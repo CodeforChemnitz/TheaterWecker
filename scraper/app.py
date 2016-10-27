@@ -59,7 +59,8 @@ def get_plays(year, month):
                 if desciption_raw:
                     play["description"] = desciption_raw.get_text()
                 tickets_raw = info.find("a", class_="karten")
-                play["tickets"] = True if tickets_raw else False
+                if tickets_raw is None:
+                    continue
                 plays.append(play)
     return plays
 
