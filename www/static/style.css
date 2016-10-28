@@ -28,6 +28,7 @@ h1 {
   text-align: center;
   opacity: .5;
   font-size: 10px;
+  margin: .5em 0;
 }
 
 .cite {
@@ -64,9 +65,9 @@ h1 {
 }
 
 .button {
-  border: 1px solid #2590ff;
+  border: 1px solid #428bc1;
   padding: 8px 15px;
-  color: #2590ff;
+  color: #428bc1;
   background-color: white;
   white-space: nowrap;
   /* hack to avoid space between buttons */
@@ -87,7 +88,7 @@ input[type="checkbox"].button:hover,
 input[type="submit"].button,
 .button-group input[type="radio"]:checked + label,
 .button-group input[type="checkbox"]:checked + label {
-  background-color: #2590ff;
+  background-color: #428bc1;
   color: white;
 }
 
@@ -127,7 +128,7 @@ input[type="submit"].button {
 }
 
 .horizontal {
-  border-bottom: 1px solid #2590ff;
+  border-bottom: 1px solid #428bc1;
   opacity: .5;
 }
 
@@ -156,4 +157,16 @@ p.thanks a:focus {
 .footer > a,
 strong {
   font-weight: 600;
+}
+
+.icon {
+  max-width: 100px;
+  display: block;
+  margin: auto;
+}
+
+.logo {
+  height: 42px;
+  position: relative;
+  top: 8px;
 }
