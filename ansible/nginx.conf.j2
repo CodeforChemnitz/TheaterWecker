@@ -8,6 +8,8 @@ server {
   server_name  theaterwecker.codeforchemnitz.de;
   root         /var/www/theaterwecker/www;
 
+  access_log /var/log/nginx/access.log timed_combined;
+
   index     index.php  index.html;
   location ~ \.php$ {
     try_files $uri =404;
