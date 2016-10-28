@@ -91,6 +91,10 @@ input[type="submit"].button,
   color: white;
 }
 
+input[type="submit"].button {
+  -webkit-appearance: none; /* Safari on iOS otherwise looks ugly */
+}
+
 .button-group .button:first-child,
 .button-group .button:nth-child(2) { /* needed because the hidden input is the first */
   border-top-left-radius: 5px;
