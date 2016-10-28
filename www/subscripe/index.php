@@ -9,6 +9,8 @@ $possibleLocations = [
   'figurentheater'
 ];
 
+$logDir = '/var/data/theaterwecker/';
+
 $category = [];
 $time = 15;
 $email = null;
@@ -30,7 +32,7 @@ if(isset($_POST['email']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
 }
 
 function writeToFile($name, $data) {
-  $fp = fopen('/var/data/theaterwecker/' . $name, 'a');
+  $fp = fopen($logDir . $name, 'a');
   if(is_resource($fp)) {
     fwrite($fp, json_encode($data) . PHP_EOL);
     fclose($fp);
@@ -67,9 +69,12 @@ if($category !== [] && !is_null($email)) {
   } else {
     header('Location: /fehler.html');
   }
-}
-if($category === []) {
-  header('Location: /fehler-kategorie.html');
 } else {
-  header('Location: /fehler-email.html');
+  if($category === []) {
+    header('Location: /fehler-kategorie.html');
+  } elseif (is_null($email)) {
+    header('Location: /fehler-email.html');
+  } else {
+    header('Location: /fehler.html');
+  }
 }
