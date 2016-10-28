@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta charset="utf-8">
+
+  <title>TheaterWecker</title>
+  <link rel="stylesheet" href="static/fonts.css">
+  <link rel="stylesheet" href="static/style.css">
+
+</head>
+<body>
+
+  <h1>TheaterWecker</h1>
+  <div>
+    <p>
+      Wusstest du, dass du als Chemnitzer Student mit deinem <strong>Studentenausweis</strong> 15 Minuten vor Beginn einer Theatervorstellung <strong>kostenlos</strong> rein kommst, wenn noch Tickets vorhanden sind? <span class="cite">*</span>
+    </p>
+    <p>
+      Lass dich einfach von uns benachrichtigen, wenn kurz vor der Veranstaltung noch Tickets frei sind.
+    </p>
+    <div class="horizontal"></div>
+    <form action="/subscripe/" method="post">
+      <p>Benachrichtige mich</p>
+      <div class="button-group">
+        <input type="radio" name="time" id="time1" value="15" checked>
+        <label class="button" for="time1">15 Minuten</label>
+        <input type="radio" name="time" id="time2" value="30">
+        <label class="button" for="time2">30 Minuten</label>
+        <input type="radio" name="time" id="time3" value="60">
+        <label class="button" for="time3">1 Stunde</label>
+      </div>
+
+      <p>vor Beginn der Veranstaltung, wenn noch Plätze frei sind, für</p>
+
+      <div class="button-group">
+        <input type="checkbox" name="category[]" id="category2" value="oper">
+        <label class="button" for="category2">Oper</label>
+        <input type="checkbox" name="category[]" id="category3" value="figurentheater">
+        <label class="button" for="category3">Figurentheater</label>
+        <input type="checkbox" name="category[]" id="category4" value="schauspiel">
+        <label class="button" for="category4">Schauspiel</label>
+        <input type="checkbox" name="category[]" id="category5" value="ballett">
+        <label class="button" for="category5">Ballett</label>
+        <input type="checkbox" name="category[]" id="category6" value="philharmonie">
+        <label class="button" for="category6">Philharmonie</label>
+        <input type="checkbox" name="category[]" id="category7" value="sonstiges">
+        <label class="button" for="category7">Sonstiges</label>
+      </div>
+
+      <p>via E-Mail</p>
+
+      <div class="button-group">
+        <input class="button" type="email" name="email" placeholder="max@mustermann.de" required>
+      </div>
+
+      <div class="button-group">
+        <input class="button" type="submit" value="Abonnieren">
+      </div>
+    </form>
+
+  </div>
+  <div class="footer">
+    <div class="footnote">
+      * Dies ist mit dem <a href="https://www.tu-chemnitz.de/stura/de/kulturticket">Kulturticket</a> deines Studentenausweises möglich.
+    </div>
+    Made with ♥ by <a href="http://codeforchemnitz.de/">Code for Chemnitz</a>
+  </div>
+</body>
+</html>
