@@ -31,7 +31,7 @@ if(isset($_POST['email']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
   $email = $_POST['email'];
 }
 
-function writeToFile($name, $data) {
+function writeToFile($logDir, $name, $data) {
   $fp = fopen($logDir . $name, 'a');
   if(is_resource($fp)) {
     fwrite($fp, json_encode($data) . PHP_EOL);
@@ -52,12 +52,12 @@ if($category !== [] && !is_null($email)) {
   ];
   $name = date('Y-m-d') . '.log';
   try {
-    writeToFile($name, $data);
+    writeToFile($logDir, $name, $data);
     $success = true;
   } catch(\Exception $e) {
     sleep(1);
     try {
-      writeToFile($name, $data);
+      writeToFile($logDir, $name, $data);
       $success = true;
     } catch(\Exception $e) {
       // we can't do anything
