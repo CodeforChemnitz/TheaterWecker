@@ -1,8 +1,12 @@
+@media screen and (min-width: 800px) {
+    body {
+      max-width: 800px;
+      margin: auto;
+    }
+}
+
 body {
   padding: 1em;
-
-  max-width: 800px;
-  margin: auto;
 }
 body * {
   font-family: 'Open Sans', sans-serif;
