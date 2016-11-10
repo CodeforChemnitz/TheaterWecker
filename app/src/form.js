@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native';
-import styles from 'styles'
+import { View, Text, TextInput, Button } from 'react-native';
+import styles from './styles'
+
+// Button: https://facebook.github.io/react-native/docs/button.html
 
 class RadioButtonGroup extends Component {
   constructor(props) {
@@ -10,13 +12,16 @@ class RadioButtonGroup extends Component {
     }
   }
   render() {
+    if (typeof this.props.options == 'undefined') {
+      return null
+    }
     return (
-      <View>
-      { this.props.properties.keys.map((key) => {
-          let value = this.props.properties[key]
+      <View style={styles.radioButtonGroup}>
+      { this.props.options.keys().map((key) => {
+          let value = this.props.options[key]
           return <Button 
               title={value} 
-              class={[this.props.classButton, this.props.value == value ? this.props.classButtonActive : {}]} 
+              style={[this.props.classButton, this.props.value == value ? this.props.classButtonActive : {}]} 
               onPress={() => this.props.onCheck(key)} />
       })}
       </View>
@@ -57,11 +62,11 @@ export default class Form extends Component {
 
   render() {
     return (
-        <View class={styles.form}>
-            <View class={styles.p}>
-                <Text>Benachrichtige mich</Text>
+        <View style={styles.form}>
+            <View style={styles.p}>
+                <Text style={styles.center}>Benachrichtige mich</Text>
             </View>
-            <View class={styles.buttonGroup}>
+            <View style={styles.buttonGroup}>
                 <RadioButtonGroup 
                   options={this.props.times} 
                   value={this.state.time} 
@@ -69,10 +74,10 @@ export default class Form extends Component {
                   classButtonActive={styles.buttonPrimary}
                   onChange={(time) => this.onTimeSelected(time)} />
             </View>
-            <View class={styles.p}>
-                <Text>vor Beginn der Veranstaltung - sofern noch Plätze frei sind - für</Text>
+            <View style={styles.p}>
+                <Text style={styles.center}>vor Beginn der Veranstaltung - sofern noch Plätze frei sind - für</Text>
             </View>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={styles.buttonGroup}>
               <RadioButtonGroup 
                   options={this.props.categories} 
                   value={this.state.category} 
@@ -80,22 +85,22 @@ export default class Form extends Component {
                   classButtonActive={styles.buttonPrimary}
                   onChange={(category) => this.onCategorySelected(category)} />
             </View>
-            <View class={styles.p}>
-                <Text>via E-Mail</Text>
+            <View style={styles.p}>
+                <Text style={styles.center}>via E-Mail</Text>
             </View>
-            <View class={styles.buttonGroup}>
+            <View style={styles.buttonGroup}>
                 <TextInput 
-                    keyboardType="email"
+                    keyboardType="email-address"
                     placeholder="max@musterman.de"
-                    class={styles.email}
+                    style={styles.email}
                     onChangeText={(email) => this.setState({email})}
                     value={this.state.email} 
                     />
             </View>
-            <View class={styles.buttonGroup}>
+            <View style={styles.buttonGroup}>
                 <Button 
                     title="Abonnieren" 
-                    class={styles.buttonPrimary} 
+                    style={styles.buttonPrimary} 
                     onPress={() => this.onAbonnieren} />
             </View>
         </View>
