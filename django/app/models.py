@@ -12,6 +12,9 @@ class Institution(models.Model):
     name = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class Category(models.Model):
     class Meta:
@@ -19,6 +22,9 @@ class Category(models.Model):
         verbose_name_plural = _('Categories')
 
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 
 class Performance(models.Model):
@@ -31,6 +37,9 @@ class Performance(models.Model):
     institution = models.ForeignKey('Institution')
     category = models.ForeignKey('Category', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
 
 
 class PerformanceNotification(models.Model):
