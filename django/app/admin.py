@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
 from django.contrib import admin
 
-# Register your models here.
+from app.models import *
+
+
+@admin.register(Institution)
+class InstitutionAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Performance)
+class PerformanceAdmin(admin.ModelAdmin):
+    pass
