@@ -6,6 +6,7 @@ import styles from './styles'
 
 class RadioButtonGroup extends Component {
   constructor(props) {
+    console.log("options", props)
     super(props)
     this.state = {
       text: ''
@@ -19,10 +20,11 @@ class RadioButtonGroup extends Component {
       <View style={styles.radioButtonGroup}>
       { this.props.options.keys().map((key) => {
           let value = this.props.options[key]
-          return <Button 
-              title={value} 
-              style={[this.props.classButton, this.props.value == value ? this.props.classButtonActive : {}]} 
-              onPress={() => this.props.onCheck(key)} />
+          return <Text>{key} - {value}</Text>
+          // return <Button 
+          //     title={value} 
+          //     style={[this.props.classButton, this.props.value == value ? this.props.classButtonActive : {}]} 
+          //     onPress={() => this.props.onCheck(key)} />
       })}
       </View>
     )
@@ -51,7 +53,9 @@ export default class Form extends Component {
     }
   }
 
-  onAbonnieren() {}
+  onAbonnieren() {
+    console.log("Abonnieren clicked")
+  }
 
   onCategorySelected(category) {
     this.setState({category})
@@ -61,6 +65,7 @@ export default class Form extends Component {
   }
 
   render() {
+    console.log("RENDER")
     return (
         <View style={styles.form}>
             <View style={styles.p}>

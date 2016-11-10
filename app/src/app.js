@@ -11,9 +11,15 @@ export default class App extends Component {
     super(props);
   }
 
-  openCodeForChemnitz() {}
-  openEmojiOne() {}
-  openKulturticket() {}
+  openCodeForChemnitz() {
+      console.log("CodeForChemnitz clicked")
+  }
+  openEmojiOne() {
+      console.log("EmojiOne clicked")
+  }
+  openKulturticket() {
+      console.log("Kulturticket clicked")
+  }
 
   render() {
     return (
@@ -49,13 +55,13 @@ export default class App extends Component {
                     </Text> 
                 </View>
                 <Text style={styles.center}>
-                    <Text>Made with ♥ by</Text>
+                    <Text>Made with ♥ by </Text>
                     <Text style={styles.link} onClick={this.openCodeForChemnitz}>Code for Chemnitz</Text>
                 </Text>
             </View>
             <View style={styles.footer}>
                 <Text style={styles.center}>
-                    <Text>Emoji art supplied by</Text>
+                    <Text>Emoji art supplied by </Text>
                     <Text style={styles.link} onClick={this.openEmojiOne}>EmojiOne</Text>
                 </Text>
             </View>
