@@ -23,14 +23,14 @@ class PerformanceSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
-class PerformanceNotificationSerializer(serializers.HyperlinkedModelSerializer):
+class PerformanceNotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PerformanceNotification
         fields = '__all__'
 
 
-class CategoryNotificationSerializer(serializers.HyperlinkedModelSerializer):
+class CategoryNotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CategoryNotification
