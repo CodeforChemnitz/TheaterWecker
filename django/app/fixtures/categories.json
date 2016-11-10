@@ -1,0 +1,44 @@
+[
+{
+  "model": "app.category",
+  "pk": 1,
+  "fields": {
+    "name": "Oper"
+  }
+},
+{
+  "model": "app.category",
+  "pk": 2,
+  "fields": {
+    "name": "Figurentheater"
+  }
+},
+{
+  "model": "app.category",
+  "pk": 3,
+  "fields": {
+    "name": "Schauspiel"
+  }
+},
+{
+  "model": "app.category",
+  "pk": 4,
+  "fields": {
+    "name": "Ballett"
+  }
+},
+{
+  "model": "app.category",
+  "pk": 5,
+  "fields": {
+    "name": "Philharmonie"
+  }
+},
+{
+  "model": "app.category",
+  "pk": 6,
+  "fields": {
+    "name": "Sonstiges"
+  }
+}
+]
