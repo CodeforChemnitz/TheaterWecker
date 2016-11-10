@@ -1,0 +1,172 @@
+@media screen and (min-width: 800px) {
+    body {
+      max-width: 800px;
+      margin: auto;
+    }
+}
+
+body {
+  padding: 1em;
+}
+body * {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  color: #333;
+  font-size: 18px;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 300;
+  text-align: center;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+.footer {
+  text-align: center;
+  opacity: .5;
+  font-size: 10px;
+  margin: .5em 0;
+}
+
+.cite {
+  opacity: .5;
+}
+
+.footer .footnote {
+  margin-bottom: 20px;
+}
+
+.footer .footnote,
+.footer .footnote a {
+  font-size: 15px;
+}
+.footer .footnote a {
+  font-size: 15px;
+  text-decoration: underline;
+}
+
+.footer a {
+  text-decoration: none;
+  color: #333;
+  font-size: 10px;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.button-group {
+  margin: 16px 0;
+  line-height: 58px;
+  text-align: center; /* centers the div :confused: */
+}
+
+.button {
+  border: 1px solid #428bc1;
+  padding: 8px 15px;
+  color: #428bc1;
+  background-color: white;
+  white-space: nowrap;
+  /* hack to avoid space between buttons */
+  margin-left: -6px;
+}
+
+.button-group input[type="radio"],
+.button-group input[type="checkbox"] {
+  display: none;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+input[type="radio"].button:hover,
+input[type="checkbox"].button:hover,
+input[type="submit"].button,
+.button-group input[type="radio"]:checked + label,
+.button-group input[type="checkbox"]:checked + label {
+  background-color: #428bc1;
+  color: white;
+}
+
+input[type="submit"].button {
+  -webkit-appearance: none; /* Safari on iOS otherwise looks ugly */
+}
+
+.button-group .button:first-child,
+.button-group .button:nth-child(2) { /* needed because the hidden input is the first */
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.button-group .button:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.button-group:last-child {
+  margin: 25px 0;
+}
+
+p {
+  text-align: center;
+  margin: 1em 0;
+}
+
+input[type="email"].button {
+  min-width: 200px;
+}
+input[type="email"].button:hover {
+  cursor: inherit;
+}
+
+input[type="submit"].button {
+  min-width: 200px;
+}
+
+.horizontal {
+  border-bottom: 1px solid #428bc1;
+  opacity: .5;
+}
+
+div.thanks {
+  text-align: center;
+}
+
+p.thanks {
+  font-size: 30px;
+  max-width: 400px;
+  display: inline-block;
+  margin-bottom: 2em;
+}
+
+p.thanks a {
+  display: block;
+  margin-top: 1em;
+  font-size: 22px;
+  text-decoration: none;
+}
+p.thanks a:hover,
+p.thanks a:focus {
+  text-decoration: underline;
+}
+
+.footer > a,
+strong {
+  font-weight: 600;
+}
+
+.icon {
+  max-width: 100px;
+  display: block;
+  margin: auto;
+}
+
+.logo {
+  height: 42px;
+  position: relative;
+  top: 8px;
+}
