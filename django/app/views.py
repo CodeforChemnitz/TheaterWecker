@@ -1,7 +1,7 @@
 from django.http.response import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
-from django.app.forms import SubscribeForm
+from app.forms import SubscribeForm
 
 
 def index(request):

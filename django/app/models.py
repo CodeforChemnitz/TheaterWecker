@@ -39,7 +39,7 @@ class PerformanceNotification(models.Model):
         verbose_name_plural = _('Performance Notifications')
         unique_together = ('user', 'performance')
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.EmailField()
     performance = models.ForeignKey('Performance')
     interval = models.DurationField()
 
@@ -50,6 +50,6 @@ class CategoryNotification(models.Model):
         verbose_name_plural = _('Category Notifications')
         unique_together = ('user', 'category')
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.EmailField()
     category = models.ForeignKey('Category')
     interval = models.DurationField()

@@ -1,5 +1,5 @@
 from django import forms
-from django.app.models import Category
+from app.models import Category
 
 
 class SubscribeForm(forms.Form):
