@@ -17,3 +17,13 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Performance)
 class PerformanceAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(PerformanceNotification)
+class PerformanceNotificationAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(CategoryNotification)
+class CategoryNotificationAdmin(admin.ModelAdmin):
+    pass

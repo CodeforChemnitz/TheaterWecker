@@ -52,6 +52,9 @@ class PerformanceNotification(models.Model):
     performance = models.ForeignKey('Performance')
     interval = models.DurationField()
 
+    def __str__(self):
+        return '%s ~> %s ~> %s' % (self.user, self.interval, self.performance.title)
+
 
 class CategoryNotification(models.Model):
     class Meta:
@@ -62,3 +65,6 @@ class CategoryNotification(models.Model):
     user = models.EmailField()
     category = models.ForeignKey('Category')
     interval = models.DurationField()
+
+    def __str__(self):
+        return '%s ~> %s ~> %s' % (self.user, self.interval, self.category.name)
