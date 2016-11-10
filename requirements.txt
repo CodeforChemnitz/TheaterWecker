@@ -1,5 +1,8 @@
 beautifulsoup4==4.5.1
 Django==1.10.3
+django-filter==0.15.3
+djangorestframework==3.5.3
 lxml==3.6.4
+Markdown==2.6.7
 requests==2.11.1
 wheel==0.24.0
