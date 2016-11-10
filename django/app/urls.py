@@ -3,5 +3,5 @@ from .views import *
 
 urlpatterns = [
     url(r'^subscribe/$', subscribe, name="subscribe"),
-    url(r'^$', index),
+    url(r'^$', index, name="index"),
 ]

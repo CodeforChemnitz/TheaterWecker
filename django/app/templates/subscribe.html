@@ -3,10 +3,13 @@
 
 {% block content %}
 <h1>TheaterWecker</h1>
-<img class="icon" src="{% static 'img/ok.svg' %}">
+<img class="icon" src="{% static icon %}">
 <div class="thanks">
 <p class="thanks">
-  Danke, wir werden dich bei der nächsten Gelegenheit benachrichtigen.
+  {{ text }}
+  {% if showBack %}
+    <a href="{% url 'app:index' %}">Zurück</a>
+  {% endif %}
 </p>
 </div>
 {% endblock %}
