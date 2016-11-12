@@ -1,8 +1,13 @@
+# -*- coding: utf-8 -*-
 from django import forms
-from app.models import Category
 
 
 class SubscribeForm(forms.Form):
     interval = forms.DurationField()
-    categories = forms.ChoiceField(choices=Category.objects.all().values_list("pk","name"))
+    categories = forms.ChoiceField()
     email = forms.EmailField()
+
+    def __init__(self, *args, **kwargs):
+        self.category_choices = kwargs.pop('category_choices')
+        super(SubscribeForm, self).__init__(*args, **kwargs)
+        self.categories.choices = self.category_choices
