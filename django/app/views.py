@@ -8,17 +8,20 @@ from django.http.response import HttpResponse
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from app.forms import SubscribeForm
-from app.models import CategoryNotification
-from app.models import Category
-from app.models import UserEmail
+from app.models import CategoryNotification, Category, UserEmail, Institution, City
 
 
-def index(request):
+def index(request, institution=None):
+    if institution:
+        inst = get_object_or_404(Institution, pk=institution)
+    else:
+        city = City.objects.get(name='Chemnitz')
+        inst = Institution.objects.filter(city=city).first()
     return render(request, "index.html", {
-        'categories': Category.objects.all()
+        'categories': Category.objects.filter(institution=inst)
     })
 
 

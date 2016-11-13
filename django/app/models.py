@@ -27,13 +27,36 @@ class UserEmail(models.Model):
         )
 
 
+class City(models.Model):
+    class Meta:
+        verbose_name = _('City')
+        verbose_name_plural = _('Cities')
+
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Institution(models.Model):
     class Meta:
         verbose_name = _('Institution')
         verbose_name_plural = _('Institutions')
 
     name = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
+    city = models.ForeignKey('City')
+
+    def __str__(self):
+        return self.name
+
+
+class Location(models.Model):
+    class Meta:
+        verbose_name = _('Location')
+        verbose_name_plural = _('Locations')
+
+    name = models.CharField(max_length=255)
+    institution = models.ForeignKey('Institution')
 
     def __str__(self):
         return self.name
@@ -45,6 +68,7 @@ class Category(models.Model):
         verbose_name_plural = _('Categories')
 
     name = models.CharField(max_length=255)
+    institution = models.ForeignKey('Institution')
 
     def __str__(self):
         return self.name
@@ -57,7 +81,7 @@ class Performance(models.Model):
 
     title = models.CharField(max_length=255)
     begin = models.DateTimeField()
-    institution = models.ForeignKey('Institution')
+    location = models.ForeignKey('Location')
     category = models.ForeignKey('Category', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 

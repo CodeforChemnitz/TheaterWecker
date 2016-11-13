@@ -9,19 +9,29 @@ class UserEmailAdmin(admin.ModelAdmin):
     list_filter = ['verified']
 
 
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(Institution)
 class InstitutionAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ['city']
+
+
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    list_filter = ['institution']
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ['institution']
 
 
 @admin.register(Performance)
 class PerformanceAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ['location__institution']
 
 
 @admin.register(PerformanceNotification)
