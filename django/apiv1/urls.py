@@ -5,6 +5,7 @@ from rest_framework import routers
 from .views import *
 router = routers.DefaultRouter()
 
+router.register(r'users', UserEmailViewSet)
 router.register(r'institutions', InstitutionViewSet)
 router.register(r'categories', CategoryViewSet)
 router.register(r'performances', PerformanceViewSet)

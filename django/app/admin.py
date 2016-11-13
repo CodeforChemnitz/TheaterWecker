@@ -4,6 +4,11 @@ from django.contrib import admin
 from app.models import *
 
 
+@admin.register(UserEmail)
+class UserEmailAdmin(admin.ModelAdmin):
+    list_filter = ['verified']
+
+
 @admin.register(Institution)
 class InstitutionAdmin(admin.ModelAdmin):
     pass

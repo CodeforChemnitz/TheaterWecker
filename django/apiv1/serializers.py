@@ -5,7 +5,14 @@ from rest_framework import serializers
 from app.models import *
 
 
-class InstitutionSerializer(serializers.HyperlinkedModelSerializer):
+class UserEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserEmail
+        fields = '__all__'
+
+
+
+class InstitutionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Institution
         fields = '__all__'
@@ -17,7 +24,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PerformanceSerializer(serializers.HyperlinkedModelSerializer):
+class PerformanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Performance
         fields = '__all__'

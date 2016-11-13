@@ -1,0 +1,15 @@
+{% autoescape off %}Liebe/r Theaterenthusiast/in,
+
+wir werden dich bei der nächsten Gelegenheit benachrichtigen.
+
+Vorher musst du bitte noch deine E-Mail Adresse bestätigen.
+Klicke dazu einfach auf folgenden Link:
+
+{{ verification_link }}
+
+Liebe Grüße,
+dein TheaterWecker Team
+
+--
+Made with ♥ by Code for Chemnitz
+{% endautoescape %}

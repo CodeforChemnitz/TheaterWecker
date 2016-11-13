@@ -139,11 +139,15 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
     )
 }
 
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = "anymail.backends.mailgun.MailgunBackend"
-DEFAULT_FROM_EMAIL = "no-reply@mg.theaterwecker.de"
+DEFAULT_FROM_EMAIL = "TheaterWecker <no-reply@mg.theaterwecker.com>"
 
 # Try to import mailgun Settings (settings_mailgun.py should be existing after deployment or should be created by hand)
 try:
