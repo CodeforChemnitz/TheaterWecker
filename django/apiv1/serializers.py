@@ -11,10 +11,21 @@ class UserEmailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = '__all__'
+
 
 class InstitutionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Institution
+        fields = '__all__'
+
+
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
         fields = '__all__'
 
 

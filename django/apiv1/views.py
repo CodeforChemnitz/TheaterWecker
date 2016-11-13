@@ -18,9 +18,29 @@ class UserEmailViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['=email']
 
 
+class CityViewSet(viewsets.ModelViewSet):
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
+    filter_backends = [
+        filters.OrderingFilter
+    ]
+    ordering_fields = ['name']
+
+
 class InstitutionViewSet(viewsets.ModelViewSet):
     queryset = Institution.objects.all()
     serializer_class = InstitutionSerializer
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.OrderingFilter
+    ]
+    filter_fields = ['city']
+    ordering_fields = ['name']
+
+
+class LocationViewSet(viewsets.ModelViewSet):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
     filter_backends = [
         filters.OrderingFilter
     ]
@@ -31,8 +51,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [
+        DjangoFilterBackend,
         filters.OrderingFilter
     ]
+    filter_fields = ['institution', 'institution__city']
     ordering_fields = ['name']
 
 
@@ -43,7 +65,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         DjangoFilterBackend,
         filters.OrderingFilter
     ]
-    filter_fields = ['institution', 'category']
+    filter_fields = ['location', 'location__institution', 'location__institution__city', 'category']
     ordering_fields = ['title', 'begin', 'institution', 'category']
 
 
