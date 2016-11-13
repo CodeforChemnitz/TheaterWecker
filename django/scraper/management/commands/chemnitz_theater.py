@@ -74,6 +74,9 @@ class Command(BaseCommand):
         city, _ = City.objects.get_or_create(name='Chemnitz')
         institution, _ = Institution.objects.get_or_create(name='Theater Chemnitz', city=city)
 
+        old_performances = Performance.objects.filter(location__institution=institution, begin__gte=datetime.datetime.now())
+        current_performances = []
+
         for play in plays:
             location, _ = Location.objects.get_or_create(name=play.get('location', "Theater Chemnitz"), institution=institution)
             category, _ = Category.objects.get_or_create(name=play.get('category', 'Sonstiges'), institution=institution)
@@ -85,3 +88,10 @@ class Command(BaseCommand):
                 begin=begin.isoformat(),
                 description=play.get('description', '')
             )
+            current_performances.append(performance)
+
+        # Aufführungen rausschmeißen, wenn sie nicht mehr im scraping auftauchen (z.B. wenn ausverkauft)
+        # ToDo not working
+        to_delete = [old_performance for old_performance in old_performances if old_performances not in current_performances]
+        for x in to_delete:
+            x.delete()

@@ -42,8 +42,10 @@ class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
     filter_backends = [
+        DjangoFilterBackend,
         filters.OrderingFilter
     ]
+    filter_fields = ['institution', 'institution__city']
     ordering_fields = ['name']
 
 
