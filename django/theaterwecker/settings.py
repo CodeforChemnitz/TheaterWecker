@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'anymail',
     'theaterwecker',
     'app',
     'apiv1',
@@ -140,3 +141,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     )
 }
+
+EMAIL_BACKEND = "anymail.backends.mailgun.MailgunBackend"
+DEFAULT_FROM_EMAIL = "no-reply@mg.theaterwecker.de"
+
+# Try to import mailgun Settings (settings_mailgun.py should be existing after deployment or should be created by hand)
+try:
+    from .settings_mailgun import *
+except ImportError:
+    pass
+

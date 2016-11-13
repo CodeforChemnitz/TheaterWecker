@@ -1,5 +1,6 @@
 beautifulsoup4==4.5.1
 Django==1.10.3
+django-anymail==0.6.1
 django-filter==0.15.3
 djangorestframework==3.5.3
 lxml==3.6.4

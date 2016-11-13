@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
 
+from django.core.mail import send_mail
 from django.http.response import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
@@ -32,13 +33,24 @@ def subscribe(request):
                 if notification.interval != interval:
                     notification.interval = interval
                     notification.save()
+
             except Exception as e:
                 # TODO log exception
+                print(e)
                 return render(request, 'subscribe.html', {
                         'icon': 'img/boom.svg',
                         'text': 'Leider ist ein Fehler aufgetreten. Bitte versuche es erneut.',
                         'showBack': True
                     })
+
+        try:
+            # TODO send proper email
+            send_mail("Willkommen beim TheaterWecker", "Wir werden dich bei der nächsten Gelegenheit benachrichtigen.",
+                      "TheaterWecker <no-reply@mg.theaterwecker.com>", [email])
+        except Exception as e:
+            # TODO log exception
+            print(e)
+            # send the email later
         return render(request, 'subscribe.html', {
                 'icon': 'img/ok.svg',
                 'text': 'Danke, wir werden dich bei der nächsten Gelegenheit benachrichtigen.',
