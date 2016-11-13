@@ -13,6 +13,11 @@ from django.shortcuts import render, get_object_or_404
 from app.forms import SubscribeForm
 from app.models import CategoryNotification, Category, UserEmail, Institution, City
 
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger('root')
 
 def index(request, institution=None):
     if institution:
@@ -48,8 +53,10 @@ def subscribe(request):
                     notification.save()
 
             except Exception as e:
-                # TODO log exception
-                print(e)
+                logger.error('Saving category failed', exc_info=True, extra={
+                    # Optionally pass a request and we'll grab any information we can
+                    'request': request,
+                })
                 return render(request, 'subscribe.html', {
                         'icon': 'img/boom.svg',
                         'text': 'Leider ist ein Fehler aufgetreten. Bitte versuche es erneut.',
@@ -62,9 +69,12 @@ def subscribe(request):
                 'verification_link': "%s://%s%s" % (request.scheme, request.get_host(), reverse('app:verify', kwargs={'key': user_email.verification_key}))
             }))
         except Exception as e:
-            # TODO log exception
-            print(e)
-            # send the email later
+            logger.error('Sending email failed', exc_info=True, extra={
+                # Optionally pass a request and we'll grab any information we can
+                'request': request,
+            })
+            # TODO send the email later
+
         return render(request, 'subscribe.html', {
                 'icon': 'img/ok.svg',
                 'text': 'Danke, wir werden dich bei der nächsten Gelegenheit benachrichtigen.',

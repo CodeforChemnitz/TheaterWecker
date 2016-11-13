@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'anymail',
+    'raven.contrib.django.raven_compat',
     'theaterwecker',
     'app',
     'apiv1',
@@ -150,9 +151,57 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = "anymail.backends.mailgun.MailgunBackend"
 DEFAULT_FROM_EMAIL = "TheaterWecker <no-reply@mg.theaterwecker.com>"
 
-# Try to import mailgun Settings (settings_mailgun.py should be existing after deployment or should be created by hand)
+# Try to import mailgun settings (settings_mailgun.py should be existing after deployment or should be created by hand)
 try:
     from .settings_mailgun import *
 except ImportError:
     pass
 
+# Try to import raven settings (settings_raven.py should be existing after deployment or should be created by hand)
+try:
+    from .settings_raven import *
+except ImportError:
+    pass
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s '
+                      '%(process)d %(thread)d %(message)s'
+        },
+    },
+    'handlers': {
+        'sentry': {
+            'level': 'WARNING',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'root': {
+            'level': 'WARNING',
+            'handlers': ['sentry'],
+        },
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'raven': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+    },
+}
