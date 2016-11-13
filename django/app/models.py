@@ -66,6 +66,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
+        ordering = ['name']
 
     name = models.CharField(max_length=255)
     institution = models.ForeignKey('Institution')

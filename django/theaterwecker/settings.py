@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'theaterwecker',
     'app',
     'apiv1',
+    'scraper',
 ]
 
 MIDDLEWARE = [
