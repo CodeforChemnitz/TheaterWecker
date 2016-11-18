@@ -3,42 +3,48 @@
   "model": "app.category",
   "pk": 1,
   "fields": {
-    "name": "Oper"
+    "name": "Oper",
+    "institution": 1
   }
 },
 {
   "model": "app.category",
   "pk": 2,
   "fields": {
-    "name": "Figurentheater"
+    "name": "Figurentheater",
+    "institution": 1
   }
 },
 {
   "model": "app.category",
   "pk": 3,
   "fields": {
-    "name": "Schauspiel"
+    "name": "Schauspiel",
+    "institution": 1
   }
 },
 {
   "model": "app.category",
   "pk": 4,
   "fields": {
-    "name": "Ballett"
+    "name": "Ballett",
+    "institution": 1
   }
 },
 {
   "model": "app.category",
   "pk": 5,
   "fields": {
-    "name": "Philharmonie"
+    "name": "Philharmonie",
+    "institution": 1
   }
 },
 {
   "model": "app.category",
   "pk": 6,
   "fields": {
-    "name": "Sonstiges"
+    "name": "Sonstiges",
+    "institution": 1
   }
 }
 ]

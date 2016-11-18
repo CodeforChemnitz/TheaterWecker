@@ -1,0 +1,9 @@
+[
+{
+  "model": "app.city",
+  "pk": 1,
+  "fields": {
+    "name": "Chemnitz"
+  }
+}
+]

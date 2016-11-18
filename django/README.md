@@ -5,6 +5,7 @@
 ```
 ./manage.py migrate
 ./manage.py createsuperuser
+./manage.py loaddata cities institutions categories
 ```
 
 ## Start server
