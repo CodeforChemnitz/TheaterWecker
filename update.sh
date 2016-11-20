@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 cd /var/theaterwecker/django
 
@@ -12,7 +12,7 @@ systemctl reload nginx
 # install new dependencies
 pip install -r requirements.txt
 ./manage.py migrate
-./manage.py collectstatic
+./manage.py collectstatic --no-input -c
 
 # restart the django app
 systemctl restart theaterwecker-web
