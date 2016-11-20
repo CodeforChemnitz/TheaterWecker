@@ -163,6 +163,11 @@ try:
 except ImportError:
     pass
 
+try:
+    from .settings_prod import *
+except ImportError:
+    pass
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
