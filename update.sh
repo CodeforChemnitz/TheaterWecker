@@ -1,15 +1,25 @@
 #!/usr/bin/bash
 
-cd /var/theaterwecker
+cd /var/theaterwecker/django
 
-source bin/activate
+source /var/theaterwecker-venv/bin/activate
 
+# switch to upgrade page
 rm /etc/nginx/sites-enabled/theaterwecker.conf
 ln -s /etc/nginx/sites-available/update.conf /etc/nginx/sites-enabled/update.conf
 systemctl reload nginx
 
+# install new dependencies
 pip install -r requirements.txt
+./manage.py migrate
+./manage.py collectstatic
 
+# restart the django app
+systemctl restart theaterwecker-web
+
+# move back to normal page
 rm /etc/nginx/sites-enabled/update.conf
 ln -s /etc/nginx/sites-available/theaterwecker.conf /etc/nginx/sites-enabled/theaterwecker.conf
 systemctl reload nginx
+
+deactivate
