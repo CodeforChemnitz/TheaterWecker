@@ -1,0 +1,16 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+PIDFile=/var/run/theaterwecker/web.pid
+User=www-data
+Group=www-data
+WorkingDirectory=/var/theaterwecker/django
+ExecStart=/var/theaterwecker-venv/bin/gunicorn --workers 9 --bind unix:/var/run/theaterwecker/web.sock --pid /var/run/theaterwecker/web.pid theaterwecker.wsgi
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

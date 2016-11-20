@@ -1,28 +1,121 @@
 ---
 - hosts: theaterwecker
   become: true
+  vars_files:
+    - secrets.yml
 
   tasks:
   - name: update packages cache
     apt: update_cache=yes cache_valid_time=3600
+    tags:
+      - setup
 
   - name: install packages
     apt: name={{ item.name }}
     with_items:
       - { name: 'nginx' }
-      - { name: 'php-fpm' }
+      - { name: 'python-psycopg2' }
+      - { name: 'python3-dev' }
+    tags:
+      - setup
 
-  - name: create theater wecker data dir
-    file: path=/var/data/theaterwecker/ state=directory mode=0755 owner=www-data group=www-data
+  - name: create database
+    postgresql_db: name=theaterwecker
+                 encoding='UTF-8'
+                 lc_collate='de_DE.UTF-8'
+                 lc_ctype='de_DE.UTF-8'
+                 template='template0'
+    become: true
+    become_user: postgres
+    tags:
+      - setup
 
-  - name: create nginx config
-    template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/default
+  - name: create database user
+    postgresql_user: db=theaterwecker name=theaterwecker password={{postgres_password}} priv=ALL
+    become: true
+    become_user: postgres
+    tags:
+      - setup
+
+  - name: create nginx config for update page
+    template: src=update.conf.j2 dest=/etc/nginx/sites-available/update.conf
     notify:
       - reload nginx
+    tags:
+      - setup
+      - deployment
+
+  - name: create nginx config for theaterwecker
+    template: src=theaterwecker.conf.j2 dest=/etc/nginx/sites-available/theaterwecker.conf
+    notify:
+      - reload nginx
+    tags:
+      - setup
+      - deployment
+
+  - name: create run directory for gunicorn
+    file: path=/var/run/theaterwecker owner=www-data group=www-data  state=directory
+    tags:
+      - setup
 
   - name: checkout files
-    git: repo=https://github.com/codeforchemnitz/theaterwecker.git dest=/var/www/theaterwecker
-    
+    git: repo=https://github.com/codeforchemnitz/theaterwecker.git dest=/var/theaterwecker version=django
+    notify:
+      - run update.sh
+    tags:
+      - deployment
+
+  - name: create virtualenv
+    command: virtualenv /var/theaterwecker-venv -p python3 creates=/var/theaterwecker-venv
+    tags:
+      - setup
+
+  - name: install gunicorn into virtualenv
+    pip:
+      name: gunicorn
+      virtualenv_python: python3.5
+      executable: /var/theaterwecker-venv/bin/pip
+    tags:
+      - setup
+
+  - name: install requirements into virtualenv
+    pip:
+      requirements: /var/theaterwecker/requirements.txt
+      virtualenv_python: python3.5
+      executable: /var/theaterwecker-venv/bin/pip
+    tags:
+      - setup
+
+  - name: create gunicorn config for theaterwecker
+    template: src=theaterwecker-web.service.j2 dest=/etc/systemd/system/theaterwecker-web.service
+    notify:
+      - systemctl daemon-reload
+      - restart theaterwecker-web
+    tags:
+      - setup
+      - deployment
+
+  - name: enable theaterwecker-web
+    service: name=theaterwecker-web enabled=yes
+    tags:
+      - setup
+
+  - name: place settings_prod.py
+    template: src=settings_prod.py.j2 dest=/var/theaterwecker/django/theaterwecker/settings_prod.py
+    notify:
+      - restart theaterwecker-web
+    tags:
+      - deployment
+
+  - name: create static directory for collectstatic
+    file: path=/var/theaterwecker/django/static owner=www-data group=www-data state=directory
+    tags:
+      - setup
+
   handlers:
+    - name: systemctl daemon-reload
+      command: systemctl daemon-reload
     - name: reload nginx
       service: name=nginx state=reloaded
+    - name: restart theaterwecker-web
+      service: name=theaterwecker-web state=restarted
