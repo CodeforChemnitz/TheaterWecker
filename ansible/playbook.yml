@@ -5,6 +5,12 @@
     - secrets.yml
 
   tasks:
+  - name: add debian docker repository
+    apt_repository: repo='deb http://deb.goaccess.io/ xenial main' state=present filename=goaccess.list
+
+  - name: add goaccess repo key
+    apt_key: url=https://deb.goaccess.io/gnugpg.key state=present
+
   - name: update packages cache
     apt: update_cache=yes cache_valid_time=3600
     tags:
@@ -16,6 +22,8 @@
       - { name: 'nginx' }
       - { name: 'python-psycopg2' }
       - { name: 'python3-dev' }
+      - { name: 'goaccess-tcb' }
+      - { name: 'apt-transport-https' }
     tags:
       - setup
 
@@ -111,6 +119,20 @@
     file: path=/var/theaterwecker/django/static owner=www-data group=www-data state=directory
     tags:
       - setup
+
+  - name: create results directory for goaccess
+    file: path=/var/www/report state=directory
+    tags:
+      - setup
+
+  - name: add goaccess config
+    template: src=goaccess.conf dest=/etc/goaccess.conf
+
+  - name: add parse access log script
+    template: src=parse_access_log.sh dest=/opt/parse_access_log.sh mode="u=rwx,g=rx,o=rx"
+
+  - name: add goaccess cronjob
+    cron: name="create goaccess result" job="/opt/parse_access_log.sh"
 
   handlers:
     - name: systemctl daemon-reload
