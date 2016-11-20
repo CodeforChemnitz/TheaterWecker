@@ -1,3 +1,9 @@
 .idea
 data.json
 ansible/hosts
+
+# virtualenv
+bin/
+lib/
+share/
+pip-selfcheck.json
