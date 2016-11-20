@@ -120,4 +120,4 @@
     - name: restart theaterwecker-web
       service: name=theaterwecker-web state=restarted
     - name: run update.sh
-      shell: /var/theaterwecker/django/update.sh
+      shell: /var/theaterwecker/update.sh
