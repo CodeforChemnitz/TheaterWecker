@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>TheaterWecker</h1>
+<img class="icon" src="{% static icon %}">
+<div class="thanks">
+<p class="thanks">
+  {{ text }}
+  {% if showBack %}
+    <a href="{% url 'app:index' %}">Zurück</a>
+  {% endif %}
+</p>
+</div>
+{% endblock %}

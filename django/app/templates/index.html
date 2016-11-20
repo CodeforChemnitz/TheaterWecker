@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1><img class="logo" src="{% static 'img/performing-arts.svg' %}"><img class="logo" src="{% static 'img/alarm-clock.svg' %}"> &nbsp; TheaterWecker</h1>
+<div>
+<p>
+  Wusstest du, dass du als Chemnitzer Student mit deinem <strong>Studentenausweis</strong> 15 Minuten vor Beginn einer Theatervorstellung <strong>kostenlos</strong> rein kommst, wenn noch Tickets vorhanden sind? <span class="cite">*</span>
+</p>
+<p>
+  Lass dich einfach von uns benachrichtigen, wenn kurz vor der Veranstaltung noch Tickets frei sind.
+</p>
+<div class="horizontal"></div>
+<form action="{% url 'app:subscribe' %}" method="post">
+  <p>Benachrichtige mich</p>
+  <div class="button-group">
+    <input type="radio" name="interval" id="interval1" value="00:15:00" checked>
+    <label class="button" for="interval1">15 Minuten</label>
+    <input type="radio" name="interval" id="interval2" value="00:30:00">
+    <label class="button" for="interval2">30 Minuten</label>
+    <input type="radio" name="interval" id="interval3" value="01:00:00">
+    <label class="button" for="interval3">1 Stunde</label>
+  </div>
+
+  <p>vor Beginn der Veranstaltung – sofern noch Plätze frei sind – für</p>
+
+  <div class="button-group">
+    {% for category in categories %}
+      <input type="checkbox" name="categories" id="category{{ category.id }}" value="{{ category.pk }}">
+      <label class="button" for="category{{ category.pk }}">{{ category.name }}</label>
+    {% endfor %}
+  </div>
+
+  <p>via E-Mail</p>
+
+  <div class="button-group">
+    <input class="button" type="email" name="email" placeholder="max@mustermann.de" required>
+  </div>
+
+  <div class="button-group">
+    <input class="button" type="submit" value="Abonnieren">
+  </div>
+
+  {% csrf_token %}
+</form>
+
+</div>
+{% endblock %}
+
+{% block footnote %}
+<div class="footnote">
+  * Dies ist mit dem <a href="https://www.tu-chemnitz.de/stura/de/kulturticket">Kulturticket</a> deines Studentenausweises möglich.
+</div>
+{% endblock %}

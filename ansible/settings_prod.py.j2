@@ -1,0 +1,31 @@
+SECRET_KEY = '{{django_secret}}'
+
+DEBUG = False
+
+RAVEN_CONFIG = {
+    'dsn': '{{sentry_dsn}}',
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': '0.1',
+}
+
+ANYMAIL = {
+    "MAILGUN_API_KEY": "{{mailgun_api_key}}",
+    "MAILGUN_SENDER_DOMAIN": 'mg.theaterwecker.de',
+}
+
+ALLOWED_HOSTS = ["theaterwecker.de"]
+
+# Database
+# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'theaterwecker',
+        'USER': 'theaterwecker',
+        'PASSWORD': '{{postgres_password}}',
+        'HOST': '',
+        'PORT': '',
+    }
+}

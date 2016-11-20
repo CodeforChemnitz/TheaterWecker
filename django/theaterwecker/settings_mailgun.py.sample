@@ -1,0 +1,4 @@
+ANYMAIL = {
+    "MAILGUN_API_KEY": "<api-key-here>",
+    "MAILGUN_SENDER_DOMAIN": 'mg.theaterwecker.de',
+}

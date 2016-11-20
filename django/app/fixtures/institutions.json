@@ -1,0 +1,10 @@
+[
+{
+  "model": "app.institution",
+  "pk": 1,
+  "fields": {
+    "name": "Theater",
+    "city": 1
+  }
+}
+]
