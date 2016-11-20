@@ -1,0 +1,121 @@
+@media screen and (min-width: 800px) {
+    body {
+      max-width: 800px;
+      margin: auto;
+    }
+}
+
+body {
+  padding: 1em;
+}
+body * {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  color: #333;
+  font-size: 18px;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 300;
+  text-align: center;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+.footer {
+  text-align: center;
+  opacity: .5;
+  font-size: 10px;
+  margin: .5em 0;
+}
+
+.footer .footnote {
+  margin-bottom: 20px;
+}
+
+.footer .footnote,
+.footer .footnote a {
+  font-size: 15px;
+}
+.footer .footnote a {
+  font-size: 15px;
+  text-decoration: underline;
+}
+
+.footer a {
+  text-decoration: none;
+  color: #333;
+  font-size: 10px;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+p {
+  text-align: center;
+  margin: 1em 0;
+}
+
+.horizontal {
+  border-bottom: 1px solid #428bc1;
+  opacity: .5;
+}
+
+div.thanks {
+  text-align: center;
+}
+
+p.thanks {
+  font-size: 30px;
+  max-width: 400px;
+  display: inline-block;
+  margin-bottom: 2em;
+}
+
+p.thanks a {
+  display: block;
+  margin-top: 1em;
+  font-size: 22px;
+  text-decoration: none;
+}
+p.thanks a:hover,
+p.thanks a:focus {
+  text-decoration: underline;
+}
+
+.footer > a,
+strong {
+  font-weight: 600;
+}
+
+.icon {
+  max-width: 100px;
+  display: block;
+  margin: auto;
+}
+
+.logo {
+  height: 42px;
+  position: relative;
+  top: 8px;
+}
+
+
+.spin {
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+}
