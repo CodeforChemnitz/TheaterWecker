@@ -59,7 +59,7 @@
       - setup
 
   - name: checkout files
-    git: repo=https://github.com/codeforchemnitz/theaterwecker.git dest=/var/theaterwecker version=django
+    git: repo=https://github.com/codeforchemnitz/theaterwecker.git dest=/var/theaterwecker version=master
     notify:
       - run update.sh
     tags:
