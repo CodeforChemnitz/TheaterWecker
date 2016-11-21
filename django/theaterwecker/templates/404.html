@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>TheaterWecker</h1>
+<img class="icon" src="{% static 'img/penguin.svg' %}">
+<div class="thanks">
+<p class="thanks">
+  Oh nein! Diese Seite gibt es nicht.
+  <a href="{% url 'app:index' %}">Zurück</a>
+</p>
+</div>
+{% endblock %}
