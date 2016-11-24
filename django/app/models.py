@@ -127,4 +127,5 @@ class CategoryNotification(models.Model):
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return '%s ~> %s ~> %s' % (self.user, self.interval, self.category.name)
+        check = "✓" if self.verified else "×"
+        return '%s ~> %s ~> %s (%s)' % (self.user, self.interval, self.category.name, check)
