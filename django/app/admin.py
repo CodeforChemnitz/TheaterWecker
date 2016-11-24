@@ -7,6 +7,13 @@ from app.models import *
 @admin.register(UserEmail)
 class UserEmailAdmin(admin.ModelAdmin):
     list_filter = ['verified']
+    readonly_fields = ['updated', 'created']
+
+
+@admin.register(UserDevice)
+class UserDeviceAdmin(admin.ModelAdmin):
+    list_filter = ['verified']
+    readonly_fields = ['updated', 'created']
 
 
 @admin.register(City)
@@ -41,4 +48,5 @@ class PerformanceNotificationAdmin(admin.ModelAdmin):
 
 @admin.register(CategoryNotification)
 class CategoryNotificationAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ['verified']
+    readonly_fields = ['updated', 'created']
