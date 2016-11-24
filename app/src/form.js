@@ -1,15 +1,20 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput, Button } from 'react-native'
 import styles from './styles'
+import _ from 'underscore'
 
 // Button: https://facebook.github.io/react-native/docs/button.html
 
 class RadioButtonGroup extends Component {
   constructor(props) {
-    console.log("options", props)
     super(props)
     this.state = {
-      text: ''
+      active: this.props.value
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.state.active != this.props.value) {
+      this.setState({active: this.props.value})
     }
   }
   render() {
@@ -18,34 +23,34 @@ class RadioButtonGroup extends Component {
     }
     return (
       <View style={styles.radioButtonGroup}>
-      { this.props.options.keys().map((key) => {
+      { _.map(_.keys(this.props.options), (key) => {
           let value = this.props.options[key]
-          return <Text>{key} - {value}</Text>
-          // return <Button 
-          //     title={value} 
-          //     style={[this.props.classButton, this.props.value == value ? this.props.classButtonActive : {}]} 
-          //     onPress={() => this.props.onCheck(key)} />
-      })}
+          return <Button
+              key={key} 
+              title={value} 
+              style={[this.props.classButton, this.state.active == value ? this.props.classButtonActive : {}]} 
+              onPress={() => this.props.onChange(key)} />
+      } ) }
       </View>
     )
   }
 }
 
 export default class Form extends Component {
+  categories = {
+    'oper': "Oper",
+    'figurentheater': "Figurentheater",
+    'schauspiel': "Schauspiel",
+    'ballett': "Ballett",
+    'philharmonie': "Philharmonie",
+    'sonstiges' : "Sonstiges"
+  }
+  times = {
+    '15': '15 Minuten',
+    '30': '30 Minuten',
+    '60': '1 Stunde' 
+  }
   constructor(props) {
-    props.categories = {
-      'oper': "Oper",
-      'figurentheater': "Figurentheater",
-      'schauspiel': "Schauspiel",
-      'ballett': "Ballett",
-      'philharmonie': "Philharmonie",
-      'sonstiges' : "Sonstiges"
-    }
-    props.times = {
-      '15': '15 Minuten',
-      '30': '30 Minuten',
-      '60': '1 Stunde' 
-    }
     super(props)
     this.state = {
       email: '',
@@ -65,7 +70,6 @@ export default class Form extends Component {
   }
 
   render() {
-    console.log("RENDER")
     return (
         <View style={styles.form}>
             <View style={styles.p}>
@@ -73,7 +77,7 @@ export default class Form extends Component {
             </View>
             <View style={styles.buttonGroup}>
                 <RadioButtonGroup 
-                  options={this.props.times} 
+                  options={this.times} 
                   value={this.state.time} 
                   classButton={styles.button} 
                   classButtonActive={styles.buttonPrimary}
@@ -84,7 +88,7 @@ export default class Form extends Component {
             </View>
             <View style={styles.buttonGroup}>
               <RadioButtonGroup 
-                  options={this.props.categories} 
+                  options={this.categories} 
                   value={this.state.category} 
                   classButton={styles.button} 
                   classButtonActive={styles.buttonPrimary}
