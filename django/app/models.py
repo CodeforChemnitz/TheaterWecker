@@ -13,6 +13,8 @@ class UserEmail(models.Model):
     email = models.EmailField(unique=True)
     verified = models.BooleanField(default=False)
     verification_key = models.CharField(max_length=255, null=True, blank=True, unique=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         check = "✓" if self.verified else "×"
@@ -32,6 +34,8 @@ class UserDevice(models.Model):
         verbose_name_plural = _('User Devices')
 
     device_id = models.CharField(max_length=255, unique=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.device_id
@@ -125,6 +129,8 @@ class CategoryNotification(models.Model):
     category = models.ForeignKey('Category')
     interval = models.DurationField()
     verified = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         check = "✓" if self.verified else "×"
