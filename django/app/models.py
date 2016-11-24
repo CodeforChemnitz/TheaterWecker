@@ -79,6 +79,7 @@ class Performance(models.Model):
     class Meta:
         verbose_name = _('Performance')
         verbose_name_plural = _('Performances')
+        ordering = ['begin']
 
     title = models.CharField(max_length=255)
     begin = models.DateTimeField()
