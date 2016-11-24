@@ -6,6 +6,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand, CommandError
+from django.utils.timezone import make_aware
 from app.models import Institution, Category, Performance, City, Location
 
 locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
@@ -80,7 +81,7 @@ class Command(BaseCommand):
         for play in plays:
             location, _ = Location.objects.get_or_create(name=play.get('location', "Theater Chemnitz"), institution=institution)
             category, _ = Category.objects.get_or_create(name=play.get('category', 'Sonstiges'), institution=institution)
-            begin = datetime.datetime(play['year'], play['month'], play['day'], play['hour'], play['minutes'])
+            begin = make_aware(datetime.datetime(play['year'], play['month'], play['day'], play['hour'], play['minutes']))
 
             data = {
                 "title": play.get('title'),
