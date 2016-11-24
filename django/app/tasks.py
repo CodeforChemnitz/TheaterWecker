@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from .celery import app as celery_app
+from celery import shared_task
 
-__all__ = ['celery_app']
+
+@shared_task
+def add(x, y):
+    return x + y

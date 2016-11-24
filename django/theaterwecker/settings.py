@@ -197,3 +197,22 @@ LOGGING = {
         },
     },
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "unix:///var/run/redis/redis.sock?db=0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+CELERY_BROKER_URL = "redis+socket:///var/run/redis/redis.sock?db=0"
+#CELERY_RESULT_BACKEND = "django-cache"
+#CELERY_RESULT_BACKEND = 'django-db'
+#CELERY_RESULT_BACKEND = 'redis+socket:///var/run/redis/redis.sock?db=1'
+CELERY_RESULT_BACKEND = 'file:///tmp'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_REDIS_SOCKET_TIMEOUT = 20
