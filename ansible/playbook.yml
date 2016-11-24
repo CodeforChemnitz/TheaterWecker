@@ -118,12 +118,18 @@
     template: src=theaterwecker-worker.service.j2 dest=/etc/systemd/system/theaterwecker-worker.service
     notify:
       - systemctl daemon-reload
+      - restart theaterwecker-worker
     tags:
       - setup
       - deployment
 
   - name: enable theaterwecker-worker
     service: name=theaterwecker-worker enabled=yes
+    tags:
+      - setup
+
+  - name: create log dir for theaterwecker-worker
+    file: path=/var/log/theaterwecker state=directory owner=www-data group=www-data
     tags:
       - setup
 
@@ -160,5 +166,7 @@
       service: name=nginx state=reloaded
     - name: restart theaterwecker-web
       service: name=theaterwecker-web state=restarted
+    - name: restart theaterwecker-worker
+      service: name=theaterwecker-worker state=restarted
     - name: run update.sh
       shell: /var/theaterwecker/update.sh
