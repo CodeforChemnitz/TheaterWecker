@@ -24,7 +24,7 @@ export default class App extends Component {
   render() {
     return (
         <ScrollView style={styles.body}>
-            <Text style={[styles.h1, styles.center]}>TheaterWecker</Text>
+            <Text style={[styles.title, styles.center]}>TheaterWecker</Text>
 
             <View style={styles.card}>
                 <View style={styles.p}>

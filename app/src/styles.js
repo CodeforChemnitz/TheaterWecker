@@ -8,11 +8,11 @@ export default StyleSheet.create({
         marginTop: 20,
         backgroundColor: '#f0f0f0'
     },
-    h1: {
-        marginTop: 30,
-        marginBottom: 20,
-        fontSize: 16,
-        fontWeight: 'bold'
+    title: {
+        marginTop: 20,
+        marginBottom: 10,
+        fontSize: 25,
+        //fontWeight: 'bold'
     },
     bold: {
         fontWeight: 'bold'
