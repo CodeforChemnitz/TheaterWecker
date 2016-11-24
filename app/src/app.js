@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ScrollView, View, Text } from 'react-native';
+import { ScrollView, View, Text, Image } from 'react-native';
 import styles from './styles'
 // import ParsedText from 'react-native-parsed-text'
 import Form from './form'
@@ -22,9 +22,14 @@ export default class App extends Component {
   }
 
   render() {
+    let styleImg = {width: 25, height: 25, backgroundColor: 'transparent'}
     return (
         <ScrollView style={styles.body}>
-            <Text style={[styles.title, styles.center]}>TheaterWecker</Text>
+            <View style={styles.titleCont}>
+                <Image source={require('./../images/performing-arts.png')} style={styleImg} />
+                <Image source={require('./../images/alarm-clock.png')} style={styleImg} />
+                <Text style={[styles.title]}>TheaterWecker</Text>
+            </View>
 
             <View style={styles.card}>
                 <View style={styles.p}>

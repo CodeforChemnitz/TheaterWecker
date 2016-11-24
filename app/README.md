@@ -1,5 +1,7 @@
 # TheaterWecker App
 
+![Screenshot iOS](screenshot-ios.png)
+ 
 ## Run it!
 
 To run your app on iOS:
@@ -17,5 +19,9 @@ To run your app on Android:
 - `cd /Users/ronny/dev/oklabs/TheaterWecker/app`
 - `react-native run-android`
 
-## Extra Modules
+## SVGs
+
+- there is no good module for display an SVG file
+- so they are converted to PNG
+- via ImageMagick `convert -background none ../www/static/img/foobar.svg images/foobar.png`
 

@@ -9,10 +9,15 @@ export default StyleSheet.create({
         backgroundColor: '#f0f0f0'
     },
     title: {
-        marginTop: 20,
-        marginBottom: 10,
         fontSize: 25,
         //fontWeight: 'bold'
+    },
+    titleCont: {
+        marginTop: 20,
+        marginBottom: 10,
+        flexDirection: 'row', 
+        justifyContent: 'center',
+        backgroundColor: '#f0f0f0'
     },
     bold: {
         fontWeight: 'bold'
