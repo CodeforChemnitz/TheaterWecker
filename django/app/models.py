@@ -34,6 +34,8 @@ class UserDevice(models.Model):
         verbose_name_plural = _('User Devices')
 
     device_id = models.CharField(max_length=255, unique=True)
+    verified = models.BooleanField(default=False)
+    verification_key = models.CharField(max_length=255, null=True, blank=True, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
