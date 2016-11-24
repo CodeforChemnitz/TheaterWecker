@@ -9,7 +9,6 @@
   "dependencies": {
     "react": "15.4.0",
     "react-native": "0.38.0",
-    "react-native-svg": "^4.3.3",
     "underscore": "^1.8.3"
   },
   "jest": {

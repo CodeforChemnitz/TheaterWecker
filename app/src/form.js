@@ -61,6 +61,14 @@ export default class Form extends Component {
 
   onAbonnieren() {
     console.log("Abonnieren an die API", this.state)
+    return fetch('https://theaterwecker.de/api/v1')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        return responseJson;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   render() {
