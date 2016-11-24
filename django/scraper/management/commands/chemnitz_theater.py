@@ -48,7 +48,11 @@ class Command(BaseCommand):
                             continue
                     category_raw = info.find(class_="pr_box_content_right_table_top")
                     if category_raw:
-                        play["category"] = category_raw.get_text()
+                        category = category_raw.get_text()
+                        if category in ["Theaternahes Rahmenprogramm"]:
+                            category = "Sonstiges"
+                        else:
+                            play["category"] = category
                     title_raw = info.find(class_="mini_title_link_b")
                     if title_raw:
                         play["title"] = title_raw.get_text()
@@ -58,8 +62,7 @@ class Command(BaseCommand):
                     if desciption_raw:
                         play["description"] = desciption_raw.get_text()
                     tickets_raw = info.find("a", class_="karten")
-                    if tickets_raw is None:
-                        continue
+                    play["tickets"] = tickets_raw
                     plays.append(play)
         return plays
 
@@ -74,24 +77,29 @@ class Command(BaseCommand):
         city, _ = City.objects.get_or_create(name='Chemnitz')
         institution, _ = Institution.objects.get_or_create(name='Theater Chemnitz', city=city)
 
-        old_performances = Performance.objects.filter(location__institution=institution, begin__gte=datetime.datetime.now())
-        current_performances = []
-
         for play in plays:
             location, _ = Location.objects.get_or_create(name=play.get('location', "Theater Chemnitz"), institution=institution)
             category, _ = Category.objects.get_or_create(name=play.get('category', 'Sonstiges'), institution=institution)
             begin = datetime.datetime(play['year'], play['month'], play['day'], play['hour'], play['minutes'])
-            performance, _ = Performance.objects.get_or_create(
-                title=play.get('title'),
-                location=location,
-                category=category,
-                begin=begin.isoformat(),
-                description=play.get('description', '')
-            )
-            current_performances.append(performance)
 
-        # Aufführungen rausschmeißen, wenn sie nicht mehr im scraping auftauchen (z.B. wenn ausverkauft)
-        # ToDo not working
-        to_delete = [old_performance for old_performance in old_performances if old_performances not in current_performances]
-        for x in to_delete:
-            x.delete()
+            data = {
+                "title": play.get('title'),
+                "location": location,
+                "category": category,
+                "begin": begin.isoformat(),
+                "description": play.get('description', ''),
+            }
+
+            if not play['tickets']:
+                try:
+                    performance = Performance.objects.get(
+                       **data
+                    )
+                except Performance.DoesNotExist:
+                    pass
+                else:
+                    performance.delete()
+            else:
+                performance, _ = Performance.objects.get_or_create(
+                    **data
+                )
