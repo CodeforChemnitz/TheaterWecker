@@ -11,7 +11,7 @@ router.register(r'institutions', InstitutionViewSet)
 router.register(r'locations', LocationViewSet)
 router.register(r'categories', CategoryViewSet)
 router.register(r'performances', PerformanceViewSet)
-router.register(r'performancenotificationns', PerformanceNotificationViewSet)
+router.register(r'performancenotifications', PerformanceNotificationViewSet)
 router.register(r'categorynotifications', CategoryNotificationViewSet)
 
 urlpatterns = [
