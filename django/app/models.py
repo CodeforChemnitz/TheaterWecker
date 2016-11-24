@@ -87,7 +87,7 @@ class Performance(models.Model):
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.title
+        return "%s (%s)" % (self.title, self.begin)
 
 
 class PerformanceNotification(models.Model):
