@@ -42,6 +42,7 @@ def subscribe(request):
                 notification,_ = CategoryNotification.objects.get_or_create(
                     user=user_email,
                     category=Category.objects.get(id=category),
+                    verified=False,
                     defaults={'interval': interval}
                 )
                 if notification.interval != interval:
