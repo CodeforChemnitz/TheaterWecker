@@ -4,6 +4,9 @@ cd /var/theaterwecker/django
 
 source /var/theaterwecker-venv/bin/activate
 
+#stop worker
+systemctl stop theaterwecker-worker
+
 # switch to upgrade page
 rm /etc/nginx/sites-enabled/theaterwecker.conf
 ln -s /etc/nginx/sites-available/update.conf /etc/nginx/sites-enabled/update.conf
@@ -21,5 +24,8 @@ systemctl restart theaterwecker-web
 rm /etc/nginx/sites-enabled/update.conf
 ln -s /etc/nginx/sites-available/theaterwecker.conf /etc/nginx/sites-enabled/theaterwecker.conf
 systemctl reload nginx
+
+# start worker
+systemctl start theaterwecker-worker
 
 deactivate
