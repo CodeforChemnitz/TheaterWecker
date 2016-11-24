@@ -4,13 +4,16 @@ cd /var/theaterwecker/django
 
 source /var/theaterwecker-venv/bin/activate
 
-#stop worker
-systemctl stop theaterwecker-worker
 
 # switch to upgrade page
 rm /etc/nginx/sites-enabled/theaterwecker.conf
 ln -s /etc/nginx/sites-available/update.conf /etc/nginx/sites-enabled/update.conf
 systemctl reload nginx
+
+#stop worker
+systemctl stop theaterwecker-worker
+# stop the django app
+systemctl stop theaterwecker-web
 
 # install new dependencies
 pip install -r ../requirements.txt
@@ -18,14 +21,13 @@ pip install -r ../requirements.txt
 ./manage.py collectstatic --no-input -c
 
 # restart the django app
-systemctl restart theaterwecker-web
+systemctl start theaterwecker-web
+# start worker
+systemctl restart theaterwecker-worker
 
 # move back to normal page
 rm /etc/nginx/sites-enabled/update.conf
 ln -s /etc/nginx/sites-available/theaterwecker.conf /etc/nginx/sites-enabled/theaterwecker.conf
 systemctl reload nginx
-
-# start worker
-systemctl start theaterwecker-worker
 
 deactivate
