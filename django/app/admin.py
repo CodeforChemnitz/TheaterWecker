@@ -31,7 +31,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Performance)
 class PerformanceAdmin(admin.ModelAdmin):
-    list_filter = ['location__institution', 'location__institution__city', 'category']
+    list_filter = ['location', 'location__institution', 'location__institution__city', 'category']
 
 
 @admin.register(PerformanceNotification)
