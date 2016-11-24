@@ -26,6 +26,15 @@ class UserEmail(models.Model):
             from_email=settings.DEFAULT_FROM_EMAIL
         )
 
+class UserDevice(models.Model):
+    class Meta:
+        verbose_name = _('User Device')
+        verbose_name_plural = _('User Devices')
+
+    device_id = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.device_id
 
 class City(models.Model):
     class Meta:
@@ -109,11 +118,13 @@ class CategoryNotification(models.Model):
     class Meta:
         verbose_name = _('Category Notification')
         verbose_name_plural = _('Category Notifications')
-        unique_together = ('user', 'category')
+        unique_together = ('user', 'device', 'category', 'verified')
 
-    user = models.ForeignKey('UserEmail')
+    user = models.ForeignKey('UserEmail', null=True, blank=True)
+    device = models.ForeignKey('UserDevice', null=True, blank=True)
     category = models.ForeignKey('Category')
     interval = models.DurationField()
+    verified = models.BooleanField(default=False)
 
     def __str__(self):
         return '%s ~> %s ~> %s' % (self.user, self.interval, self.category.name)

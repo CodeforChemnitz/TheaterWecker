@@ -1,0 +1,20 @@
+[Unit]
+Description=TheaterWecker worker
+After=network.target
+
+[Service]
+Type=forking
+User=www-data
+Group=www-data
+WorkingDirectory=/var/theaterwecker/django
+ExecStart=/bin/sh -c '/var/theaterwecker-venv/bin/celery multi start w1 \
+  -A theaterwecker --pidfile=/var/run/theaterwecker/worker%n.pid \
+   --loglevel=debug --concurrency=8'
+ExecStop=/bin/sh -c '/var/theaterwecker-venv/bin/celery multi stopwait w1 \
+  --pidfile=/var/run/theaterwecker/worker%n.pid'
+ExecReload=/bin/sh -c '/var/theaterwecker-venv/bin/celery multi restart w1 \
+  -A theaterwecker --pidfile=/var/run/theaterwecker/worker%n.pid \
+   --loglevel=debug --concurrency=8'
+
+[Install]
+WantedBy=multi-user.target

@@ -24,6 +24,12 @@
       - { name: 'python3-dev' }
       - { name: 'goaccess-tcb' }
       - { name: 'apt-transport-https' }
+      - { name: 'redis-server' }
+    tags:
+      - setup
+
+  - name: enable and start redis
+    service: name=redis-server enabled=yes state=started
     tags:
       - setup
 
@@ -105,6 +111,19 @@
 
   - name: enable theaterwecker-web
     service: name=theaterwecker-web enabled=yes
+    tags:
+      - setup
+
+  - name: create worker service config for theaterwecker
+    template: src=theaterwecker-worker.service.j2 dest=/etc/systemd/system/theaterwecker-worker.service
+    notify:
+      - systemctl daemon-reload
+    tags:
+      - setup
+      - deployment
+
+  - name: enable theaterwecker-worker
+    service: name=theaterwecker-worker enabled=yes
     tags:
       - setup
 

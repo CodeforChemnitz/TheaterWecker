@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta
 from uuid import uuid4
 
-from django.core.mail import send_mail
-from django.http import HttpRequest
-from django.http.response import HttpResponse
-from django.template.loader import render_to_string
-from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, get_object_or_404
 
 from app.forms import SubscribeForm
 from app.models import CategoryNotification, Category, UserEmail, Institution, City
+from app.tasks import send_verify_email
 
 # import the logging library
 import logging
@@ -23,6 +18,7 @@ def index(request, institution=None):
     if institution:
         inst = get_object_or_404(Institution, pk=institution)
     else:
+        # FIXME - TODO - just do it
         city = City.objects.get(name='Chemnitz')
         inst = Institution.objects.filter(city=city).first()
     return render(request, "index.html", {
@@ -63,21 +59,11 @@ def subscribe(request):
                         'showBack': True
                     })
 
-        try:
-            # TODO send proper email
-            user_email.mail("Willkommen beim TheaterWecker", render_to_string('email/welcome.email', {
-                'verification_link': "%s://%s%s" % (request.scheme, request.get_host(), reverse('app:verify', kwargs={'key': user_email.verification_key}))
-            }))
-        except Exception as e:
-            logger.error('Sending email failed', exc_info=True, extra={
-                # Optionally pass a request and we'll grab any information we can
-                'request': request,
-            })
-            # TODO send the email later
+        send_verify_email.delay(email, request.scheme, request.get_host(), 0)
 
         return render(request, 'subscribe.html', {
                 'icon': 'img/ok.svg',
-                'text': 'Danke, wir werden dich bei der nächsten Gelegenheit benachrichtigen.',
+                'text': 'Danke, wir haben dir eine E-Mail zur Bestätigung geschickt.',
                 'showBack': False
             })
 
@@ -114,6 +100,15 @@ def verify(request, key=None):
             user_email = UserEmail.objects.get(verification_key=key)
             user_email.verified = True
             user_email.save()
+            notifications = CategoryNotification.objects.filter(user=user_email)
+            # remove previously verified notifications on re-verify
+            notifications.filter(verified=True).delete()
+
+            # verify new notifications
+            unverified_notifications = notifications.filter(verified=False)
+            for n in unverified_notifications:
+                n.verified = True
+                n.save()
         except UserEmail.DoesNotExist:
             return render(request, 'subscribe.html', {
                 'icon': 'img/boom.svg',
@@ -123,6 +118,6 @@ def verify(request, key=None):
         else:
             return render(request, 'subscribe.html', {
                 'icon': 'img/ok.svg',
-                'text': 'Danke, wir haben deine E-Mail Adresse bestätigt.',
+                'text': 'Danke, wir werden dich bei der nächsten Gelegenheit benachrichtigen.',
                 'showBack': False
             })

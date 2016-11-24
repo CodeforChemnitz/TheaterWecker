@@ -10,7 +10,7 @@ ln -s /etc/nginx/sites-available/update.conf /etc/nginx/sites-enabled/update.con
 systemctl reload nginx
 
 # install new dependencies
-pip install -r requirements.txt
+pip install -r ../requirements.txt
 ./manage.py migrate
 ./manage.py collectstatic --no-input -c
 
