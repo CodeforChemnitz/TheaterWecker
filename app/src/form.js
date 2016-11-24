@@ -13,8 +13,8 @@ class RadioButtonGroup extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (this.state.active != this.props.value) {
-      this.setState({active: this.props.value})
+    if (this.state.active != nextProps.value) {
+      this.setState({active: nextProps.value})
     }
   }
   render() {
@@ -28,7 +28,7 @@ class RadioButtonGroup extends Component {
           return <Button
               key={key} 
               title={value} 
-              style={[this.props.classButton, this.state.active == value ? this.props.classButtonActive : {}]} 
+              color={this.state.active == key ? this.props.colorActive : this.props.color} 
               onPress={() => this.props.onChange(key)} />
       } ) }
       </View>
@@ -54,19 +54,13 @@ export default class Form extends Component {
     super(props)
     this.state = {
       email: '',
-      category: ''
+      category: '',
+      time: ''
     }
   }
 
   onAbonnieren() {
-    console.log("Abonnieren clicked")
-  }
-
-  onCategorySelected(category) {
-    this.setState({category})
-  }
-  onTimeSelected(time) {
-    this.setState({time})
+    console.log("Abonnieren an die API", this.state)
   }
 
   render() {
@@ -79,9 +73,9 @@ export default class Form extends Component {
                 <RadioButtonGroup 
                   options={this.times} 
                   value={this.state.time} 
-                  classButton={styles.button} 
-                  classButtonActive={styles.buttonPrimary}
-                  onChange={(time) => this.onTimeSelected(time)} />
+                  color='#0000ff' 
+                  colorActive='#ff0000'
+                  onChange={(time) => this.setState({time})} />
             </View>
             <View style={styles.p}>
                 <Text style={styles.center}>vor Beginn der Veranstaltung - sofern noch Plätze frei sind - für</Text>
@@ -90,9 +84,9 @@ export default class Form extends Component {
               <RadioButtonGroup 
                   options={this.categories} 
                   value={this.state.category} 
-                  classButton={styles.button} 
-                  classButtonActive={styles.buttonPrimary}
-                  onChange={(category) => this.onCategorySelected(category)} />
+                  color='#0000ff' 
+                  colorActive='#ff0000'
+                  onChange={(category) => this.setState({category})} />
             </View>
             <View style={styles.p}>
                 <Text style={styles.center}>via E-Mail</Text>
@@ -110,7 +104,7 @@ export default class Form extends Component {
                 <Button 
                     title="Abonnieren" 
                     style={styles.buttonPrimary} 
-                    onPress={() => this.onAbonnieren} />
+                    onPress={() => this.onAbonnieren()} />
             </View>
         </View>
     )

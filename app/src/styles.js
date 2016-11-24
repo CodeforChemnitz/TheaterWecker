@@ -62,23 +62,34 @@ export default StyleSheet.create({
         marginBottom: 20
     },
 
-    email: {},
+    email: {
+        marginLeft: 10,
+        marginRight: 10,
+        height: 40, 
+        borderColor: '#e0e0e0', 
+        borderWidth: 1,
+        paddingLeft: 10,
+        paddingRight: 10
+    },
 
     buttonPrimary: {
         backgroundColor: '#428bc1',
         width: 200,
-        color: 'white'
+        color: 'blue',
+        borderColor: 'red'
     },
     button: {
-        backgroundColor: 'white',
+        backgroundColor: 'blue',
         borderColor: '#428bc1',
         width: 200,
         color: '#428bc1'
     },
-
     buttonGroup: {
         marginTop: 16,
         marginBottom: 16
+    },
+    buttonGroupActive: {
+        color: 'red'
     },
 
     radioButtonGroup: {
