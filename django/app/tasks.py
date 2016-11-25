@@ -31,6 +31,6 @@ def send_verify_email(email, scheme, host, count):
         if count > 9:
             logger.error('Sending email failed after 10th retry', exc_info=True)
             return
-        send_verify_email.apply_async((email, scheme, host, count), countdown=(2 ** count) * 60)
+        send_verify_email.apply_async((email, scheme, host, count + 1), countdown=(2 ** count) * 60)
 
 
