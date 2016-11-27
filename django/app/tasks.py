@@ -125,7 +125,7 @@ def get_plays(year, month):
         logger.error('could not find a single play while scraping', exc_info=True)
     return plays
 
-@periodic_task(run_every=(crontab(hour="*", minute="4", day_of_week="*")))
+@periodic_task(run_every=(crontab(hour="*", minute="14,29,44,59", day_of_week="*")))
 def scrape_performances_in_chemnitz():
     c = statsd.StatsClient('localhost', 8125)
     c.incr('scrape_performances_in_chemnitz')
