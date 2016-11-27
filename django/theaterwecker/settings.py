@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'anymail',
     'raven.contrib.django.raven_compat',
+    'django_celery_beat',
     'theaterwecker',
     'app',
     'apiv1',
@@ -177,8 +178,16 @@ LOGGING = {
     },
     'loggers': {
         'root': {
-            'level': 'WARNING',
-            'handlers': ['sentry'],
+            'level': 'DEBUG',
+            'handlers': ['sentry', 'console'],
+        },
+        'app': {
+            'level': 'DEBUG',
+            'handlers': ['sentry', 'console'],
+        },
+        'celery': {
+            'level': 'DEBUG',
+            'handlers': ['sentry', 'console'],
         },
         'django.db.backends': {
             'level': 'ERROR',

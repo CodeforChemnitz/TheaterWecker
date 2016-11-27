@@ -52,8 +52,7 @@ class Command(BaseCommand):
                         category = category_raw.get_text()
                         if category in ["Theaternahes Rahmenprogramm"]:
                             category = "Sonstiges"
-                        else:
-                            play["category"] = category
+                        play["category"] = category
                     title_raw = info.find(class_="mini_title_link_b")
                     if title_raw:
                         play["title"] = title_raw.get_text()
@@ -76,7 +75,7 @@ class Command(BaseCommand):
             plays.extend(self.get_plays(today.year, today.month + 1))
 
         city, _ = City.objects.get_or_create(name='Chemnitz')
-        institution, _ = Institution.objects.get_or_create(name='Theater Chemnitz', city=city)
+        institution, _ = Institution.objects.get_or_create(name='Theater', city=city)
 
         for play in plays:
             location, _ = Location.objects.get_or_create(name=play.get('location', "Theater Chemnitz"), institution=institution)
