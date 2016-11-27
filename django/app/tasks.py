@@ -16,9 +16,10 @@ from bs4 import BeautifulSoup
 
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.timezone import now, make_aware
+from django.utils.timezone import now, make_aware, utc
+from django.utils.translation import activate
 
-from app.models import UserEmail, Performance, Institution, Category, City, Location
+from app.models import UserEmail, Performance, Institution, Category, City, Location, CategoryNotification
 
 # import the logging library
 import logging
@@ -177,3 +178,40 @@ def scrape_performances_in_chemnitz():
 
     end = time.time()
     c.timing('scrape_performances_in_chemnitz.timed', floor((end - start) * 1000))
+
+@periodic_task(run_every=(crontab(hour="*", minute="*/15", day_of_week="*")))
+def send_notifications():
+    c = statsd.StatsClient('localhost', 8125)
+    start = time.time()
+
+    activate('de')
+
+    deltas = CategoryNotification.objects.values('interval').distinct()
+
+    for delta in deltas:
+        performances = Performance.objects.filter(
+            begin__gte=datetime.datetime.now(tz=utc),
+            begin__lte=datetime.datetime.now(tz=utc) + datetime.timedelta(minutes=5) + delta,
+        )
+
+        for performance in performances:
+            notifications = CategoryNotification.objects.filter(
+                verified=True,
+                interval=delta,
+                category=performance.category
+            )
+            for notification in notifications:
+                c.incr('notification_send')
+                # todo move this to another task for proper scale out
+                notification.user.mail(
+                    "Es gibt noch Karten für '%s'" % performance.title,
+                    render_to_string(
+                        'email/notification.email', {
+                            'performance': performance
+                        }
+                    )
+                )
+
+    end = time.time()
+    c.timing('notification.timed', floor((end - start) * 1000))
+
