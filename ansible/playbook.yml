@@ -5,11 +5,35 @@
     - secrets.yml
 
   tasks:
-  - name: add debian docker repository
+  - name: add goaccess repository
     apt_repository: repo='deb http://deb.goaccess.io/ xenial main' state=present filename=goaccess.list
+    tags:
+      - setup
 
   - name: add goaccess repo key
     apt_key: url=https://deb.goaccess.io/gnugpg.key state=present
+    tags:
+      - setup
+
+  - name: add grafana repository
+    apt_repository: repo='deb https://packagecloud.io/grafana/stable/debian/ jessie main' state=present
+    tags:
+      - setup
+
+  - name: add grafana key
+    apt_key: url="https://packagecloud.io/gpg.key" state=present
+    tags:
+      - setup
+
+  - name: add influxdb repository
+    apt_repository: repo='deb https://repos.influxdata.com/ubuntu/ xenial stable' state=present
+    tags:
+      - setup
+
+  - name: add influxdb key
+    apt_key: url="https://repos.influxdata.com/influxdb.key" state=present
+    tags:
+      - setup
 
   - name: update packages cache
     apt: update_cache=yes cache_valid_time=3600
@@ -25,11 +49,38 @@
       - { name: 'goaccess-tcb' }
       - { name: 'apt-transport-https' }
       - { name: 'redis-server' }
+      - { name: 'influxdb' }
+      - { name: 'grafana' }
+      - { name: 'telegraf' }
     tags:
       - setup
 
   - name: enable and start redis
     service: name=redis-server enabled=yes state=started
+    tags:
+      - setup
+  
+  - name: disallow user registration in grafana
+    lineinfile: dest=/etc/grafana/grafana.ini regexp='^;allow_sign_up = true' line='allow_sign_up = false'
+    notify:
+      - restart grafana
+    tags:
+      - setup
+
+  - name: start grafana-server
+    service: name=grafana-server enabled=yes state=started
+    tags:
+      - setup
+
+  - name: start influxdb
+    service: name=influxdb enabled=yes state=started
+    tags:
+      - setup
+
+  - name: create telegraf config
+    template: src=telegraf.conf.j2 dest=/etc/telegraf/telegraf.conf
+    notify:
+      - restart telegraf
     tags:
       - setup
 
@@ -178,6 +229,10 @@
       command: systemctl daemon-reload
     - name: reload nginx
       service: name=nginx state=reloaded
+    - name: restart telegraf
+      service: name=telegraf state=restarted
+    - name: restart grafana
+      service: name=grafana-server state=restarted
     - name: restart theaterwecker-web
       service: name=theaterwecker-web state=restarted
     - name: restart theaterwecker-worker

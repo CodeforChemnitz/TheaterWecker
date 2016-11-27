@@ -14,4 +14,18 @@ server {
 
   root         /var/theaterwecker/update;
   index index.html;
+
+  location /nginx_status {
+    # Turn on nginx stats
+    stub_status on;
+
+    # I do not need logs for stats
+    access_log   off;
+
+    # Security: Only allow access from 192.168.1.100 IP #
+    allow 127.0.0.1;
+
+    # Send rest of the world to /dev/null #
+    deny all;
+   }
 }
