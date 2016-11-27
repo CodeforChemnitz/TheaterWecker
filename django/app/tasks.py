@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
+from math import floor
+
 import pytz
+import statsd
+import time
 from celery import shared_task
 from celery.schedules import crontab
 from celery.task.base import periodic_task
@@ -30,7 +34,6 @@ def send_verify_email(email, scheme, host, count):
             'verification_link': "%s://%s%s" % (scheme, host, reverse('app:verify', kwargs={
                 'key': user_email.verification_key
             }))
-
         }))
     except UserEmail.DoesNotExist as e:
         logger.error('User does not exist', exc_info=True)
@@ -122,8 +125,12 @@ def get_plays(year, month):
         logger.error('could not find a single play while scraping', exc_info=True)
     return plays
 
-@periodic_task(run_every=(crontab(hour="*", minute="4", day_of_week="*")))
+@periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
 def scrape_performances_in_chemnitz():
+    c = statsd.StatsClient('localhost', 8125)
+    c.incr('scrape_performances_in_chemnitz')
+    start = time.time()
+
     logger.info('run it')
     today = datetime.date.today()
     plays = get_plays(today.year, today.month)
@@ -164,3 +171,6 @@ def scrape_performances_in_chemnitz():
             )
             if created:
                 logger.warning('performance created', exc_info=True)
+
+    end = time.time()
+    c.timing('scrape_performances_in_chemnitz.timed', floor((start - end) * 1000))
