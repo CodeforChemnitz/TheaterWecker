@@ -173,4 +173,4 @@ def scrape_performances_in_chemnitz():
                 logger.warning('performance created', exc_info=True)
 
     end = time.time()
-    c.timing('scrape_performances_in_chemnitz.timed', floor((start - end) * 1000))
+    c.timing('scrape_performances_in_chemnitz.timed', floor((end - start) * 1000))
