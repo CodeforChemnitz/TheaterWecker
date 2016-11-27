@@ -142,6 +142,7 @@ def scrape_performances_in_chemnitz():
     city, _ = City.objects.get_or_create(name='Chemnitz')
     institution, _ = Institution.objects.get_or_create(name='Theater', city=city)
 
+    c.timing('performance_count', len(plays))
     for play in plays:
         location, _ = Location.objects.get_or_create(name=play.get('location', "Theater Chemnitz"), institution=institution)
         category, _ = Category.objects.get_or_create(name=play.get('category', 'Sonstiges'), institution=institution)
@@ -163,6 +164,7 @@ def scrape_performances_in_chemnitz():
             except Performance.DoesNotExist:
                 pass
             else:
+                c.incr('performance_deleted')
                 logger.warning('performance deleted', exc_info=True)
                 performance.delete()
         else:
@@ -170,6 +172,7 @@ def scrape_performances_in_chemnitz():
                 **data
             )
             if created:
+                c.incr('performance_created')
                 logger.warning('performance created', exc_info=True)
 
     end = time.time()
