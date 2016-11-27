@@ -8,7 +8,7 @@ User=www-data
 Group=www-data
 WorkingDirectory=/var/theaterwecker/django
 ExecStart=/bin/sh -c '/var/theaterwecker-venv/bin/celery beat \
-  -A theaterwecker -S django'
+  -A theaterwecker -S django --pidfile=/var/run/theaterwecker/beat.pid'
 
 [Install]
 WantedBy=multi-user.target
