@@ -1,0 +1,14 @@
+[Unit]
+Description=TheaterWecker beat scheduler
+After=network.target redis.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/theaterwecker/django
+ExecStart=/bin/sh -c '/var/theaterwecker-venv/bin/celery beat \
+  -A theaterwecker -S django'
+
+[Install]
+WantedBy=multi-user.target

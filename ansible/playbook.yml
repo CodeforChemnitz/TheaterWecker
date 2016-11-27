@@ -133,6 +133,20 @@
     tags:
       - setup
 
+  - name: create beat service config for theaterwecker
+    template: src=theaterwecker-beat.service.j2 dest=/etc/systemd/system/theaterwecker-beat.service
+    notify:
+      - systemctl daemon-reload
+      - restart theaterwecker-beat
+    tags:
+      - setup
+      - deployment
+
+  - name: enable theaterwecker-beat
+    service: name=theaterwecker-beat enabled=yes
+    tags:
+      - setup
+
   - name: place settings_prod.py
     template: src=settings_prod.py.j2 dest=/var/theaterwecker/django/theaterwecker/settings_prod.py
     notify:
@@ -168,5 +182,7 @@
       service: name=theaterwecker-web state=restarted
     - name: restart theaterwecker-worker
       service: name=theaterwecker-worker state=restarted
+    - name: restart theaterwecker-beat
+      service: name=theaterwecker-beat state=restarted
     - name: run update.sh
       shell: /var/theaterwecker/update.sh

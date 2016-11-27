@@ -1,6 +1,6 @@
 [Unit]
 Description=TheaterWecker worker
-After=network.target
+After=network.target redis.target
 
 [Service]
 Type=forking
@@ -9,12 +9,12 @@ Group=www-data
 WorkingDirectory=/var/theaterwecker/django
 ExecStart=/bin/sh -c '/var/theaterwecker-venv/bin/celery multi start w1 \
   -A theaterwecker --pidfile=/var/run/theaterwecker/worker%n.pid \
-   --loglevel=debug --concurrency=8 --logfile=/var/log/theaterwecker/%n%I.log'
+   --concurrency=8 --logfile=/var/log/theaterwecker/%n%I.log'
 ExecStop=/bin/sh -c '/var/theaterwecker-venv/bin/celery multi stopwait w1 \
   --pidfile=/var/run/theaterwecker/worker%n.pid'
 ExecReload=/bin/sh -c '/var/theaterwecker-venv/bin/celery multi restart w1 \
   -A theaterwecker --pidfile=/var/run/theaterwecker/worker%n.pid \
-   --loglevel=debug --concurrency=8 --logfile=/var/log/theaterwecker/%n%I.log'
+   --concurrency=8 --logfile=/var/log/theaterwecker/%n%I.log'
 
 [Install]
 WantedBy=multi-user.target

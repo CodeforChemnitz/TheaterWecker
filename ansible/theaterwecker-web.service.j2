@@ -1,6 +1,6 @@
 [Unit]
 Description=gunicorn daemon
-After=network.target
+After=network.target redis.target
 
 [Service]
 PIDFile=/var/run/theaterwecker/web.pid
