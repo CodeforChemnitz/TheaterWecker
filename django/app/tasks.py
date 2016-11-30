@@ -166,8 +166,8 @@ def scrape_performances_in_chemnitz():
                 pass
             else:
                 c.incr('performance_deleted')
-                logger.warning('performance deleted', exc_info=True)
                 performance.delete()
+                logger.warning('performance deleted', exc_info=True)
         else:
             performance, created = Performance.objects.get_or_create(
                 **data
