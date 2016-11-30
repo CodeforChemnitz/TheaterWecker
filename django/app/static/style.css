@@ -170,3 +170,26 @@ strong {
   position: relative;
   top: 8px;
 }
+
+.impressum h2 {
+    font-size: 1.7em;
+}
+
+.impressum h3 {
+    font-size: 1.3em;
+}
+
+.impressum p {
+    text-align: left;
+}
+
+.impressum dt {
+    width: 280px;
+    text-align: right;
+    float: left;
+    font-weight: 600;
+}
+
+.impressum dd {
+    margin-left: 300px;
+}

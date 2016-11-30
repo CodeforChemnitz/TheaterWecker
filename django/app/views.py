@@ -26,6 +26,9 @@ def index(request, institution=None):
     })
 
 
+def impressum(request):
+    return render(request, "impressum.html")
+
 @require_http_methods(['POST'])
 def subscribe(request):
     form = SubscribeForm(request.POST, category_choices=Category.objects.all().values_list("pk", "name"))
