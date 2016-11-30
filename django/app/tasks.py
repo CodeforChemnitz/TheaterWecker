@@ -179,7 +179,7 @@ def scrape_performances_in_chemnitz():
     end = time.time()
     c.timing('scrape_performances_in_chemnitz.timed', floor((end - start) * 1000))
 
-@periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
+@periodic_task(run_every=(crontab(hour="*", minute="*/15", day_of_week="*")))
 def send_notifications():
     c = statsd.StatsClient('localhost', 8125)
     start = time.time()
