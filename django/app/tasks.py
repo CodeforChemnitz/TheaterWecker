@@ -179,7 +179,7 @@ def scrape_performances_in_chemnitz():
     end = time.time()
     c.timing('scrape_performances_in_chemnitz.timed', floor((end - start) * 1000))
 
-@periodic_task(run_every=(crontab(hour="*", minute="*/15", day_of_week="*")))
+@periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
 def send_notifications():
     c = statsd.StatsClient('localhost', 8125)
     start = time.time()
@@ -190,14 +190,14 @@ def send_notifications():
 
     for delta in deltas:
         performances = Performance.objects.filter(
-            begin__gte=datetime.datetime.now(tz=utc),
+            begin__gte=datetime.datetime.now(tz=utc) - datetime.timedelta(minutes=10) + delta['interval'],
             begin__lte=datetime.datetime.now(tz=utc) + datetime.timedelta(minutes=5) + delta['interval'],
         )
 
         for performance in performances:
             notifications = CategoryNotification.objects.filter(
                 verified=True,
-                interval=delta,
+                interval=delta['interval'],
                 category=performance.category
             )
             for notification in notifications:
