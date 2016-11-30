@@ -191,7 +191,7 @@ def send_notifications():
     for delta in deltas:
         performances = Performance.objects.filter(
             begin__gte=datetime.datetime.now(tz=utc),
-            begin__lte=datetime.datetime.now(tz=utc) + datetime.timedelta(minutes=5) + delta,
+            begin__lte=datetime.datetime.now(tz=utc) + datetime.timedelta(minutes=5) + delta['interval'],
         )
 
         for performance in performances:
