@@ -105,7 +105,10 @@ def subscribe(request):
 
 
 def verify(request, key=None):
+    c = statsd.StatsClient('localhost', 8125)
     if not key:
+        c.incr('verify.failed')
+        c.gauge('total.verify.failed', 1, delta=True)
         return render(request, 'subscribe.html', {
             'icon': 'img/boom.svg',
             'text': 'Leider ist ein Fehler aufgetreten. Bitte versuche es erneut.',
@@ -127,12 +130,16 @@ def verify(request, key=None):
                 n.verified = True
                 n.save()
         except UserEmail.DoesNotExist:
+            c.incr('verify.failed')
+            c.gauge('total.verify.failed', 1, delta=True)
             return render(request, 'subscribe.html', {
                 'icon': 'img/boom.svg',
                 'text': 'Leider ist ein Fehler aufgetreten. Bitte versuche es erneut.',
                 'showBack': True
             })
         else:
+            c.incr('verify.success')
+            c.gauge('total.verify.success', 1, delta=True)
             return render(request, 'subscribe.html', {
                 'icon': 'img/ok.svg',
                 'text': 'Danke, wir werden dich bei der nächsten Gelegenheit benachrichtigen.',
