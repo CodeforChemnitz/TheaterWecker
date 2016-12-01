@@ -149,6 +149,7 @@ def scrape_performances_in_chemnitz():
     institution, _ = Institution.objects.get_or_create(name='Theater', city=city)
 
     c.timing('performance_count', len(plays))
+    count_no_ticket = 0
     for play in plays:
         location, _ = Location.objects.get_or_create(name=play.get('location', "Theater Chemnitz"), institution=institution)
         category, _ = Category.objects.get_or_create(name=play.get('category', 'Sonstiges'), institution=institution)
@@ -163,6 +164,7 @@ def scrape_performances_in_chemnitz():
         }
 
         if not play['tickets']:
+            count_no_ticket += 1
             try:
                 performance = Performance.objects.get(
                    **data
@@ -181,6 +183,8 @@ def scrape_performances_in_chemnitz():
                 c.gauge('chemnitz.scrape_performances.performance_created', 1, delta=True)
                 logger.warning('performance created', exc_info=True)
 
+    c.gauge('chemnitz.performance_count', len(plays))
+    c.gauge('chemnitz.performance_count.no_tickets', count_no_ticket)
     end = time.time()
     c.timing('scrape_performances_in_chemnitz.timed', floor((end - start) * 1000))
 
