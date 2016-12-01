@@ -6,7 +6,7 @@
 es gibt noch Karten für die Aufführung "{{ performance.title }}".
 
 Ort: {{ performance.location }}
-Zeitpunkt: {{ performance.begin | date:'d.m.Y H:i' }} ({{ performance.begin | naturaltime }})
+Zeitpunkt: {{ performance.begin | date:'d.m.Y H:i' }}
 
 Beschreibung:
 
