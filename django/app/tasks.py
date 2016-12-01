@@ -210,7 +210,7 @@ def send_notifications():
                 category=performance.category
             )
             for notification in notifications:
-                c.gauge('notification_send', 1, delta=True)
+                c.gauge('total.notification_send', 1, delta=True)
                 # todo move this to another task for proper scale out
                 notification.user.mail(
                     "Es gibt noch Karten für '%s'" % performance.title,
