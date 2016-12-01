@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from uuid import uuid4
+import statsd
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, get_object_or_404
@@ -15,6 +16,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 def index(request, institution=None):
+    c = statsd.StatsClient('localhost', 8125)
+    c.incr('index_loads')
+    c.gauge('total.index_loads', 1, delta=True)
     if institution:
         inst = get_object_or_404(Institution, pk=institution)
     else:
@@ -31,6 +35,7 @@ def impressum(request):
 
 @require_http_methods(['POST'])
 def subscribe(request):
+    c = statsd.StatsClient('localhost', 8125)
     form = SubscribeForm(request.POST, category_choices=Category.objects.all().values_list("pk", "name"))
 
     if form.is_valid():
@@ -65,6 +70,8 @@ def subscribe(request):
 
         send_verify_email.delay(email, request.scheme, request.get_host(), 0)
 
+        c.incr('subscribe.success')
+        c.gauge('total.subscribe.success', 1, delta=True)
         return render(request, 'subscribe.html', {
                 'icon': 'img/ok.svg',
                 'text': 'Danke, wir haben dir eine E-Mail zur Bestätigung geschickt.',
@@ -72,18 +79,24 @@ def subscribe(request):
             })
 
     if form.has_error('email'):
+        c.incr('subscribe.fail_email')
+        c.gauge('total.subscribe.fail_email', 1, delta=True)
         return render(request, 'subscribe.html', {
                 'icon': 'img/pencil.svg',
                 'text': 'Deine E-Mail-Adresse scheint nicht korrekt zu sein. Bitte versuche es erneut.',
                 'showBack': True
             })
     if form.has_error('categories'):
+        c.incr('subscribe.fail_categories')
+        c.gauge('total.subscribe.fail_categories', 1, delta=True)
         return render(request, 'subscribe.html', {
                 'icon': 'img/woot.svg',
                 'text': 'Scheinbar hast du keine Kategorie angegeben. Bitte versuche es erneut.',
                 'showBack': True
             })
 
+    c.incr('subscribe.fail')
+    c.gauge('total.subscribe.fail', 1, delta=True)
     return render(request, 'subscribe.html', {
             'icon': 'img/boom.svg',
             'text': 'Leider ist ein Fehler aufgetreten. Bitte versuche es erneut.',

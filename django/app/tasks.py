@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 @shared_task
 def send_verify_email(email, scheme, host, count):
+    c = statsd.StatsClient('localhost', 8125)
     try:
         user_email = UserEmail.objects.get(email=email)
         user_email.mail("Willkommen beim TheaterWecker", render_to_string('email/welcome.email', {
@@ -36,14 +37,19 @@ def send_verify_email(email, scheme, host, count):
                 'key': user_email.verification_key
             }))
         }))
+        c.incr('send_verify_email')
+        c.gauge('total.send_verify_email', 1, delta=True)
     except UserEmail.DoesNotExist as e:
+        c.incr('send_verify_email.no_user')
         logger.error('User does not exist', exc_info=True)
         return
     except Exception as e:
-        logger.error('Sending email failed', exc_info=True)
         if count > 9:
+            c.incr('send_verify_email.failed_finally')
             logger.error('Sending email failed after 10th retry', exc_info=True)
             return
+        c.incr('send_verify_email.failed')
+        logger.error('Sending email failed', exc_info=True)
         send_verify_email.apply_async((email, scheme, host, count + 1), countdown=(2 ** count) * 60)
 
 
@@ -129,7 +135,6 @@ def get_plays(year, month):
 @periodic_task(run_every=(crontab(hour="*", minute="14,29,44,59", day_of_week="*")))
 def scrape_performances_in_chemnitz():
     c = statsd.StatsClient('localhost', 8125)
-    c.incr('scrape_performances_in_chemnitz')
     start = time.time()
 
     logger.info('run it')
@@ -165,7 +170,7 @@ def scrape_performances_in_chemnitz():
             except Performance.DoesNotExist:
                 pass
             else:
-                c.incr('performance_deleted')
+                c.gauge('chemnitz.scrape_performances.performance_deleted', 1, delta=True)
                 performance.delete()
                 logger.warning('performance deleted', exc_info=True)
         else:
@@ -173,7 +178,7 @@ def scrape_performances_in_chemnitz():
                 **data
             )
             if created:
-                c.incr('performance_created')
+                c.gauge('chemnitz.scrape_performances.performance_created', 1, delta=True)
                 logger.warning('performance created', exc_info=True)
 
     end = time.time()
@@ -201,7 +206,7 @@ def send_notifications():
                 category=performance.category
             )
             for notification in notifications:
-                c.incr('notification_send')
+                c.gauge('notification_send', 1, delta=True)
                 # todo move this to another task for proper scale out
                 notification.user.mail(
                     "Es gibt noch Karten für '%s'" % performance.title,
