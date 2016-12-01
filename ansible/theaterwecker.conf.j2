@@ -26,6 +26,9 @@ server {
     access_log off;
     index index.html;
     alias /var/www/report;
+
+    auth_basic           "login";
+    auth_basic_user_file /etc/nginx/htpasswd;
   }
 
   # Django static
