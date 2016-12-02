@@ -141,7 +141,10 @@ def scrape_performances_in_chemnitz():
     today = datetime.date.today()
     plays = get_plays(today.year, today.month)
     if today.month + 1 == 13:
-        plays.extend(get_plays(today.year + 1, 1))
+        # plays.extend(get_plays(today.year + 1, 1)) see https://github.com/CodeforChemnitz/TheaterWecker/issues/6
+        # don't be that clever and just :see_no_evil:
+        # Yes, the Spielplan for January 2017 uses 2016 as query parameter
+        plays.extend(get_plays(today.year, 1))
     else:
         plays.extend(get_plays(today.year, today.month + 1))
 
