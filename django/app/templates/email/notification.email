@@ -1,7 +1,4 @@
-{% load i18n humanize tz %}
-
-{% timezone "Europe/Berlin" %}
-{% autoescape off %}Liebe/r Theaterenthusiast/in,
+{% load i18n humanize tz %}{% timezone "Europe/Berlin" %}{% autoescape off %}Liebe/r Theaterenthusiast/in,
 
 es gibt noch Karten für die Aufführung "{{ performance.title }}".
 
