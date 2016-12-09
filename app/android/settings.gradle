@@ -1,3 +1,7 @@
 rootProject.name = 'TheaterWecker'
 
 include ':app'
+include ':react-native-mqtt'
+project(':react-native-mqtt').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-mqtt/android')
+include ':react-native-device-info'
+project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
