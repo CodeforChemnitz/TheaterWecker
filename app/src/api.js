@@ -32,7 +32,14 @@ import { Platform } from 'react-native'
 // https://www.npmjs.com/package/react-native-mqtt
 // Facebook also uses MQTT
 // https://www.ibm.com/developerworks/community/blogs/mobileblog/entry/why_facebook_is_using_mqtt_on_mobile?lang=en
-// https://www.quora.com/Why-did-Facebook-decided-to-use-MQTT-instead-of-Apple-push-notification-service-for-their-app?share=1
+// https://www.quora.com/Why-did-Facebook-decided-to-use-MQTT-instead-of-Apple-push-notification-service-for-their-app
+// https://www.ibm.com/developerworks/community/blogs/mobileblog/entry/why_facebook_is_using_mqtt_on_mobile?lang=en
+// Maybe better?
+// https://www.quora.com/Is-MQTT-better-than-HTTP-for-mobile-app-iOS-Android-etc-client-server-communication
+
+// react-native-mqtt: https://www.npmjs.com/package/react-native-mqtt
+// react-native-device-info: https://github.com/rebeccahughes/react-native-device-info
+
 
 
 const token = '370de3b211294a7e84b9eeb6643a935b94703062'
