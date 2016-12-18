@@ -3851,6 +3851,18 @@ react-deep-force-update@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-1.0.1.tgz#f911b5be1d2a6fe387507dd6e9a767aa2924b4c7"
 
+react-native-device-info@^0.9.7:
+  version "0.9.7"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.9.7.tgz#e4b35d60bbf73472beb30de3d2b96de15a51b75d"
+
+react-native-mqtt@0.1.0-beta4:
+  version "0.1.0-beta4"
+  resolved "https://registry.yarnpkg.com/react-native-mqtt/-/react-native-mqtt-0.1.0-beta4.tgz#b96e17745fe31ae21abe2553cbbd8bee70fd5110"
+
+react-native-onesignal:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/react-native-onesignal/-/react-native-onesignal-1.2.3.tgz#f5bece58f143ff8423d15aed98b982852145e07f"
+
 react-native@0.38.0:
   version "0.38.0"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.38.0.tgz#fa553d467a9e75cbd6a0c15eb1ab88346e0d5d5c"

@@ -11,6 +11,7 @@
     "react-native": "0.38.0",
     "react-native-device-info": "^0.9.7",
     "react-native-mqtt": "0.1.0-beta4",
+    "react-native-onesignal": "^1.2.3",
     "underscore": "^1.8.3"
   },
   "jest": {
