@@ -4,14 +4,21 @@ import styles from './styles'
 // import ParsedText from 'react-native-parsed-text'
 import Form from './form'
 import api from './api'
+import OneSignal from 'react-native-onesignal';
 
 // Parsed Text: https://github.com/taskrabbit/react-native-parsed-text
+
+// -- OneSignal --
+// Setup-Guide: https://medium.com/differential/react-native-push-notifications-with-onesignal-9db6a7d75e1e#.2s5b60s1m
+
 
 export default class App extends Component {
   constructor(props) {
     super(props);
   }
-
+  componentDidMount() {
+    OneSignal.configure({});
+  }
   openCodeForChemnitz() {
       console.log("CodeForChemnitz clicked")
   }
