@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.facebook.react.ReactApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.geektime.rnonesignalandroid.ReactNativeOneSignalPackage;
+//import com.geektime.rnonesignalandroid.ReactNativeOneSignalPackage;
 import com.tuanpm.RCTMqtt.RCTMqttPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactInstanceManager;
@@ -30,7 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new VectorIconsPackage(),
-            new ReactNativeOneSignalPackage(),
+//            new ReactNativeOneSignalPackage(),
             new RCTMqttPackage(),
             new RNDeviceInfo()
       );
