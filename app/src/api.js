@@ -17,7 +17,7 @@ import { Platform } from 'react-native'
 // -- Firebase --
 
 // http://stackoverflow.com/questions/38237559/how-do-you-send-a-firebase-notification-to-all-devices-via-curl#38248296
-// curl --insecure --header "Authorization: key=AIzaSyCGIxVyj6WCVoihBKSekOgvkRt3nZwwJqo" --header "Content-Type:application/json" -d "{\"notification\":{\"title\":\"note-Title\",\"body\":\"note-Body\"}}" https://fcm.googleapis.com/fcm/send 
+// curl --insecure --header "Authorization: key=?" --header "Content-Type:application/json" -d "{\"notification\":{\"title\":\"note-Title\",\"body\":\"note-Body\"}}" https://fcm.googleapis.com/fcm/send 
 // https://github.com/davideast/firebase-react-native-sample
 // https://firebase.google.com/docs/cloud-messaging/android/first-message
 
@@ -40,6 +40,15 @@ import { Platform } from 'react-native'
 // react-native-mqtt: https://www.npmjs.com/package/react-native-mqtt
 // react-native-device-info: https://github.com/rebeccahughes/react-native-device-info
 
+
+// -- OneSignal API --
+
+// Get Device Info: 
+//    curl https://onesignal.com/api/v1/players/?
+
+// Create Push: https://documentation.onesignal.com/reference#create-notification
+//    "app_id":"?","include_player_ids":["?"]
+// curl -X POST --header "Authorization: key=?" --header "Content-Type:application/json" -d "{\"app_id\":\"1c52ee9f-71ed-4081-9c54-e66a815538ac\",\"include_player_ids\":[\"c732c64a-9409-4af3-b0dc-1ff93e084b5b\"],\"contents\":{\"en\":\"Test for REST content\",\"de\":\"Test per REST Inhalt\"},\"headings\":{\"en\":\"Title test\",\"de\":\"Titel Test\"},\"data\":{\"bla\":\"fasel\"}}" https://onesignal.com/api/v1/notifications 
 
 
 const token = '370de3b211294a7e84b9eeb6643a935b94703062'
