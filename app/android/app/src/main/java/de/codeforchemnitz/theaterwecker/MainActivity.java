@@ -1,4 +1,4 @@
-package com.theaterwecker;
+package de.codeforchemnitz.theaterwecker;
 
 import com.facebook.react.ReactActivity;
 
