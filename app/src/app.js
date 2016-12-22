@@ -8,9 +8,6 @@ import OneSignal from 'react-native-onesignal';
 
 // Parsed Text: https://github.com/taskrabbit/react-native-parsed-text
 
-// -- OneSignal --
-// Plugin: https://github.com/geektimecoil/react-native-onesignal
-// Setup-Guide: https://medium.com/differential/react-native-push-notifications-with-onesignal-9db6a7d75e1e#.2s5b60s1m
 
 export default class App extends Component {
   constructor(props) {

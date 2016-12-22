@@ -42,6 +42,9 @@ import { Platform } from 'react-native'
 
 
 // -- OneSignal API --
+// Plugin: https://github.com/geektimecoil/react-native-onesignal
+// Setup-Guide: https://medium.com/differential/react-native-push-notifications-with-onesignal-9db6a7d75e1e#.2s5b60s1m
+// Accounts&Keys: https://documentation.onesignal.com/docs/accounts-and-keys#section-keys-ids
 
 // Get Device Info: 
 //    curl https://onesignal.com/api/v1/players/?
@@ -49,6 +52,10 @@ import { Platform } from 'react-native'
 // Create Push: https://documentation.onesignal.com/reference#create-notification
 //    "app_id":"?","include_player_ids":["?"]
 // curl -X POST --header "Authorization: key=?" --header "Content-Type:application/json" -d "{\"app_id\":\"1c52ee9f-71ed-4081-9c54-e66a815538ac\",\"include_player_ids\":[\"c732c64a-9409-4af3-b0dc-1ff93e084b5b\"],\"contents\":{\"en\":\"Test for REST content\",\"de\":\"Test per REST Inhalt\"},\"headings\":{\"en\":\"Title test\",\"de\":\"Titel Test\"},\"data\":{\"bla\":\"fasel\"}}" https://onesignal.com/api/v1/notifications 
+
+// -- Theaterwecker Backend --
+// Django Systemverwaltung: https://theaterwecker.de/admin/
+// local self documented API: http://127.0.0.1:8000/api/v1/
 
 
 const token = '370de3b211294a7e84b9eeb6643a935b94703062'
