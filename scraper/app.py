@@ -15,14 +15,32 @@ locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
 
 URL = "http://www.theater-chemnitz.de/spielplan/gesamtspielplan"
 time_location_re = re.compile("(?P<hour>\d{2}):(?P<minutes>\d{2})(\s*Uhr\s*)(?P<location>[\w\s]*)")
+calendar_months = [
+    '',
+    'januar',
+    'februar',
+    'marz',
+    'april',
+    'mai',
+    'juni',
+    'juli',
+    'august',
+    'september',
+    'oktober',
+    'november',
+    'dezember'
+]
 
 
 def get_plays(year, month):
     plan = requests.get(URL, params={
-        "month": calendar.month_name[month].lower(),
+        "month": calendar_months[month],
         "year": year,
         "tip": 1,
     })
+    if plan.status_code != 200:
+        logger.error('got non-200 return code while scraping', exc_info=True)
+        return []
     soup = BeautifulSoup(plan.text.replace('&nbsp;', ' '), "lxml")
     block_tops = soup.find_all("div", class_="block_top")
     plays = []
@@ -46,23 +64,29 @@ def get_plays(year, month):
                 special_raw = info.find("span", class_="pr_red")
                 if special_raw:
                     special = special_raw.get_text()
-                    if special == "Gastspiel":
+                    if special in ["Gastspiel"]:  # Ausnahmen
                         continue
-                    play["special"] = special
-                typ_raw = info.find(class_="pr_box_content_right_table_top")
-                if typ_raw:
-                    play["typ"] = typ_raw.get_text()
+                category_raw = info.find(class_="pr_box_content_right_table_top")
+                if category_raw:
+                    category = category_raw.get_text()
+                    if category in ["Theaternahes Rahmenprogramm"]:
+                        category = "Sonstiges"
+                    play["category"] = category
                 title_raw = info.find(class_="mini_title_link_b")
                 if title_raw:
                     play["title"] = title_raw.get_text()
+                else:
+                    continue
                 desciption_raw = info.find(class_="news_box_descript")
                 if desciption_raw:
                     play["description"] = desciption_raw.get_text()
                 tickets_raw = info.find("a", class_="karten")
-                if tickets_raw is None:
-                    continue
+                play["tickets"] = tickets_raw
                 plays.append(play)
+    if len(plays) == 0:
+        logger.error('could not find a single play while scraping', exc_info=True)
     return plays
+
 
 
 def main():
@@ -73,8 +97,9 @@ def main():
     else:
         plays.extend(get_plays(today.year, today.month + 1))
 
-    with open("data.json", "w") as fp:
-        json.dump(plays, fp, indent=2)
+    for play in plays:
+        print(play)
+
 
 if __name__ == "__main__":
     main()

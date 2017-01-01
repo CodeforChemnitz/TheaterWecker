@@ -80,7 +80,7 @@ calendar_months = [
 def get_plays(year, month):
     plan = requests.get(URL, params={
         "month": calendar_months[month],
-        "year": year,
+        "year": 2016,
         "tip": 1,
     })
     if plan.status_code != 200:
