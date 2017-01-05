@@ -30,14 +30,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'rest_framework',
-    'rest_framework.authtoken',
     'anymail',
     'raven.contrib.django.raven_compat',
     'django_celery_beat',
     'theaterwecker',
     'app',
-    'apiv1',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -118,19 +116,6 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
-    )
-}
-
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = "anymail.backends.mailgun.MailgunBackend"
 DEFAULT_FROM_EMAIL = "TheaterWecker <no-reply@mg.theaterwecker.com>"
@@ -183,6 +168,10 @@ LOGGING = {
             'handlers': ['sentry', 'console'],
         },
         'app': {
+            'level': 'DEBUG',
+            'handlers': ['sentry', 'console'],
+        },
+        'api': {
             'level': 'DEBUG',
             'handlers': ['sentry', 'console'],
         },
