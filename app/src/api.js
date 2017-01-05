@@ -10,6 +10,32 @@ import push from './push'
 
 const url = 'http://127.0.0.1:8000/api'
 
+const api = {
+  // getInstitutions: () => {
+  //   return getAsJson('institutions')
+  // },
+  getCategories() {
+    return get('categories')
+  },
+  createDevice() {
+    const uuid = push.getDeviceId();
+    post('device', uuid)
+  },
+  verifyDevice(urlWithHash) {
+    fetch(urlWithHash, {
+      method: 'GET',
+    })
+  },
+  subscribe (categories) {
+    const uuid = push.getDeviceId();
+    post('subscribe', JSON.stringify({
+        deviceId: uuid,
+        categories
+      }))
+  }
+}
+
+
 const get = function(route) {
   return fetch(url + '/' + route)
     .then((response) => response.json())
@@ -36,31 +62,6 @@ const post = function(route, body) {
       console.log(error)
       return false
     })
-}
-
-const api = {
-  // getInstitutions: () => {
-  //   return getAsJson('institutions')
-  // },
-  getCategories() {
-    return get('categories')
-  },
-  createDevice() {
-    const uuid = push.getDeviceId();
-    post('device', uuid)
-  },
-  verifyDevice(urlWithHash) {
-    fetch(urlWithHash, {
-      method: 'GET',
-    })
-  },
-  subscribe (categories) {
-    const uuid = push.getDeviceId();
-    post('subscribe', JSON.stringify({
-        deviceId: uuid,
-        categories
-      }))
-  }
 }
 
 export default api
