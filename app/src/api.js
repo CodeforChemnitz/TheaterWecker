@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Platform } from 'react-native'
+import push from './push'
 
 // Network fetch: https://facebook.github.io/react-native/releases/next/docs/network.html
 
@@ -55,46 +56,60 @@ import { Platform } from 'react-native'
 
 // -- Theaterwecker Backend --
 // Django Systemverwaltung: https://theaterwecker.de/admin/
-// local self documented API: http://127.0.0.1:8000/api/v1/
+// local self documented API: http://127.0.0.1:8000/api/
 
+const url = 'http://127.0.0.1:8000/api'
 
-const token = '370de3b211294a7e84b9eeb6643a935b94703062'
-const url = 'http://127.0.0.1:8000/api/v1'
-
-const getAsJson = (type) => {
-  return fetch(url + '/' + type)
+const get = function(route) {
+  return fetch(url + '/' + route)
     .then((response) => response.json())
     .then((responseJson) => {
       return responseJson
     })
     .catch((error) => {
       console.log(error)
+      return false
     })
 }
 
-const api = {
-  getInstitutions: () => {
-    return getAsJson('institutions')
-  },
-  getCategories: () => {
-    return getAsJson('categories')
-  },
-  createUserDevice: () => {
-    const deviceInfo = require('react-native-device-info')
-    const uuid = DeviceInfo.getUniqueID()
-    console.log("UUID", uuid)
-
-    fetch(url + '/userdevice', {
+const post = function(route, body) {
+  return fetch(url + 'device', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        deviceId: uuid,
-        deviceType: Platform.iOS ? 'iOS' : 'Android',
-      })
+      body
     })
+    .then(() => { return true })
+    .catch((error) => {
+      console.log(error)
+      return false
+    })
+}
+
+const api = {
+  // getInstitutions: () => {
+  //   return getAsJson('institutions')
+  // },
+  getCategories() {
+    return get('categories')
+  },
+  createDevice() {
+    const uuid = push.getDeviceId();
+    post('device', uuid)
+  },
+  verifyDevice(urlWithHash) {
+    fetch(urlWithHash, {
+      method: 'GET',
+    })
+  },
+  subscribe (categories) {
+    const uuid = push.getDeviceId();
+    post('subscribe', JSON.stringify({
+        deviceId: uuid,
+        categories
+      }))
   }
 }
 

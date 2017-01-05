@@ -45,17 +45,10 @@ export default class Form extends Component {
     'philharmonie': "Philharmonie",
     'sonstiges' : "Sonstiges"
   }
-  times = {
-    '15': '15 Minuten',
-    '30': '30 Minuten',
-    '60': '1 Stunde' 
-  }
   constructor(props) {
     super(props)
     this.state = {
-      email: '',
-      category: '',
-      time: ''
+      categories: ''
     }
   }
 
@@ -77,14 +70,6 @@ export default class Form extends Component {
             <View style={styles.p}>
                 <Text style={styles.center}>Benachrichtige mich</Text>
             </View>
-            <View style={styles.buttonGroup}>
-                <RadioButtonGroup 
-                  options={this.times} 
-                  value={this.state.time} 
-                  color='#0000ff' 
-                  colorActive='#ff0000'
-                  onChange={(time) => this.setState({time})} />
-            </View>
             <View style={styles.p}>
                 <Text style={styles.center}>vor Beginn der Veranstaltung - sofern noch Plätze frei sind - für</Text>
             </View>
@@ -94,19 +79,10 @@ export default class Form extends Component {
                   value={this.state.category} 
                   color='#0000ff' 
                   colorActive='#ff0000'
-                  onChange={(category) => this.setState({category})} />
+                  onChange={(categories) => this.setState({categories})} />
             </View>
             <View style={styles.p}>
-                <Text style={styles.center}>via E-Mail</Text>
-            </View>
-            <View style={styles.buttonGroup}>
-                <TextInput 
-                    keyboardType="email-address"
-                    placeholder="max@musterman.de"
-                    style={styles.email}
-                    onChangeText={(email) => this.setState({email})}
-                    value={this.state.email} 
-                    />
+                <Text style={styles.center}>via Push-Benachrichtigung</Text>
             </View>
             <View style={styles.buttonGroup}>
                 <Button 
