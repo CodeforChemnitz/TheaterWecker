@@ -9,7 +9,7 @@
   "dependencies": {
     "react": "15.4.0",
     "react-native": "0.38.0",
-    "react-native-onesignal": "^1.2.3",
+    "react-native-onesignal": "file:/Users/ronny/dev/react-native/react-native-onesignal",
     "underscore": "^1.8.3"
   },
   "jest": {
