@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
-import { Actions } from 'react-native-router-flux';
+import { View, StyleSheet, Text, Button } from 'react-native'
+import push from '../lib/push'
 
 export default class InitScene extends Component {
   constructor(props) {
     super(props);
-    window.setTimeout(function() {
-      Actions.main()
-    }, 2000)
+  }
+  componentDidMount() {
+    push.init()
   }
 
   render() {
@@ -26,4 +26,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   }
-});
+})

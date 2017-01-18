@@ -1,4 +1,5 @@
 import OneSignal from 'react-native-onesignal'
+import { Actions } from 'react-native-router-flux';
 
 // -- OneSignal API --
 // Plugin: https://github.com/geektimecoil/react-native-onesignal
@@ -20,6 +21,7 @@ let push = {
         this.deviceId = device.userId
         console.log('UserId = ', device.userId)
         console.log('PushToken = ', device.pushToken)
+        Actions.main()
       },
       onNotificationOpened: (message, data, isActive) => {
         console.log('MESSAGE: ', message)

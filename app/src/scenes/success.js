@@ -5,7 +5,6 @@ import Footer from '../components/footer'
 
 // Parsed Text: https://github.com/taskrabbit/react-native-parsed-text
 
-
 export default class SuccessScene extends Component {
   constructor(props) {
     super(props)
@@ -15,7 +14,7 @@ export default class SuccessScene extends Component {
     return (
         <ScrollView style={styles.body}>
             <View style={styles.titleCont}>
-                <Image source={require('./../images/ok.png')} style={styleImg} />
+                <Image source={require('../../images/ok.png')} style={styleImg} />
             </View>
 
             <View style={styles.card}>

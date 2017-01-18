@@ -2,6 +2,22 @@
 
 ![Screenshot iOS](screenshot-ios.png)
  
+## Setup
+
+
+### OneSignal Setup (Pods)
+
+https://github.com/geektimecoil/react-native-onesignal#ios-installation
+
+Init & Setup CocoaPods
+
+```
+cd ios
+sudo gem install cocoapods
+pod setup
+```
+
+
 ## Run it!
 
 To run your app on iOS:
@@ -48,5 +64,10 @@ To run your app on Android:
 - App to Backend via REST ->  `POST /api/subscribe {'deviceId':'c732c64a-9409-4af3-b0dc-1ff93e084b5b','categories':[]}
 
 
+## Upgrade RN (via Git)
 
+https://facebook.github.io/react-native/docs/upgrading.html
 
+```
+react-native-git-upgrade
+```

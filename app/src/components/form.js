@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button } from 'react-native'
-import styles from './styles'
+import styles from '../styles'
 import _ from 'underscore'
 
 // Button: https://facebook.github.io/react-native/docs/button.html

@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { ScrollView, View, Text, Image } from 'react-native';
-import styles from './styles'
+import styles from '../styles'
 // import ParsedText from 'react-native-parsed-text'
 import Form from '../components/form'
 import Footer from '../components/footer'
 import api from '../lib/api'
-import push from '../lib/push'
 
 // Parsed Text: https://github.com/taskrabbit/react-native-parsed-text
 
@@ -13,9 +12,6 @@ import push from '../lib/push'
 export default class MainScene extends Component {
   constructor(props) {
     super(props)
-  }
-  componentDidMount() {
-    push.init()
   }
   openCodeForChemnitz() {
       console.log("CodeForChemnitz clicked")
@@ -32,8 +28,8 @@ export default class MainScene extends Component {
     return (
         <ScrollView style={styles.body}>
             <View style={styles.titleCont}>
-                <Image source={require('./../images/performing-arts.png')} style={styleImg} />
-                <Image source={require('./../images/alarm-clock.png')} style={styleImg} />
+                <Image source={require('../../images/performing-arts.png')} style={styleImg} />
+                <Image source={require('../../images/alarm-clock.png')} style={styleImg} />
                 <Text style={[styles.title]}>TheaterWecker</Text>
             </View>
 

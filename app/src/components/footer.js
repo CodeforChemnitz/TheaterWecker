@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { ScrollView, View, Text, Image } from 'react-native';
 import styles from '../styles'
 
-export default class Error extends Component {
+export default class Footer extends Component {
   constructor(props) {
     super(props)
   }
   render() {
-    <View>
+    return ( <View>
         <View style={styles.footer}>
             <View style={styles.footnote}>
                 <Text style={styles.center}>
@@ -27,6 +27,6 @@ export default class Error extends Component {
                 <Text style={styles.link} onClick={this.openEmojiOne}>EmojiOne</Text>
             </Text>
         </View>
-    </View>
+    </View> )
   }
 }
