@@ -23,7 +23,7 @@ export default StyleSheet.create({
         fontWeight: 'bold'
     },
     center: {
-        textAlign: 'center'
+        // textAlign: 'center'
     },
     cite: {
         color: 'gray'

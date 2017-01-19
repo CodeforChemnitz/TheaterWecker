@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { ScrollView, View, Text, Image } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import styles from '../styles'
 import Footer from '../components/footer'
 
@@ -21,6 +22,7 @@ export default class SuccessScene extends Component {
                 <View style={[styles.p, styles.baseText, styles.center]}>
                     <Text>Alles super.</Text>
                 </View>
+                <Button title="Zurück" onPress={Actions.main} />
             </View>
 
             <Footer/>
