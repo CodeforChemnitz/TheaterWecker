@@ -19,7 +19,7 @@ from django.urls import reverse
 from django.utils.timezone import now, make_aware, utc
 from django.utils.translation import activate
 
-from app.models import UserEmail, Performance, Institution, Category, City, Location, CategoryNotification
+from app.models import UserEmail, Performance, Institution, Category, City, Location, CategoryNotification, UserDevice
 
 # import the logging library
 import logging
@@ -51,6 +51,40 @@ def send_verify_email(email, scheme, host, count):
         c.incr('send_verify_email.failed')
         logger.error('Sending email failed', exc_info=True)
         send_verify_email.apply_async((email, scheme, host, count + 1), countdown=(2 ** count) * 60)
+
+
+@shared_task
+def send_verify_notification(device, count):
+    c = statsd.StatsClient('localhost', 8125)
+    try:
+        user_device = UserDevice.objects.get(device_id=device)
+        user_device.notify(data={
+            'headings': {
+                'de': 'Willkommen beim TheaterWecker',
+                'en': 'Willkommen beim TheaterWecker',
+            },
+            'contents': {
+                'de': 'Tippe hier, um dein Gerät zu verifizieren.',
+                'en': 'Tippe hier, um dein Gerät zu verifizieren.',
+            },
+            'data': {
+                'verification': user_device.verification_key,
+            },
+        })
+        c.incr('send_verify_notification')
+        c.gauge('total.send_verify_notification', 1, delta=True)
+    except UserDevice.DoesNotExist as e:
+        c.incr('send_verify_notification.no_user')
+        logger.error('User does not exist', exc_info=True)
+        return
+    except Exception as e:
+        if count > 9:
+            c.incr('send_verify_notification.failed_finally')
+            logger.error('Sending notification failed after 10th retry', exc_info=True)
+            return
+        c.incr('send_verify_notification.failed')
+        logger.error('Sending notification failed', exc_info=True)
+        send_verify_notification.apply_async((device, count + 1), countdown=(2 ** count) * 60)
 
 
 @periodic_task(run_every=(crontab(hour="4", minute="33", day_of_week="*")))

@@ -10,3 +10,4 @@ __pycache__
 /theaterwecker/settings_mailgun.py
 /theaterwecker/settings_raven.py
 /theaterwecker/settings_prod.py
+/theaterwecker/settings_one_signal.py

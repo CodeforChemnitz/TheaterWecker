@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import requests
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
@@ -28,6 +29,7 @@ class UserEmail(models.Model):
             from_email=settings.DEFAULT_FROM_EMAIL
         )
 
+
 class UserDevice(models.Model):
     class Meta:
         verbose_name = _('User Device')
@@ -39,8 +41,24 @@ class UserDevice(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    def notify(self, data):
+        payload = {
+            'app_id': settings.ONE_SIGNAL['APP_ID'],
+            'include_player_ids': [self.device_id]
+        }
+        payload.update(data)
+        requests.post(
+            url=settings.ONE_SIGNAL['URL'],
+            headers={
+                'Authorization': 'key=%s' % settings.ONE_SIGNAL['KEY'],
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            json=payload,
+        )
+
     def __str__(self):
         return self.device_id
+
 
 class City(models.Model):
     class Meta:

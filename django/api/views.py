@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from app.models import *
+from app.tasks import send_verify_notification
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -36,6 +37,7 @@ def device(request):
     user_device.save()
 
     # TODO send verification key via PUSH
+    send_verify_notification.delay(device_id, 0)
 
     return HttpResponse("", status=201)
 

@@ -1,0 +1,5 @@
+ONE_SIGNAL = {
+    'URL': 'https://onesignal.com/api/v1/notifications',
+    'KEY': '',
+    'APP_ID': '',
+}

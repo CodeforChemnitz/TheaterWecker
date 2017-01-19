@@ -132,6 +132,11 @@ try:
 except ImportError:
     pass
 
+# Try to import one signal settings (settings_raven.py should be existing after deployment or should be created by hand)
+try:
+    from .settings_one_signal import *
+except ImportError:
+    pass
 
 try:
     from .settings_prod import *
