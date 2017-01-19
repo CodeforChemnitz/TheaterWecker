@@ -21,6 +21,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
+ios/TheaterWecker/AppDelegate.m
 
 # Android/IntelliJ
 #

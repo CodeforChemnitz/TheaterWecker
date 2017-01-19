@@ -34,7 +34,7 @@
   [self.window makeKeyAndVisible];
   
   self.oneSignal = [[RCTOneSignal alloc] initWithLaunchOptions:launchOptions
-                                                         appId:@"1c52ee9f-71ed-4081-9c54-e66a815538ac"];
+                                                         appId:@"ONESIGNAL_APP_ID_GOES_HERE"];
   
   return YES;
 }
