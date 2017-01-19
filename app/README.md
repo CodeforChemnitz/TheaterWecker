@@ -55,8 +55,12 @@ To run your app on Android:
 ### Init of app
 
 1. App to OneSignal via REST -> Register device (automatically)
-2. Create/Register device -> App to Backend via REST -> `POST /api/device {'deviceId':'c732c64a-9409-4af3-b0dc-1ff93e084b5b'}``
+2. Create/Register device -> App to Backend via REST -> `POST /api/device c732c64a-9409-4af3-b0dc-1ff93e084b5b`
+   - `curl -X POST -d 'c732c64a-9409-4af3-b0dc-1ff93e084b5b' https://theaterwecker.de/api/device/`
+   - Status 201 -> created
+   - Status 200 -> exists
 3. Fetch all possible categories -> App to Backend via REST -> GET /api/categories
+   - `curl https://theaterwecker.de/api/categories/`
 
 ### On first start of app -> Verify device
 

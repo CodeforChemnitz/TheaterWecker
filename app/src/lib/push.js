@@ -15,13 +15,13 @@ import { Actions } from 'react-native-router-flux';
 
 let push = {
   deviceId: '',
-  init() {
+  init(success, error) {
     OneSignal.configure({
       onIdsAvailable: (device) => {
         this.deviceId = device.userId
         console.log('UserId = ', device.userId)
         console.log('PushToken = ', device.pushToken)
-        Actions.main()
+        success()
       },
       onNotificationOpened: (message, data, isActive) => {
         console.log('MESSAGE: ', message)

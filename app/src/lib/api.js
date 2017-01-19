@@ -14,24 +14,47 @@ const api = {
   // getInstitutions: () => {
   //   return getAsJson('institutions')
   // },
-  getCategories() {
-    return get('categories')
+
+  // curl  
+  getCategories(success, error) {
+    let cat = get('categories')
+    if (cat !== false) {
+      success(cat)
+    } else {
+      error('getCategories')
+    }
   },
-  createDevice() {
+
+  registerDevice(success, error) {
     const uuid = push.getDeviceId();
-    post('device', uuid)
+    if (post('device', uuid)) {
+      success(true)
+    } else {
+      error('registerDevice')
+    }
   },
-  verifyDevice(urlWithHash) {
+
+  verifyDevice(urlWithHash, success, error) {
     fetch(urlWithHash, {
       method: 'GET',
+    }).then(() => {
+      success()
+    }).catch((msg) => {
+      error(msg)
     })
   },
-  subscribe (categories) {
+
+  subscribe(categories, success, error) {
     const uuid = push.getDeviceId();
-    post('subscribe', JSON.stringify({
+    let ok = post('subscribe', JSON.stringify({
         deviceId: uuid,
         categories
-      }))
+    }))
+    if (ok) {
+      success()
+    } else {
+      error('subscribe')
+    }
   }
 }
 
