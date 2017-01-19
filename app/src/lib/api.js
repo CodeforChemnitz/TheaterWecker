@@ -15,7 +15,7 @@ const api = {
   //   return getAsJson('institutions')
   // },
 
-  // curl  
+  // curl https://theaterwecker.de/api/categories/
   getCategories(success, error) {
     let cat = get('categories')
     if (cat !== false) {
@@ -25,6 +25,7 @@ const api = {
     }
   },
 
+  // curl -X POST -d 'c732c64a-9409-4af3-b0dc-1ff93e084b5b' https://theaterwecker.de/api/device/
   registerDevice(success, error) {
     const uuid = push.getDeviceId();
     if (post('device', uuid)) {

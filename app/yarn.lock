@@ -2595,7 +2595,7 @@ mkdirp@0.5.x, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-moment@2.x.x:
+moment@2.x.x, moment@^2.17.1:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
@@ -2985,6 +2985,10 @@ react-native-onesignal@^3.0.0:
   resolved "https://registry.yarnpkg.com/react-native-onesignal/-/react-native-onesignal-3.0.0.tgz#b50acb764e80971c4e10be3a0bdf08abfa29122b"
   dependencies:
     invariant "^2.2.2"
+
+react-native-parsed-text@^0.0.16:
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/react-native-parsed-text/-/react-native-parsed-text-0.0.16.tgz#788f6a51c3e2c224ad89101cc3d63f5993d37747"
 
 react-native-router-flux@^3.37.0:
   version "3.37.0"

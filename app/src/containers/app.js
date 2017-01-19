@@ -4,6 +4,9 @@ import Init from '../scenes/init'
 import Main from '../scenes/main'
 import Fehler from '../scenes/error'
 import Success from '../scenes/success'
+import MustValidate from '../scenes/mustValidate'
+import EventNotification from '../scenes/eventNotification'
+
 
 // Router Tuorial: https://github.com/aksonov/react-native-router-flux/blob/master/docs/MINI_TUTORIAL.md
 
@@ -20,6 +23,8 @@ export default class App extends Component {
           <Scene key="main" component={Main} type={ActionConst.REPLACE} />
           <Scene key="fehler" component={Fehler} title="Fehler" />
           <Scene key="success" component={Success} title="Success" />
+          <Scene key="mustValidate" component={ustValidateess}  type={ActionConst.REPLACE} />
+          <Scene key="eventNotification" component={EventNotifications} type={ActionConst.REPLACE} />
         </Scene>
       </Router>
     )
