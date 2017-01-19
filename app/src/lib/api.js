@@ -28,11 +28,18 @@ const api = {
   // curl -X POST -d 'c732c64a-9409-4af3-b0dc-1ff93e084b5b' https://theaterwecker.de/api/device/
   registerDevice(success, error) {
     const uuid = push.getDeviceId();
-    if (post('device', uuid)) {
-      success(true)
-    } else {
-      error('registerDevice')
-    }
+    const status = postAndGetJson('device', uuid)
+      .then((status) => {
+        console.log("registerDevice status:", status)
+        if (!!status && 'verified' in status) {
+          success(status.verified)
+        } else {
+          error('registerDevice')  
+        }
+      })
+      .catch((errorMsg) => {
+        error(errorMsg)
+      })    
   },
 
   verifyDevice(urlWithHash, success, error) {
@@ -73,7 +80,7 @@ const get = function(route) {
 }
 
 const post = function(route, body) {
-  return fetch(url + 'device', {
+  return fetch(url + '/' + route, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -81,7 +88,30 @@ const post = function(route, body) {
       },
       body
     })
-    .then(() => { return true })
+    .then((data) => { return true })
+    .catch((error) => {
+      console.log(error)
+      return false
+    })
+}
+
+const postAndGetJson = function(route, body) {
+  return fetch(url + '/' + route, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body
+    })
+    .then((response) => {
+      console.log("postAndGetJson response", response)
+      return response.json()
+    })
+    .then((responseJson) => {
+      console.log("postAndGetJson responseJson", responseJson)
+      return responseJson
+    })
     .catch((error) => {
       console.log(error)
       return false

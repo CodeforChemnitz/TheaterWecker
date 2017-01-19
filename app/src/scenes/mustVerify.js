@@ -3,7 +3,7 @@ import { ScrollView, View, Text, Image } from 'react-native';
 import styles from '../styles'
 import Footer from '../components/footer'
 
-export default class MustValidateScene extends Component {
+export default class MustVerifyScene extends Component {
   constructor(props) {
     super(props)
   }

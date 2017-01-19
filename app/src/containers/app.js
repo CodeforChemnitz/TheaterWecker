@@ -4,7 +4,7 @@ import Init from '../scenes/init'
 import Main from '../scenes/main'
 import Fehler from '../scenes/error'
 import Success from '../scenes/success'
-import MustValidate from '../scenes/mustValidate'
+import MustVerify from '../scenes/mustVerify'
 import EventNotification from '../scenes/eventNotification'
 
 
@@ -23,8 +23,8 @@ export default class App extends Component {
           <Scene key="main" component={Main} type={ActionConst.REPLACE} />
           <Scene key="fehler" component={Fehler} title="Fehler" />
           <Scene key="success" component={Success} title="Success" />
-          <Scene key="mustValidate" component={ustValidateess}  type={ActionConst.REPLACE} />
-          <Scene key="eventNotification" component={EventNotifications} type={ActionConst.REPLACE} />
+          <Scene key="mustVerify" component={MustVerify}  type={ActionConst.REPLACE} />
+          <Scene key="eventNotification" component={EventNotification} type={ActionConst.REPLACE} />
         </Scene>
       </Router>
     )

@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { ScrollView, View, Text, Image } from 'react-native';
+import { ScrollView, View, Text, Image, Button } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import styles from '../styles'
 import Footer from '../components/footer'
-
-// Parsed Text: https://github.com/taskrabbit/react-native-parsed-text
 
 export default class ErrorScene extends Component {
   constructor(props) {
@@ -21,6 +20,7 @@ export default class ErrorScene extends Component {
                 <View style={[styles.p, styles.baseText, styles.center]}>
                     <Text>Uh oh da ist was passiert.</Text>
                 </View>
+                <Button title="Zurück" onPress={Actions.main} />
             </View>
 
             <Footer/>
