@@ -41,23 +41,22 @@ export default class InitScene extends Component {
       })
     })
 
-    // then switch to Main scene
     .then((categories) =>  {
-      console.log("AsyncStorage.setItem")
-      try {
-        AsyncStorage.setItem('@TW:categories', JSON.stringify(categories));
-      } catch (error) {
-        console.error(error)
-      }
+      console.log("AsyncStorage.setItem", categories)
+      this.setState({progressText: 'Cache Kategorien..'})
+      return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories))
+    })
 
-      this.setState({progressText: 'Lade Maske..'})
+    // then switch to Main scene
+    .then(() =>  {
       console.log("Actions.main")
+      this.setState({progressText: 'Lade Maske..'})
       Actions.main()
-      resolve()
     })
     
     // show errors
     .catch((error) => {
+      console.error(error)
       this.setState({
         progressText: `Es ist ein Fehler aufgetreten: ${error}`,
         skipButton: true,
@@ -71,7 +70,7 @@ export default class InitScene extends Component {
         <View style={styles.container}>
             <Text>{this.state.progressText}</Text>
             {this.state.skipButton ? <Button title="Überspringen" onPress={Actions.main} /> : null}
-            {this.state.spinner ? <ActivityIndicator /> : null }
+            {this.state.spinner ? <ActivityIndicator size="large" /> : null }
         </View>
     )
   }
