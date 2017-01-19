@@ -13,6 +13,7 @@ import datetime
 import re
 import requests
 from bs4 import BeautifulSoup
+from django.conf import settings
 
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -225,6 +226,94 @@ def scrape_performances_in_chemnitz():
     end = time.time()
     c.timing('scrape_performances_in_chemnitz.timed', floor((end - start) * 1000))
 
+
+@shared_task
+def send_push_notifications(devices, performance_id):
+    c = statsd.StatsClient('localhost', 8125)
+    start = time.time()
+
+    try:
+        performance = Performance.objects.get(pk=performance_id)
+
+        payload = {
+            'app_id': settings.ONE_SIGNAL['APP_ID'],
+            'include_player_ids': devices,
+            'headings': {
+                'en': "Es gibt noch Karten für '%s'" % performance.title,
+                'de': "Es gibt noch Karten für '%s'" % performance.title,
+            },
+            'contents': {
+                'en': performance.description,
+                'de': performance.description,
+            },
+            'data': {
+                'title': performance.title,
+                'begin': performance.begin.isoformat(),
+                'location': performance.location.__str__(),
+                'description': performance.description,
+            }
+        }
+        requests.post(
+            url=settings.ONE_SIGNAL['URL'],
+            headers={
+                'Authorization': 'key=%s' % settings.ONE_SIGNAL['KEY'],
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            json=payload,
+        )
+    except Performance.DoesNotExist as e:
+        c.incr('send_push_notifications.no_performance')
+        logger.error('Performance does not exist', exc_info=True)
+        return
+    except requests.exceptions.RequestException as e:
+        c.incr('send_push_notifications.request_exception')
+        logger.error('Request Exception', exc_info=True)
+        return
+    except Exception as e:
+        c.incr('send_push_notifications.failed')
+        logger.error('Sending email failed', exc_info=True)
+        return
+
+    end = time.time()
+    c.timing('send_push_notifications.timed', floor((end - start) * 1000))
+
+
+@shared_task
+def send_email_notification(email, performance_id):
+    c = statsd.StatsClient('localhost', 8125)
+    start = time.time()
+    try:
+        user_email = UserEmail.objects.get(email=email)
+        performance = Performance.objects.get(pk=performance_id)
+
+        user_email.mail(
+            "Es gibt noch Karten für '%s'" % performance.title,
+            render_to_string(
+                'email/notification.email', {
+                    'performance': performance
+                }
+            )
+        )
+
+        c.incr('send_email_notification')
+        c.gauge('total.send_email_notification', 1, delta=True)
+    except UserEmail.DoesNotExist as e:
+        c.incr('send_email_notification.no_user')
+        logger.error('User does not exist', exc_info=True)
+        return
+    except Performance.DoesNotExist as e:
+        c.incr('send_email_notification.no_performance')
+        logger.error('Performance does not exist', exc_info=True)
+        return
+    except Exception as e:
+        c.incr('send_email_notification.failed')
+        logger.error('Sending email failed', exc_info=True)
+        return
+
+    end = time.time()
+    c.timing('send_email_notifications.timed', floor((end - start) * 1000))
+
+
 @periodic_task(run_every=(crontab(hour="*", minute="*/15", day_of_week="*")))
 def send_notifications():
     c = statsd.StatsClient('localhost', 8125)
@@ -246,17 +335,15 @@ def send_notifications():
                 interval=delta['interval'],
                 category=performance.category
             )
+            devices = []
             for notification in notifications:
                 c.gauge('total.notification_send', 1, delta=True)
                 # todo move this to another task for proper scale out
-                notification.user.mail(
-                    "Es gibt noch Karten für '%s'" % performance.title,
-                    render_to_string(
-                        'email/notification.email', {
-                            'performance': performance
-                        }
-                    )
-                )
+                if notification.user:
+                    send_email_notification.delay(notification.user.email, performance.pk)
+                if notification.device:
+                    devices.append(notification.device.device_id)
+            send_push_notifications.delay(devices, performance.pk)
 
     end = time.time()
     c.timing('notification.timed', floor((end - start) * 1000))
