@@ -65,8 +65,8 @@ To run your app on Android:
 ### On first start of app -> Verify device
 
 1. Backend to OneSignal via REST -> Notification with hidden secret (URL to backend with hash)
-2. User clicks Notifcation - opens App
-3. App to Backend via Ajax -> call URL with hash
+2. User clicks Notifcation - opens App - jump into `onNotificationOpened` with data `{"verification":"KEY"}`
+3. App to Backend via REST -> `GET /api/verify/KEY`
 
 - prevents mass user/device creation
 - backend needs to cleanup not validated users/devices

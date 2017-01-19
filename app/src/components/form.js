@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, Button } from 'react-native'
+import { View, Text, TextInput, Button, AsyncStorage } from 'react-native'
 import styles from '../styles'
-import _ from 'underscore'
+import api from '../lib/api'
 
 // Button: https://facebook.github.io/react-native/docs/button.html
 
@@ -23,13 +23,13 @@ class RadioButtonGroup extends Component {
     }
     return (
       <View style={styles.radioButtonGroup}>
-      { _.map(_.keys(this.props.options), (key) => {
-          let value = this.props.options[key]
+      { this.props.options.map((itm) => {
+          console.log("Cat itm", itm)
           return <Button
-              key={key} 
-              title={value} 
-              color={this.state.active == key ? this.props.colorActive : this.props.color} 
-              onPress={() => this.props.onChange(key)} />
+              key={"id" + itm.id} 
+              title={itm.name} 
+              color={this.state.active == itm.id ? this.props.colorActive : this.props.color} 
+              onPress={() => this.props.onChange(itm.id)} />
       } ) }
       </View>
     )
@@ -37,31 +37,34 @@ class RadioButtonGroup extends Component {
 }
 
 export default class Form extends Component {
-  categories = {
-    'oper': "Oper",
-    'figurentheater': "Figurentheater",
-    'schauspiel': "Schauspiel",
-    'ballett': "Ballett",
-    'philharmonie': "Philharmonie",
-    'sonstiges' : "Sonstiges"
-  }
+  
   constructor(props) {
     super(props)
     this.state = {
-      categories: ''
+      categoriesPossible: [],
+      categoryIdsSelected: []
     }
+    AsyncStorage.getItem('@TW:categories')
+      .then((data) => {
+        try {
+          console.log("Categories!", data)
+          this.setState({categoriesPossible: JSON.parse(data)})
+        } catch(error) {
+          console.error(error)
+        }
+      })
   }
 
-  onAbonnieren() {
-    console.log("Abonnieren an die API", this.state)
-    return fetch('https://theaterwecker.de/api/v1')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        return responseJson;
+  onSubscribe() {
+    console.log("Abonnieren..", this.state)
+    new Promise((resolve, reject) =>  {
+        api.subscribe(this.state.categoryIdsSelected, resolve, reject)
+      }).then(() => {
+        Actions.success()
+      }).catch((error) => {
+        console.error("onSubscribe", error)
+        Actions.error()
       })
-      .catch((error) => {
-        console.error(error);
-      });
   }
 
   render() {
@@ -75,11 +78,11 @@ export default class Form extends Component {
             </View>
             <View style={styles.buttonGroup}>
               <RadioButtonGroup 
-                  options={this.categories} 
-                  value={this.state.category} 
+                  options={this.state.categoriesPossible} 
+                  value={this.state.categoryIdsSelected} 
                   color='#0000ff' 
                   colorActive='#ff0000'
-                  onChange={(categories) => this.setState({categories})} />
+                  onChange={(categoryIdsSelected) => this.setState({categoryIdsSelected})} />
             </View>
             <View style={styles.p}>
                 <Text style={styles.center}>via Push-Benachrichtigung</Text>
@@ -88,7 +91,7 @@ export default class Form extends Component {
                 <Button 
                     title="Abonnieren" 
                     style={styles.buttonPrimary} 
-                    onPress={() => this.onAbonnieren()} />
+                    onPress={() => this.onSubscribe()} />
             </View>
         </View>
     )

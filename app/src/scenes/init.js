@@ -30,6 +30,7 @@ export default class InitScene extends Component {
       this.setState({progressText: 'Registriere Gerät..'})
       return new Promise((resolve, reject) =>  {
         api.registerDevice(resolve, reject)
+        // TODO on 201 show "Bitte warte auf die Willkommens-Benachrichtigung zur Bestätigung."
       })
     })
 

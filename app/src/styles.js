@@ -98,7 +98,7 @@ export default StyleSheet.create({
     },
 
     radioButtonGroup: {
-        flexDirection: 'row', 
+        flexDirection: 'column', 
         justifyContent: 'space-between'
     }
 })
