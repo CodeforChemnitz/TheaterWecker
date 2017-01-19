@@ -5,17 +5,25 @@
 ## Setup
 
 
-### OneSignal Setup (Pods)
+### OneSignal iOS Setup (Pods)
 
 https://github.com/geektimecoil/react-native-onesignal#ios-installation
 
-Init & Setup CocoaPods
+**Init & Setup CocoaPods**
 
 ```
 cd ios
 sudo gem install cocoapods
 pod setup
 ```
+
+**Setup AppDelegate.m**
+
+```
+cp ios/TheaterWecker/AppDelegate.m.dist ios/TheaterWecker/AppDelegate.m
+```
+
+Replace `ONESIGNAL_APP_ID_GOES_HERE` in `AppDelegate.m` with the OneSignal App-ID.
 
 
 ## Run it!
