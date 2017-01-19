@@ -29,8 +29,7 @@ def device(request):
 
     user_device, created = UserDevice.objects.get_or_create(device_id=device_id)
     if not created:
-        return HttpResponse("", status=200)
-
+        return HttpResponse(json.dumps({'verified': user_device.verified}), status=200)
 
     user_device.verified = False
     user_device.verification_key = uuid4().hex
