@@ -16,9 +16,9 @@ export default class MustVerifyScene extends Component {
             </View>
 
             <View style={styles.card}>
-                <View style={[styles.p, styles.baseText, styles.center]}>
-                    <Text>Dein Gerät wurde registriert.</Text>
-                    <Text>Bitte warte auf die Push-Benachrichtigung zur Bestätigung.</Text>
+                <View style={[styles.p, styles.baseText]}>
+                    <Text style={styles.center}>Dein Gerät wurde registriert.</Text>
+                    <Text style={styles.center}>Bitte warte auf die Push-Benachrichtigung zur Bestätigung.</Text>
                 </View>
             </View>
 

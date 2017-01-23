@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, AsyncStorage } from 'react-native'
+import { CheckBox } from 'react-native-elements'
 import styles from '../styles'
 import api from '../lib/api'
 
@@ -24,12 +25,15 @@ class RadioButtonGroup extends Component {
     return (
       <View style={styles.radioButtonGroup}>
       { !!this.props.options ? this.props.options.map((itm) => {
-          console.log("Cat itm", itm)
-          return <Button
-              key={"id" + itm.id} 
-              title={itm.name} 
-              color={this.state.active == itm.id ? this.props.colorActive : this.props.color} 
-              onPress={() => this.props.onChange(itm.id)} />
+          // console.log("Cat itm", itm)
+          return <CheckBox
+            center
+            title={itm.name}
+            checkedIcon='dot-circle-o'
+            uncheckedIcon='circle-o'
+            checked={typeof this.state.active == "array" && this.state.active.indexOf(itm.id) !== -1} 
+            onPress={() => this.props.onChange(itm.id)}
+          />
       } ) : null }
       </View>
     )
@@ -47,7 +51,7 @@ export default class Form extends Component {
     AsyncStorage.getItem('@TW:categories')
       .then((data) => {
         try {
-          console.log("Categories!", data)
+          // console.log("Categories!", data)
           this.setState({categoriesPossible: JSON.parse(data)})
         } catch(error) {
           console.error(error)
@@ -80,8 +84,6 @@ export default class Form extends Component {
               <RadioButtonGroup 
                   options={this.state.categoriesPossible} 
                   value={this.state.categoryIdsSelected} 
-                  color='#0000ff' 
-                  colorActive='#ff0000'
                   onChange={(categoryIdsSelected) => this.setState({categoryIdsSelected})} />
             </View>
             <View style={styles.p}>

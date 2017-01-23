@@ -27,7 +27,7 @@ export default class InitScene extends Component {
   }
 
   registerDevice() {
-    console.log("registerDevice")
+    // console.log("registerDevice")
     this.setState({progressText: 'Registriere Gerät..'})
     return new Promise((resolve, reject) =>  {
       api.registerDevice(resolve, reject)
@@ -35,7 +35,7 @@ export default class InitScene extends Component {
   }
 
   getCategories() {
-    console.log("getCategories")
+    // console.log("getCategories")
     this.setState({progressText: 'Hole Kategorien..'})
     return new Promise((resolve, reject) =>  {
       api.getCategories(resolve, reject)
@@ -52,9 +52,10 @@ export default class InitScene extends Component {
     try {
       let done = await this.initPush()
       let verified = await this.registerDevice()
+      verified = true // TEST!!
 
       if (!verified) {
-        console.log("mustVerify")
+        // console.log("mustVerify")
         Actions.mustVerify()
         // FIXME: trotz mustVerify landet man im then(categories) ?!
         return
@@ -64,7 +65,7 @@ export default class InitScene extends Component {
       let catStored = await this.saveCategories(categories)
       
       // then switch to Main scene
-      console.log("Actions.main")
+      // console.log("Actions.main")
       this.setState({progressText: 'Lade Maske..'})
       Actions.main()
     

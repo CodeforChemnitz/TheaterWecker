@@ -8,7 +8,9 @@ import push from './push'
 // Django Systemverwaltung: https://theaterwecker.de/admin/
 // local self documented API: http://127.0.0.1:8000/api/
 
-const url = 'http://127.0.0.1:8000/api'
+// const url = 'http://127.0.0.1:8000/api'
+// const url = 'https://theaterwecker.de/api'
+const url = 'http://192.168.178.105:8000/api'
 
 const api = {
   // getInstitutions: () => {
@@ -68,6 +70,7 @@ const api = {
 
 
 const get = function(route) {
+  console.log("GET " + url + '/' + route)
   return fetch(url + '/' + route)
     .then((response) => response.json())
     .then((responseJson) => {
