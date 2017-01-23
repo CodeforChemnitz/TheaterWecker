@@ -23,14 +23,14 @@ class RadioButtonGroup extends Component {
     }
     return (
       <View style={styles.radioButtonGroup}>
-      { this.props.options.map((itm) => {
+      { !!this.props.options ? this.props.options.map((itm) => {
           console.log("Cat itm", itm)
           return <Button
               key={"id" + itm.id} 
               title={itm.name} 
               color={this.state.active == itm.id ? this.props.colorActive : this.props.color} 
               onPress={() => this.props.onChange(itm.id)} />
-      } ) }
+      } ) : null }
       </View>
     )
   }

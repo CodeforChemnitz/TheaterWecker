@@ -20,7 +20,7 @@ export default class ErrorScene extends Component {
                 <View style={[styles.p, styles.baseText, styles.center]}>
                     <Text>Uh oh da ist was passiert.</Text>
                 </View>
-                <Button title="Zurück" onPress={Actions.main} />
+                <Button title="Zurück" onPress={() => Actions.main({type: ActionConst.BACK})} />
             </View>
 
             <Footer/>

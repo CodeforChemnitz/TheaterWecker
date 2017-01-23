@@ -34,12 +34,12 @@ export default class InitScene extends Component {
     })
 
     .then((verified) => {
-      if (!verified) {
-        console.log("mustVerify")
-        Actions.mustVerify()
-        // FIXME: trotz mustVerify landet man im then(categories) ?!
-        return
-      } 
+      // if (!verified) {
+      //   console.log("mustVerify")
+      //   Actions.mustVerify()
+      //   // FIXME: trotz mustVerify landet man im then(categories) ?!
+      //   return
+      // } 
       console.log("getCategories")
       this.setState({progressText: 'Hole Kategorien..'})
       return new Promise((resolve, reject) =>  {
