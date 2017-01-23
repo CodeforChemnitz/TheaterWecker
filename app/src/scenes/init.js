@@ -17,58 +17,66 @@ export default class InitScene extends Component {
     }
   }
 
-  componentDidMount() {
+  initPush() {
     // first init OneSignal
     this.setState({progressText: 'Initialisiere Push Dienst..'})
-    new Promise((resolve, reject) =>  {
+    return new Promise((resolve, reject) =>  {
       console.log("init push")
       push.init(resolve, reject)
-    })
-    
-    .then((done) => {
-      console.log("registerDevice")
-      this.setState({progressText: 'Registriere Gerät..'})
-      return new Promise((resolve, reject) =>  {
-        api.registerDevice(resolve, reject)
-      })
-    })
+    })    
+  }
 
-    .then((verified) => {
-      // if (!verified) {
-      //   console.log("mustVerify")
-      //   Actions.mustVerify()
-      //   // FIXME: trotz mustVerify landet man im then(categories) ?!
-      //   return
-      // } 
-      console.log("getCategories")
-      this.setState({progressText: 'Hole Kategorien..'})
-      return new Promise((resolve, reject) =>  {
-        api.getCategories(resolve, reject)
-      })
+  registerDevice() {
+    console.log("registerDevice")
+    this.setState({progressText: 'Registriere Gerät..'})
+    return new Promise((resolve, reject) =>  {
+      api.registerDevice(resolve, reject)
     })
+  }
 
-    .then((categories) =>  {
-      console.log("AsyncStorage.setItem", categories)
-      this.setState({progressText: 'Cache Kategorien..'})
-      return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories))
+  getCategories() {
+    console.log("getCategories")
+    this.setState({progressText: 'Hole Kategorien..'})
+    return new Promise((resolve, reject) =>  {
+      api.getCategories(resolve, reject)
     })
+  }
 
-    // then switch to Main scene
-    .then(() =>  {
+  saveCategories(categories) {
+    console.log("AsyncStorage.setItem", categories)
+    this.setState({progressText: 'Cache Kategorien..'})
+    return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories))
+  }
+
+  async componentDidMount() {
+    try {
+      let done = await this.initPush()
+      let verified = await this.registerDevice()
+
+      if (!verified) {
+        console.log("mustVerify")
+        Actions.mustVerify()
+        // FIXME: trotz mustVerify landet man im then(categories) ?!
+        return
+      } 
+
+      let categories = await this.getCategories()
+      let catStored = await this.saveCategories(categories)
+      
+      // then switch to Main scene
       console.log("Actions.main")
       this.setState({progressText: 'Lade Maske..'})
       Actions.main()
-    })
     
     // show errors
-    .catch((error) => {
+    } catch(error) {
       console.error(error)
       this.setState({
         progressText: `Es ist ein Fehler aufgetreten: ${error}`,
         skipButton: true,
         spinner: false
       })
-    })
+    }
   }
 
   render() {
