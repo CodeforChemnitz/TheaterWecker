@@ -18,9 +18,11 @@ export default class ErrorScene extends Component {
 
             <View style={styles.card}>
                 <View style={[styles.p, styles.baseText]}>
-                    <Text style={styles.center}>Uh oh da ist was passiert.</Text>
+                    <Text style={styles.center}>
+                        { 'text' in this.props ? this.props.text : 'Uh oh da ist was passiert.' }
+                    </Text>
                 </View>
-                <Button title="Zurück" onPress={() => Actions.main({type: ActionConst.BACK})} />
+                { 'back' in this.props && !!this.props.back ? <Button title="Zurück" onPress={() => Actions.main({type: ActionConst.BACK})} /> : null }
             </View>
 
             <Footer/>

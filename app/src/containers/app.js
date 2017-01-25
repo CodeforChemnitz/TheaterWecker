@@ -6,9 +6,12 @@ import Fehler from '../scenes/error'
 import Success from '../scenes/success'
 import MustVerify from '../scenes/mustVerify'
 import EventNotification from '../scenes/eventNotification'
+import Webview from '../scenes/webview'
 
 
 // Router Tuorial: https://github.com/aksonov/react-native-router-flux/blob/master/docs/MINI_TUTORIAL.md
+// Ext. Tutorial: https://github.com/aksonov/react-native-router-flux/blob/master/docs/DETAILED_EXAMPLE.md
+//     Code dazu: https://github.com/aksonov/react-native-router-flux/blob/master/Example/Example.js
 
 export default class App extends Component {
     constructor(props) {
@@ -26,6 +29,7 @@ export default class App extends Component {
           <Scene key="mustVerify" component={MustVerify}  type={ActionConst.REPLACE} />
           <Scene key="eventNotification" component={EventNotification} type={ActionConst.REPLACE} />
         </Scene>
+        <Scene key="webview" component={Webview} />
       </Router>
     )
   }

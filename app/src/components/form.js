@@ -9,6 +9,7 @@ import api from '../lib/api'
 class RadioButtonGroup extends Component {
   constructor(props) {
     super(props)
+    console.log("Init RBG ", this.state.active)
     this.state = {
       active: this.props.value
     }
