@@ -28,8 +28,8 @@ export default class App extends Component {
           <Scene key="success" component={Success} title="Success" />
           <Scene key="mustVerify" component={MustVerify}  type={ActionConst.REPLACE} />
           <Scene key="eventNotification" component={EventNotification} type={ActionConst.REPLACE} />
+          <Scene key="webview" hideNavBar={false} component={Webview} />
         </Scene>
-        <Scene key="webview" component={Webview} />
       </Router>
     )
   }

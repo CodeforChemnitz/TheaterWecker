@@ -4,6 +4,7 @@ import styles from '../styles'
 // import ParsedText from 'react-native-parsed-text'
 import Form from '../components/form'
 import Footer from '../components/footer'
+import Header from '../components/header'
 import api from '../lib/api'
 
 // Parsed Text: https://github.com/taskrabbit/react-native-parsed-text
@@ -24,15 +25,9 @@ export default class MainScene extends Component {
   }
 
   render() {
-    let styleImg = {width: 25, height: 25, backgroundColor: 'transparent'}
     return (
         <ScrollView style={styles.body}>
-            <View style={styles.titleCont}>
-                <Image source={require('../../images/performing-arts.png')} style={styleImg} />
-                <Image source={require('../../images/alarm-clock.png')} style={styleImg} />
-                <Text style={[styles.title]}>TheaterWecker</Text>
-            </View>
-
+            <Header/>
             <View style={styles.card}>
                 <View style={styles.p}>
                     <Text style={[styles.baseText, styles.center]}>

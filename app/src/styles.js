@@ -46,7 +46,8 @@ export default StyleSheet.create({
         // fontFamily: 'Open Sans'
     },
     link: {
-        textDecorationStyle: 'solid'
+        textDecorationStyle: 'solid',
+        fontWeight: 'bold'
     },
     horizontal: {
         marginTop: 10,
@@ -100,5 +101,14 @@ export default StyleSheet.create({
     radioButtonGroup: {
         flexDirection: 'column', 
         justifyContent: 'space-between'
+    },
+
+
+    initContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
     }
+
 })

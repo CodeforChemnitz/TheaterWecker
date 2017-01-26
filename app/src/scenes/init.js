@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Text, Button, ActivityIndicator, AsyncStorage } from 'react-native'
 import { Actions } from 'react-native-router-flux';
+import Header from '../components/header'
 import push from '../lib/push'
 import api from '../lib/api'
+import styles from '../styles'
 
 // AsyncStorage: https://facebook.github.io/react-native/docs/asyncstorage.html
 // ActivityIndicator: https://facebook.github.io/react-native/docs/activityindicator.html
@@ -82,20 +84,18 @@ export default class InitScene extends Component {
 
   render() {
     return (
-        <View style={styles.container}>
-            <Text>{this.state.progressText}</Text>
-            {this.state.skipButton ? <Button title="Überspringen" onPress={Actions.main} /> : null}
-            {this.state.spinner ? <ActivityIndicator size="large" /> : null }
+        <View style={[styles.body, {flex: 1, flexDirection: 'column'}]}>
+          <View style={{flex: 1}}>
+            <Header/>
+          </View>
+          <View style={{flex: 5}}>
+              <View style={styles.initContainer}>
+                <Text style={{marginBottom: 20}}>{this.state.progressText}</Text>
+                {this.state.skipButton ? <Button title="Überspringen" onPress={Actions.main} /> : null}
+                {this.state.spinner ? <ActivityIndicator size="large" /> : null }
+              </View>
+          </View>
         </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-})

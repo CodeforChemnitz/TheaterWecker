@@ -47,6 +47,16 @@
           <key>NSExceptionAllowsInsecureHTTPLoads</key>
           <true/>
         </dict>
+        <key>codeforchemnitz.de</key>
+        <dict>
+          <key>NSExceptionAllowsInsecureHTTPLoads</key>
+          <true/>
+        </dict>
+        <key>emojione.com</key>
+        <dict>
+          <key>NSExceptionAllowsInsecureHTTPLoads</key>
+          <true/>
+        </dict>
       </dict>
     </dict>
     <key>UIAppFonts</key>

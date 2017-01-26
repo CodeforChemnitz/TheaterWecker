@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, AsyncStorage } from 'react-native'
 import { CheckBox } from 'react-native-elements'
+import { Actions } from 'react-native-router-flux'
 import styles from '../styles'
 import api from '../lib/api'
 
@@ -9,7 +10,6 @@ import api from '../lib/api'
 class RadioButtonGroup extends Component {
   constructor(props) {
     super(props)
-    console.log("Init RBG ", this.state.active)
     this.state = {
       active: this.props.value
     }
@@ -19,6 +19,18 @@ class RadioButtonGroup extends Component {
       this.setState({active: nextProps.value})
     }
   }
+  async uncheck(id) {
+    const index = this.state.active.indexOf(id)
+    await this.setState({active: [
+        ...this.state.active.slice(0, index),
+        ...this.state.active.slice(index + 1)
+    ]})
+    this.props.onChange(this.state.active)
+  }
+  async check(id) {
+    await this.setState({active: [ ...this.state.active, id ]})
+    this.props.onChange(this.state.active)
+  }
   render() {
     if (typeof this.props.options == 'undefined') {
       return null
@@ -27,13 +39,15 @@ class RadioButtonGroup extends Component {
       <View style={styles.radioButtonGroup}>
       { !!this.props.options ? this.props.options.map((itm) => {
           // console.log("Cat itm", itm)
+          const checked = typeof this.state.active == "object" && this.state.active.indexOf(itm.id) !== -1
           return <CheckBox
             center
+            key={"k"+itm.id}
             title={itm.name}
             checkedIcon='dot-circle-o'
             uncheckedIcon='circle-o'
-            checked={typeof this.state.active == "array" && this.state.active.indexOf(itm.id) !== -1} 
-            onPress={() => this.props.onChange(itm.id)}
+            checked={checked} 
+            onPress={checked ? () => this.uncheck(itm.id) : () => this.check(itm.id)}
           />
       } ) : null }
       </View>
