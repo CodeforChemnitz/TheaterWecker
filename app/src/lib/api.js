@@ -60,6 +60,7 @@ const api = {
         deviceId: uuid,
         categories
     }))
+    console.log("subscribe ok", ok)
     if (ok) {
       success()
     } else {
@@ -83,6 +84,7 @@ const get = function(route) {
 }
 
 const post = function(route, body) {
+  console.log("POST " + url + '/' + route, body)
   return fetch(url + '/' + route, {
       method: 'POST',
       headers: {
@@ -99,6 +101,7 @@ const post = function(route, body) {
 }
 
 const postAndGetJson = function(route, body) {
+  console.log("POST " + url + '/' + route, body)
   return fetch(url + '/' + route, {
       method: 'POST',
       headers: {
