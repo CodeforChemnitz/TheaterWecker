@@ -1,9 +1,10 @@
 # Created by .ignore support plugin (hsz.mobi)
 
-.pyc
+*.pyc
 __pycache__
 .idea
 /static
+celerybeat.pid
 
 /db.sqlite3
 
