@@ -29,7 +29,9 @@ def device(request):
 
     user_device, created = UserDevice.objects.get_or_create(device_id=device_id)
     if not created:
-        return HttpResponse(json.dumps({'verified': user_device.verified}), status=200)
+        if not user_device.verified:
+            send_verify_notification.delay(device_id, 0)
+        return HttpResponse(json.dumps({'verified': user_device.verified}), status=200, content_type="application/json")
 
     user_device.verified = False
     user_device.verification_key = uuid4().hex
@@ -38,7 +40,7 @@ def device(request):
     # TODO send verification key via PUSH
     send_verify_notification.delay(device_id, 0)
 
-    return HttpResponse("", status=201)
+    return HttpResponse(json.dumps({}), status=201, content_type="application/json")
 
 
 def verify(request, key=None):
