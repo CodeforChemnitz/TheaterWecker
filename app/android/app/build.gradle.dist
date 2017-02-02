@@ -96,7 +96,6 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
         manifestPlaceholders = [
-            manifestApplicationId: "${applicationId}",
             onesignal_app_id: "YOUR_ONESIGNAL_ID",
             onesignal_google_project_number: "YOUR_GOOGLE_PROJECT_NUMBER"]
     }
@@ -130,9 +129,8 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-vector-icons')
     compile project(':react-native-onesignal')
-    compile project(':react-native-mqtt')
-    compile project(':react-native-device-info')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
@@ -145,5 +143,3 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
-// from FCM setup guide
-apply plugin: 'com.google.gms.google-services'
