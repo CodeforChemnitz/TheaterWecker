@@ -54,12 +54,11 @@ export default class InitScene extends Component {
     try {
       let done = await this.initPush()
       let verified = await this.registerDevice()
-      verified = true // TEST!!
+      // verified = true // TEST!!
 
       if (!verified) {
         // console.log("mustVerify")
         Actions.mustVerify()
-        // FIXME: trotz mustVerify landet man im then(categories) ?!
         return
       } 
 
@@ -73,7 +72,7 @@ export default class InitScene extends Component {
     
     // show errors
     } catch(error) {
-      console.error(error)
+      // console.error(error)
       this.setState({
         progressText: `Es ist ein Fehler aufgetreten: ${error}`,
         skipButton: true,

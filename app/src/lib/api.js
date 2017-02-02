@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Platform } from 'react-native'
 import push from './push'
+import settings from '../settings'
 
 // Network fetch: https://facebook.github.io/react-native/releases/next/docs/network.html
 
@@ -8,9 +9,7 @@ import push from './push'
 // Django Systemverwaltung: https://theaterwecker.de/admin/
 // local self documented API: http://127.0.0.1:8000/api/
 
-// const url = 'http://127.0.0.1:8000/api'
-// const url = 'https://theaterwecker.de/api'
-const url = 'http://192.168.178.105:8000/api'
+const url = settings.url
 
 const api = {
   // getInstitutions: () => {
@@ -19,7 +18,7 @@ const api = {
 
   // curl https://theaterwecker.de/api/categories/
   getCategories(success, error) {
-    let cat = get('categories')
+    let cat = getJson('categories')
     if (cat !== false) {
       success(cat)
     } else {
@@ -44,14 +43,13 @@ const api = {
       })    
   },
 
-  verifyDevice(urlWithHash, success, error) {
-    fetch(urlWithHash, {
-      method: 'GET',
-    }).then(() => {
+  verifyDevice(key, success, error) {
+    const ok = get('verify/' + key)
+    if (ok) {
       success()
-    }).catch((msg) => {
-      error(msg)
-    })
+    } else {
+      error('verifyDevice')
+    }
   },
 
   subscribe(categories, success, error) {
@@ -69,8 +67,19 @@ const api = {
   }
 }
 
-
 const get = function(route) {
+  console.log("GET " + url + '/' + route)
+  return fetch(url + '/' + route)
+    .then((data) => {
+      return data
+    })
+    .catch((error) => {
+      console.log(error)
+      return false
+    })
+}
+
+const getJson = function(route) {
   console.log("GET " + url + '/' + route)
   return fetch(url + '/' + route)
     .then((response) => response.json())

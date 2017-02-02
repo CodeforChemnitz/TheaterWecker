@@ -1,5 +1,6 @@
 import OneSignal from 'react-native-onesignal'
 import { Actions } from 'react-native-router-flux';
+import api from '../lib/api'
 
 // -- OneSignal API --
 // Plugin: https://github.com/geektimecoil/react-native-onesignal
@@ -23,18 +24,28 @@ let push = {
         console.log('PushToken = ', device.pushToken)
         success()
       },
-      onNotificationOpened: (message, data, isActive) => {
-        console.log('MESSAGE: ', message)
-        console.log('DATA: ', data)
-        console.log('ISACTIVE: ', isActive)
-        // Do whatever you want with the objects here
-        // _navigator.to('main.post', data.title, { // If applicable
-        //  article: {
-        //    title: data.title,
-        //    link: data.url,
-        //    action: data.actionSelected
-        //  }
-        // });
+      onNotificationOpened: async (message, data, isActive) => {
+        try {
+          verification = message.notification.payload.additionalData.verification
+        } catch(e) {
+          // doesnt exist.. should not happen
+          Actions.error({text: 'Kein Verification-Key erhalten'})
+          console.warn("onNotificationOpened message", message)
+          return
+        }
+        
+        try {
+          await new Promise((resolve, reject) =>  {
+            api.verifyDevice(verification, resolve, reject)
+          })
+          
+          Actions.main()
+
+        } catch(e) {
+          // Promise rejected?! Show error
+          Actions.error({text: 'VerifyDevice schlug fehl'})
+        }
+        
       }
     });
   },

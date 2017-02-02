@@ -26,7 +26,22 @@ cp ios/TheaterWecker/AppDelegate.m.dist ios/TheaterWecker/AppDelegate.m
 Replace `ONESIGNAL_APP_ID_GOES_HERE` in `AppDelegate.m` with the OneSignal App-ID.
 
 
+### OneSignal iOS Setup
+
+https://github.com/geektimecoil/react-native-onesignal#android-installation
+
+**Setup app/build.gradle**
+
+```
+cp android/app/build.gradle.dist android/app/build.gradle
+```
+
+Replace `YOUR_ONESIGNAL_ID` and `YOUR_GOOGLE_PROJECT_NUMBER` with the OneSignal stuff.
+
+
 ## Run it!
+
+### iOS
 
 To run your app on iOS:
 - `cd /Users/ronny/dev/oklabs/TheaterWecker/app`
@@ -36,6 +51,8 @@ To run your app on iOS:
 
 - Open `./TheaterWecker/app/ios/TheaterWecker.xcodeproj` in Xcode
 - Hit the Run button
+
+### Android
 
 To run your app on Android:
 
