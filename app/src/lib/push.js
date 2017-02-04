@@ -26,26 +26,31 @@ let push = {
       },
       onNotificationOpened: async (message, data, isActive) => {
         try {
-          verification = message.notification.payload.additionalData.verification
-        } catch(e) {
-          // doesnt exist.. should not happen
-          Actions.error({text: 'Kein Verification-Key erhalten'})
-          console.warn("onNotificationOpened message", message)
-          return
-        }
-        
-        try {
-          await new Promise((resolve, reject) =>  {
-            api.verifyDevice(verification, resolve, reject)
-          })
-          
-          Actions.main()
+          if (Object.hasOwnProperty.call(message.notification.payload.additionalData, 'verification')) {
+            let verification = message.notification.payload.additionalData.verification
+            try {
+              await new Promise((resolve, reject) =>  {
+                api.verifyDevice(verification, resolve, reject)
+              })
+              
+              Actions.main()
 
+            } catch(e) {
+              // Promise rejected?! Show error
+              throw 'VerifyDevice schlug fehl'
+            }
+          } else if (Object.hasOwnProperty.call(message.notification.payload.additionalData, 'performance')) {
+            Actions.eventNotification({
+              performance: message.notification.payload.additionalData.performance,
+              back: true
+            })
+          } else {
+            throw 'Kein Daten erhalten'
+          }
         } catch(e) {
-          // Promise rejected?! Show error
-          Actions.error({text: 'VerifyDevice schlug fehl'})
+          console.debug(e)
+          Actions.error({ back: true })
         }
-        
       }
     });
   },

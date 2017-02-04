@@ -22,8 +22,8 @@ export default class ErrorScene extends Component {
                         { 'text' in this.props ? this.props.text : 'Uh oh da ist was passiert.' }
                     </Text>
                 </View>
-                { 'back' in this.props && !!this.props.back ? <Button title="Zurück" onPress={() => Actions.main({type: ActionConst.BACK})} /> : null }
             </View>
+            { 'back' in this.props && !!this.props.back ? <Button title="Zurück" onPress={() => Actions.main({type: ActionConst.BACK})} /> : null }
 
             <Footer/>
         </ScrollView>
