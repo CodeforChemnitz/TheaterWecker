@@ -12,3 +12,5 @@ celerybeat.pid
 /theaterwecker/settings_raven.py
 /theaterwecker/settings_prod.py
 /theaterwecker/settings_one_signal.py
+/theaterwecker/settings_dev.py
+/celerybeat.pid

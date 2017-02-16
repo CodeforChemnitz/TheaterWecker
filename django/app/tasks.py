@@ -247,10 +247,12 @@ def send_push_notifications(devices, performance_id):
                 'de': performance.description,
             },
             'data': {
-                'title': performance.title,
-                'begin': performance.begin.isoformat(),
-                'location': performance.location.__str__(),
-                'description': performance.description,
+                'performance': {
+                    'title': performance.title,
+                    'begin': performance.begin.isoformat(),
+                    'location': performance.location.__str__(),
+                    'description': performance.description,
+                }
             }
         }
         requests.post(

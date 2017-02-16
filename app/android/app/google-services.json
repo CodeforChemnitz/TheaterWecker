@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "1064193377200",
+    "firebase_url": "https://theaterwecker.firebaseio.com",
+    "project_id": "theaterwecker",
+    "storage_bucket": "theaterwecker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064193377200:android:3a64a65d12d901cc",
+        "android_client_info": {
+          "package_name": "de.codeforchemnitz.theaterwecker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064193377200-vls7ob6fbodm4lqvth039o9dma8698g1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
