@@ -1,11 +1,24 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, Button, AsyncStorage } from 'react-native'
-import { CheckBox } from 'react-native-elements'
+import { View, Text, TextInput, Button, AsyncStorage, TouchableOpacity } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import styles from '../styles'
 import api from '../lib/api'
 
 // Button: https://facebook.github.io/react-native/docs/button.html
+
+class Selection extends Component {
+  render() {
+    return (
+      <TouchableOpacity onPress={this.props.onPress}>
+        <View style={[styles.radioButtonGroupItem, this.props.checked && styles.radioButtonGroupItemActive]}>
+          <Text style={[styles.radioButtonGroupItemText, this.props.checked && styles.radioButtonGroupItemTextActive]}>
+            {this.props.title}
+          </Text>
+        </View>
+      </TouchableOpacity>
+      )
+  }
+}
 
 class RadioButtonGroup extends Component {
   constructor(props) {
@@ -40,12 +53,9 @@ class RadioButtonGroup extends Component {
       { !!this.props.options ? this.props.options.map((itm) => {
           // console.log("Cat itm", itm)
           const checked = typeof this.state.active == "object" && this.state.active.indexOf(itm.id) !== -1
-          return <CheckBox
-            center
+          return <Selection
             key={"k"+itm.id}
             title={itm.name}
-            checkedIcon='dot-circle-o'
-            uncheckedIcon='circle-o'
             checked={checked} 
             onPress={checked ? () => this.uncheck(itm.id) : () => this.check(itm.id)}
           />

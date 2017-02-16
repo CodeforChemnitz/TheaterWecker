@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 export default StyleSheet.create({
     body: {
         // fontFamily: 'Open Sans',
         // color: '#333'
-        marginTop: 20,
+        marginTop: Platform.iOS ? 20 : 0,
         backgroundColor: '#f0f0f0'
     },
     title: {
@@ -99,10 +99,35 @@ export default StyleSheet.create({
     },
 
     radioButtonGroup: {
+        flex: 1,
         flexDirection: 'column', 
-        justifyContent: 'space-between'
+        // justifyContent: 'space-between',
+        // flexWrap: 'wrap'
+    },
+    radioButtonGroupItem: {
+        flex: 1,
+        // flexGrow: 1,
+        margin: 5,
+        // lineHeight: 25,
+        // borderWidth: 1,
+        // borderColor: 'lightgray',
+        backgroundColor: '#f0f0f0',
+        padding: 10,
+        paddingLeft: 15,
+        paddingRight: 15,
+        // height: 30,
+    },
+    radioButtonGroupItemActive: {
+        backgroundColor: '#FF717F'
     },
 
+    radioButtonGroupItemText: {
+        color: 'black',
+        textAlign: 'center'
+    },
+    radioButtonGroupItemTextActive: {
+        // color: 'white'
+    },
 
     initContainer: {
         flex: 1,
