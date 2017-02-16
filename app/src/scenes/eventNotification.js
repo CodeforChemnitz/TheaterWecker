@@ -13,31 +13,33 @@ export default class EventNotificationScene extends Component {
     super(props)
   }
   render() {
-    let styleImg = {width: 50, height: 50, backgroundColor: 'transparent'}
+    let styleImg = size => ( {width: size, height: size, backgroundColor: 'transparent'} )
+    
     return (
         <ScrollView style={styles.body}>
             <View style={styles.titleCont}>
-                <Image source={require('../../images/ok.png')} style={styleImg} />
+                <Image source={require('../../images/ok.png')} style={styleImg(50)} />
             </View>
 
             <View style={styles.card}>
-                <View style={styles.p}>
-                    <Text style={[styles.baseText, styles.center]}>
-Liebe/r Theaterenthusiast/in,
-
-es gibt noch Karten für die Aufführung "{this.props.performance.title}".
-
-Ort: {this.props.performance.location}
-Zeitpunkt: {this.props.performance.begin ? this.props.performance.begin : moment().format('d.M.YYYY h:mm') }}
-
-Beschreibung:
-
-{this.props.performance.description}
-
-Wir wünschen dir viel Spaß!
-
-Liebe Grüße,
-dein TheaterWecker Team
+                <View style={[styles.p, {margin: 10}]}>
+                    <Text style={[styles.baseText, styles.center, styles.eventTitle]}>
+                        {this.props.performance.title}
+                    </Text>
+                    <Text style={[styles.baseText, styles.center, styles.eventLocation]}>{this.props.performance.location}</Text>
+                    <View style={{flex:1, flexDirection:'row', justifyContent:'center'}}>
+                        <Image source={require('../../images/alarm-clock.png')} style={[styleImg(25), {marginRight:5}]} />
+                        <Text style={[styles.baseText, styles.center, styles.eventLocation]}>
+                            {this.props.performance.begin 
+                                ? moment(this.props.performance.begin).format('hh:mm') 
+                                : moment().format('hh:mm') }
+                        </Text>
+                    </View>
+                    <Text style={[styles.baseText, styles.eventDescription]}>
+                        {this.props.performance.description}
+                    </Text>
+                    <Text style={[styles.baseText, {}]}>
+                        Wir wünschen dir viel Spaß!
                     </Text>
                 </View>
             </View>

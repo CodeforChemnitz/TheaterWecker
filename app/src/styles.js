@@ -109,6 +109,22 @@ export default StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+
+    eventTitle: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        marginTop: 10, 
+        marginBottom: 20
+    },
+    eventLocation: {
+        fontSize: 20,
+        marginBottom: 10
+    },
+    eventDescription: {
+        marginTop: 20,
+        marginBottom: 20,
+        fontSize: 16
     }
 
 })

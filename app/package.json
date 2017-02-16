@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "android-reconnect": "adb devices && adb reverse tcp:8081 tcp:8081"
   },
   "dependencies": {
     "moment": "^2.17.1",
