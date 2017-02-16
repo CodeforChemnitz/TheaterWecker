@@ -72,7 +72,7 @@ def subscribe(request):
     data = json.loads(request.body.decode("utf-8") )
 
     try:
-        user_device = UserDevice.objects.get(device_id=data.get('id', ''))
+        user_device = UserDevice.objects.get(device_id=data.get('deviceId', ''))
     except UserDevice.DoesNotExist:
         return HttpResponse("", status=404)
 
