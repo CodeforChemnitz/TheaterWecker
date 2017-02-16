@@ -44,8 +44,6 @@ let push = {
               performance: message.notification.payload.additionalData.performance,
               back: true
             })
-          } else {
-            throw 'Kein Daten erhalten'
           }
         } catch(e) {
           console.debug(e)
