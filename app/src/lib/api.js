@@ -64,6 +64,16 @@ const api = {
     } else {
       error('subscribe')
     }
+  },
+
+  getSubscriptions(success, error) {
+    const uuid = push.getDeviceId();
+    let subs = getJson('subscriptions/' + uuid)
+    if (subs !== false) {
+      success(subs)
+    } else {
+      error('getSubscripions')
+    }
   }
 }
 

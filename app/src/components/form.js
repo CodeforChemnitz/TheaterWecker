@@ -73,11 +73,13 @@ export default class Form extends Component {
       categoriesPossible: [],
       categoryIdsSelected: []
     }
-    AsyncStorage.getItem('@TW:categories')
-      .then((data) => {
+    Promise.all([AsyncStorage.getItem('@TW:categories'), AsyncStorage.getItem('@TW:subscriptions')])
+      .then(([cats, subs]) => {
         try {
-          // console.log("Categories!", data)
-          this.setState({categoriesPossible: JSON.parse(data)})
+          console.log("Categories!", cats)
+          console.log("Subscriptions!", subs)
+          this.setState({categoriesPossible: JSON.parse(cats)})
+          this.setState({categoryIdsSelected: JSON.parse(subs)})
         } catch(error) {
           console.error(error)
         }

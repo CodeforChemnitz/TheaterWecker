@@ -44,10 +44,23 @@ export default class InitScene extends Component {
     })
   }
 
+  getSubscriptions() {
+    // console.log("getSubscriptions")
+    this.setState({progressText: 'Hole Subscriptions..'})
+    return new Promise((resolve, reject) =>  {
+      api.getSubscriptions(resolve, reject)
+    })
+  }
+
   saveCategories(categories) {
     console.log("AsyncStorage.setItem", categories)
     this.setState({progressText: 'Cache Kategorien..'})
     return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories))
+  }
+  saveSubscriptions(subscriptions) {
+    console.log("AsyncStorage.setItem", subscriptions)
+    this.setState({progressText: 'Cache Subscriptions..'})
+    return AsyncStorage.setItem('@TW:subscriptions', JSON.stringify(subscriptions))
   }
 
   async componentDidMount() {
@@ -64,6 +77,9 @@ export default class InitScene extends Component {
 
       let categories = await this.getCategories()
       let catStored = await this.saveCategories(categories)
+
+      let subscriptions = await this.getSubscriptions()
+      let subsStored = await this.saveSubscriptions(subscriptions)
       
       // then switch to Main scene
       // console.log("Actions.main")
