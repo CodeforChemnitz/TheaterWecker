@@ -102,10 +102,7 @@ export default class Form extends Component {
     return (
         <View style={styles.form}>
             <View style={styles.p}>
-                <Text style={styles.center}>Benachrichtige mich</Text>
-            </View>
-            <View style={styles.p}>
-                <Text style={styles.center}>vor Beginn der Veranstaltung - sofern noch Plätze frei sind - für</Text>
+                <Text style={[styles.formTextTop, styles.center]}>Benachrichtige mich für</Text>
             </View>
             <View style={styles.buttonGroup}>
               <RadioButtonGroup 
@@ -114,7 +111,7 @@ export default class Form extends Component {
                   onChange={(categoryIdsSelected) => this.setState({categoryIdsSelected})} />
             </View>
             <View style={styles.p}>
-                <Text style={styles.center}>via Push-Benachrichtigung</Text>
+                <Text style={[styles.formText, styles.center]}>via Push-Benachrichtigung</Text>
             </View>
             <View style={styles.buttonGroup}>
                 <Button 

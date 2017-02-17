@@ -150,6 +150,13 @@ export default StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
         fontSize: 16
+    },
+    formTextTop: {
+        fontSize: 20
+    },
+    formText: {
+        fontSize: 16,
+        marginBottom: 10
     }
 
 })
