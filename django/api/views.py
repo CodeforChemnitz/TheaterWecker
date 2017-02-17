@@ -4,6 +4,7 @@ from uuid import uuid4
 
 import statsd, json, logging, re
 from django.http.response import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
@@ -97,13 +98,21 @@ def subscribe(request):
             })
             return HttpResponse("", status=500)
 
-
     c.incr('subscribe.device.success')
     c.gauge('total.subscribe.device.success', 1, delta=True)
     return HttpResponse("", status=201)
+
 
 def categories(request):
     city = City.objects.get(name='Chemnitz')
     inst = Institution.objects.filter(city=city).first()
     cats = Category.objects.filter(institution=inst).values('id', 'name')
     return HttpResponse(json.dumps(list(cats)), content_type="application/json")
+
+
+def subscriptions(request, device_id):
+
+    user_device = get_object_or_404(UserDevice, device_id=device_id, verified=True)
+    cat_ids = CategoryNotification.objects.filter(device=user_device).values_list('category', flat=True)
+
+    return HttpResponse(json.dumps(list(cat_ids)), content_type="application/json")
