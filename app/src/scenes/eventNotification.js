@@ -31,8 +31,8 @@ export default class EventNotificationScene extends Component {
                         <Image source={require('../../images/alarm-clock.png')} style={[styleImg(25), {marginRight:5}]} />
                         <Text style={[styles.baseText, styles.center, styles.eventLocation]}>
                             {this.props.performance.begin 
-                                ? moment(this.props.performance.begin).format('hh:mm') 
-                                : moment().format('hh:mm') }
+                                ? moment(this.props.performance.begin).format('HH:mm') 
+                                : moment().format('HH:mm') }
                         </Text>
                     </View>
                     <Text style={[styles.baseText, styles.eventDescription]}>
