@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
+from app.admin_actions import verification_test_push_notifications, performance_test_push_notifications
 from app.models import *
 
 
@@ -14,6 +15,10 @@ class UserEmailAdmin(admin.ModelAdmin):
 class UserDeviceAdmin(admin.ModelAdmin):
     list_filter = ['verified']
     readonly_fields = ['updated', 'created']
+    actions = [
+        verification_test_push_notifications,
+        performance_test_push_notifications,
+    ]
 
 
 @admin.register(City)
