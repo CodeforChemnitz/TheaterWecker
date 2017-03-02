@@ -22,6 +22,7 @@ class Selection extends Component {
 
 class RadioButtonGroup extends Component {
   constructor(props) {
+    console.log("RadioButtonGroup props", props)
     super(props)
     this.state = {
       active: this.props.value
@@ -50,7 +51,7 @@ class RadioButtonGroup extends Component {
     }
     return (
       <View style={styles.radioButtonGroup}>
-      { !!this.props.options ? this.props.options.map((itm) => {
+      { !!this.props.options && typeof this.props.options.map == 'function' ? this.props.options.map((itm) => {
           // console.log("Cat itm", itm)
           const checked = typeof this.state.active == "object" && this.state.active.indexOf(itm.id) !== -1
           return <Selection
