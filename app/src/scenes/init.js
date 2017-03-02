@@ -19,53 +19,45 @@ export default class InitScene extends Component {
     }
   }
 
-  initPush() {
+  async initPush() {
     // first init OneSignal
     this.setState({progressText: 'Initialisiere Push Dienst..'})
-    return new Promise((resolve, reject) =>  {
-      console.log("init push")
-      push.init(resolve, reject)
-    })    
+    console.log("init push")
+    return await push.init(resolve, reject)
   }
 
-  registerDevice() {
+  async registerDevice() {
     // console.log("registerDevice")
     this.setState({progressText: 'Registriere Gerät..'})
-    return new Promise((resolve, reject) =>  {
-      api.registerDevice(resolve, reject)
-    })
+    return await api.registerDevice()
   }
 
   getCategories() {
     // console.log("getCategories")
     this.setState({progressText: 'Hole Kategorien..'})
-    return new Promise((resolve, reject) =>  {
-      api.getCategories(resolve, reject)
-    })
+    return api.getCategories()
   }
 
   getSubscriptions() {
     // console.log("getSubscriptions")
     this.setState({progressText: 'Hole Subscriptions..'})
-    return new Promise((resolve, reject) =>  {
-      api.getSubscriptions(resolve, reject)
-    })
+    return api.getSubscriptions()
   }
 
-  saveCategories(categories) {
+  async saveCategories(categories) {
     console.log("AsyncStorage.setItem", categories)
     this.setState({progressText: 'Cache Kategorien..'})
-    return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories))
+    return await AsyncStorage.setItem('@TW:categories', JSON.stringify(categories))
   }
-  saveSubscriptions(subscriptions) {
+  async saveSubscriptions(subscriptions) {
     console.log("AsyncStorage.setItem", subscriptions)
     this.setState({progressText: 'Cache Subscriptions..'})
-    return AsyncStorage.setItem('@TW:subscriptions', JSON.stringify(subscriptions))
+    return await AsyncStorage.setItem('@TW:subscriptions', JSON.stringify(subscriptions))
   }
 
   async componentDidMount() {
     try {
-      let done = await this.initPush()
+      let done = this.initPush()
       let verified = await this.registerDevice()
       // verified = true // TEST!!
 
@@ -75,11 +67,11 @@ export default class InitScene extends Component {
         return
       } 
 
-      let categories = await this.getCategories()
-      let catStored = await this.saveCategories(categories)
+      let categories = this.getCategories()
+      // let catStored = this.saveCategories(categories)
 
-      let subscriptions = await this.getSubscriptions()
-      let subsStored = await this.saveSubscriptions(subscriptions)
+      // let subscriptions = this.getSubscriptions()
+      // let subsStored = this.saveSubscriptions(subscriptions)
       
       // then switch to Main scene
       // console.log("Actions.main")
@@ -88,7 +80,7 @@ export default class InitScene extends Component {
     
     // show errors
     } catch(error) {
-      // console.error(error)
+      console.warn(error)
       this.setState({
         progressText: `Es ist ein Fehler aufgetreten: ${error}`,
         skipButton: true,

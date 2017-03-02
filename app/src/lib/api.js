@@ -12,99 +12,116 @@ import settings from '../settings'
 const url = settings.url
 
 const api = {
-  // getInstitutions: () => {
-  //   return getAsJson('institutions')
-  // },
-
-  // curl https://theaterwecker.de/api/categories/
-  getCategories(success, error) {
-    let cat = getJson('categories')
+  /**
+   * Test: curl https://theaterwecker.de/api/categories/
+   */
+  getCategories() {
+    const cat = getJson('categories')
     if (cat !== false) {
-      success(cat)
+      return cat
     } else {
-      error('getCategories')
+      throw "keine Kategorien gefunden"
     }
   },
 
-  // curl -X POST -d 'c732c64a-9409-4af3-b0dc-1ff93e084b5b' https://theaterwecker.de/api/device/
-  registerDevice(success, error) {
+  /**
+   * Ermittelt den Verifizierungs-Status eines Gerätes
+   * 
+   * Status 200: Device gibts schon, Verify-Status als JSON-Response
+   * Status 201: Device gabs noch nicht, Response ist leer
+   * Status 400: UUID falsches Format oder sonstwas kaputt
+   * 
+   * Test: curl -X POST -d 'c732c64a-9409-4af3-b0dc-1ff93e084b5b' https://theaterwecker.de/api/device/
+   * 
+   * @param {*} success 
+   * @param {*} error 
+   */
+  async registerDevice() {
     const uuid = push.getDeviceId();
-    const status = postAndGetJson('device', uuid)
-      .then((status) => {
-        console.log("registerDevice status:", status)
-        if (!!status && 'verified' in status) {
-          success(status.verified)
-        } else {
-          error('registerDevice')  
-        }
-      })
-      .catch((errorMsg) => {
-        error(errorMsg)
-      })    
-  },
-
-  verifyDevice(key, success, error) {
-    const ok = get('verify/' + key)
-    if (ok) {
-      success()
+    const response = await post('device', uuid)
+    const json = await response.json()
+    console.log("registerDevice response:", response)
+    if (response.status == 200 && 'verified' in json) {
+      return json.verified  // Gerät war schon bekannt
+    } else if (response.status == 201) {
+      return false // Gerät neu
     } else {
-      error('verifyDevice')
+      throw 'registerDevice fehlgeschlagen'
     }
   },
 
-  subscribe(categories, success, error) {
+  /**
+   * Bestätigt ein Gerät zum Backend mit Verify-Code aus Push
+   * 
+   * Status 200: alles okay
+   * Status 400: alles kaputt
+   * 
+   * @param {*} key 
+   * @param {*} success 
+   * @param {*} error 
+   */
+  verifyDevice(key) {
+    const response = get('verify/' + key)
+    if (response.status == 200) {
+      return true
+    } else {
+      throw 'verifyDevice fehlgeschlagen'
+    }
+  },
+
+  /**
+   * Kategorien abonnieren
+   * 
+   * Status 201: Speichern erfolgreich
+   * Status 404: Device unbekannt
+   * Status 412: Device nicht verifiziert
+   * Status 500: Speichern fehlgeschlagen
+   * 
+   * @param {*} categories 
+   */
+  subscribe(categories) {
     const uuid = push.getDeviceId();
-    let ok = post('subscribe', JSON.stringify({
+    const response = post('subscribe', JSON.stringify({
         deviceId: uuid,
         categories
     }))
-    console.log("subscribe ok", ok)
-    if (ok) {
-      success()
+    console.log("subscribe response", response)
+    if (response.status === 201) {
+      return true
     } else {
-      error('subscribe')
+      throw 'subscribe fehlgeschlagen'
     }
   },
 
+  /**
+   * Abonnierte Kategorien holen
+   * 
+   * @param {*} success 
+   * @param {*} error 
+   */
   getSubscriptions(success, error) {
     const uuid = push.getDeviceId();
-    let subs = getJson('subscriptions/' + uuid)
-    if (subs !== false) {
-      success(subs)
-    } else {
-      error('getSubscripions')
-    }
+    return getJson('subscriptions/' + uuid)
   }
 }
 
-const get = function(route) {
+
+async function get(route) {
   console.log("GET " + url + '/' + route)
-  return fetch(url + '/' + route)
-    .then((data) => {
-      return data
-    })
-    .catch((error) => {
-      console.log(error)
-      return false
-    })
+  const response = await fetch(url + '/' + route)
+  console.log("get",route,"response", response)
+  return response
 }
 
-const getJson = function(route) {
-  console.log("GET " + url + '/' + route)
-  return fetch(url + '/' + route)
-    .then((response) => response.json())
-    .then((responseJson) => {
-      return responseJson
-    })
-    .catch((error) => {
-      console.log(error)
-      return false
-    })
+async function getJson(route) {
+  const response = await get(route)
+  console.log("getJson", route, "response", response)
+  return await response.json()
 }
 
-const post = function(route, body) {
+async function post(route, body) {
   console.log("POST " + url + '/' + route, body)
-  return fetch(url + '/' + route, {
+  await fetch(url + '/' + route, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -112,35 +129,7 @@ const post = function(route, body) {
       },
       body
     })
-    .then((data) => { return true })
-    .catch((error) => {
-      console.log(error)
-      return false
-    })
-}
-
-const postAndGetJson = function(route, body) {
-  console.log("POST " + url + '/' + route, body)
-  return fetch(url + '/' + route, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body
-    })
-    .then((response) => {
-      console.log("postAndGetJson response", response)
-      return response.json()
-    })
-    .then((responseJson) => {
-      console.log("postAndGetJson responseJson", responseJson)
-      return responseJson
-    })
-    .catch((error) => {
-      console.log(error)
-      return false
-    })
+  return true
 }
 
 export default api
