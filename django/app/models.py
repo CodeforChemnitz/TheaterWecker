@@ -154,4 +154,9 @@ class CategoryNotification(models.Model):
 
     def __str__(self):
         check = "✓" if self.verified else "×"
-        return '%s ~> %s ~> %s (%s)' % (self.user, self.interval, self.category.name, check)
+        u = 'N/A'
+        if self.user:
+            u = self.user
+        elif self.device:
+            u = self.device
+        return '%s ~> %s ~> %s (%s)' % (u, self.interval, self.category.name, check)
