@@ -18,83 +18,121 @@ export default class InitScene extends Component {
       spinner: true
     }
   }
+  showProgress = true
 
-  initPush() {
+  initPush(routingStatus) {
     // first init OneSignal
-    this.setState({progressText: 'Initialisiere Push Dienst..'})
-    return new Promise((resolve, reject) =>  {
-      console.log("init push")
-      push.init(resolve, reject)
-    })    
+    return new Promise((resolve, reject) => {
+      console.log("initPush")
+      if (this.showProgress) this.setState({progressText: 'Initialisiere Push Dienst..'})
+      return push.init(resolve, reject, routingStatus)
+    })
   }
 
   registerDevice() {
     // console.log("registerDevice")
-    this.setState({progressText: 'Registriere Gerät..'})
-    return new Promise((resolve, reject) =>  {
-      api.registerDevice(resolve, reject)
+    return new Promise((resolve, reject) => {
+      console.log("registerDevice")
+      if (this.showProgress) this.setState({progressText: 'Registriere Gerät..'})
+      return api.registerDevice(resolve, reject)
     })
   }
 
   getCategories() {
     // console.log("getCategories")
-    this.setState({progressText: 'Hole Kategorien..'})
-    return new Promise((resolve, reject) =>  {
-      api.getCategories(resolve, reject)
+    return new Promise((resolve, reject) => {
+      console.log("getCategories")
+      if (this.showProgress) this.setState({progressText: 'Hole Kategorien..'})
+      return api.getCategories(resolve, reject)
     })
   }
 
   getSubscriptions() {
-    // console.log("getSubscriptions")
-    this.setState({progressText: 'Hole Subscriptions..'})
-    return new Promise((resolve, reject) =>  {
-      api.getSubscriptions(resolve, reject)
+    return new Promise((resolve, reject) => {
+      console.log("getSubscriptions")
+      if (this.showProgress) this.setState({progressText: 'Hole Subscriptions..'})
+      return api.getSubscriptions(resolve, reject)
     })
   }
 
-  saveCategories(categories) {
-    console.log("AsyncStorage.setItem", categories)
-    this.setState({progressText: 'Cache Kategorien..'})
-    return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories))
+  saveCategories(categories, showText) {
+    // return new Promise((resolve, reject) => {
+      console.log("AsyncStorage.setItem", categories)
+      if (this.showProgress) this.setState({progressText: 'Cache Kategorien..'})
+      return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories)) //, reject)
+    // })
   }
+
   saveSubscriptions(subscriptions) {
-    console.log("AsyncStorage.setItem", subscriptions)
-    this.setState({progressText: 'Cache Subscriptions..'})
-    return AsyncStorage.setItem('@TW:subscriptions', JSON.stringify(subscriptions))
+    // return new Promise((resolve, reject) => {
+      console.log("AsyncStorage.setItem", subscriptions)
+      if (this.showProgress) this.setState({progressText: 'Cache Subscriptions..'})
+      return AsyncStorage.setItem('@TW:subscriptions', JSON.stringify(subscriptions)) //, reject)
+    // })
   }
 
-  async componentDidMount() {
-    try {
-      let done = await this.initPush()
-      let verified = await this.registerDevice()
-      // verified = true // TEST!!
-
-      if (!verified) {
-        // console.log("mustVerify")
-        Actions.mustVerify()
-        return
-      } 
-
-      let categories = await this.getCategories()
-      let catStored = await this.saveCategories(categories)
-
-      let subscriptions = await this.getSubscriptions()
-      let subsStored = await this.saveSubscriptions(subscriptions)
-      
-      // then switch to Main scene
-      // console.log("Actions.main")
-      this.setState({progressText: 'Lade Maske..'})
-      Actions.main()
-    
-    // show errors
-    } catch(error) {
-      // console.error(error)
-      this.setState({
-        progressText: `Es ist ein Fehler aufgetreten: ${error}`,
-        skipButton: true,
-        spinner: false
+  componentDidMount() {
+    let routingStatus = {
+      routeChanged: false, 
+      canRouteToMain: false, 
+      disableProgress: () => {
+        this.showProgress = false
+      }}
+    this.initPush(routingStatus) // Promise
+      .then(() => { 
+        console.log("%c registerDevice geht los", "color: blue")
+        return this.registerDevice()
       })
-    }
+
+      .then((verified) => {
+        console.log("%c registerDevice sollte durch sein", "color: blue")
+        // verified = true // TEST!!
+        if (!verified) {
+          // console.log("mustVerify")
+          Actions.mustVerify()
+          return Promise.resolve()
+        }
+        console.log("%c mit getCategories weiter", "color: blue")
+        return this.getCategories()
+      })
+
+      .then((categories) => {
+        console.log("%c getCategories sollte durch sein, mit saveCategories weiter", "color: blue")
+        return this.saveCategories(categories)
+      })
+
+      .then((catStored) => {
+        console.log("%c saveCategories sollte durch sein, mit getSubscriptions weiter", "color: blue")
+        return this.getSubscriptions()
+      })
+
+      .then((subscriptions) => {
+        console.log("%c getSubscriptions sollte durch sein, mit saveSubscriptions weiter", "color: blue")
+        this.saveSubscriptions(subscriptions)
+      })
+
+      .then((subsStored) => {
+        console.log("%c saveSubscriptions sollte durch sein", "color: blue")
+        // hier warten ob evtl. Push verarbeitet werden kann
+        if (this.showProgress) this.setState({progressText: 'Initialisierung abgeschlossen'})
+        // then switch to Main scene
+        if (!routingStatus.routeChanged) {
+          routingStatus.canRouteToMain = true  // ab hier wieder okay
+          console.log("Actions.main")
+          if (this.showProgress) this.setState({progressText: 'Lade Maske..'})
+          Actions.main()
+        }
+      })
+      
+      // show errors
+      .catch((error) => {
+        console.warn(error)
+        if (this.showProgress) this.setState({
+          progressText: `Es ist ein Fehler aufgetreten: ${error}`,
+          skipButton: true,
+          spinner: false
+        })
+      })
   }
 
   render() {
@@ -105,7 +143,7 @@ export default class InitScene extends Component {
           </View>
           <View style={{flex: 5}}>
               <View style={styles.initContainer}>
-                <Text style={{marginBottom: 20}}>{this.state.progressText}</Text>
+                <Text style={{margin: 20}}>{this.state.progressText}</Text>
                 {this.state.skipButton ? <Button title="Überspringen" onPress={Actions.main} /> : null}
                 {this.state.spinner ? <ActivityIndicator size="large" /> : null }
               </View>

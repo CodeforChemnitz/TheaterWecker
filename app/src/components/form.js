@@ -9,6 +9,7 @@ import api from '../lib/api'
 class Selection extends Component {
   render() {
     return (
+      <View>
       <TouchableOpacity onPress={this.props.onPress}>
         <View style={[styles.radioButtonGroupItem, this.props.checked && styles.radioButtonGroupItemActive]}>
           <Text style={[styles.radioButtonGroupItemText, this.props.checked && styles.radioButtonGroupItemTextActive]}>
@@ -16,12 +17,14 @@ class Selection extends Component {
           </Text>
         </View>
       </TouchableOpacity>
+      </View>
       )
   }
 }
 
 class RadioButtonGroup extends Component {
   constructor(props) {
+    console.log("RadioButtonGroup props", props)
     super(props)
     this.state = {
       active: this.props.value
@@ -50,7 +53,7 @@ class RadioButtonGroup extends Component {
     }
     return (
       <View style={styles.radioButtonGroup}>
-      { !!this.props.options ? this.props.options.map((itm) => {
+      { !!this.props.options && typeof this.props.options.map == 'function' ? this.props.options.map((itm) => {
           // console.log("Cat itm", itm)
           const checked = typeof this.state.active == "object" && this.state.active.indexOf(itm.id) !== -1
           return <Selection
@@ -89,9 +92,9 @@ export default class Form extends Component {
   onSubscribe() {
     console.log("Abonnieren..", this.state)
     new Promise((resolve, reject) =>  {
-        api.subscribe(this.state.categoryIdsSelected, resolve, reject)
+        return api.subscribe(this.state.categoryIdsSelected, resolve, reject)
       }).then(() => {
-        Actions.success()
+        Actions.success({text: 'Wir werden dich bei der nächsten Gelegenheit benachrichtigen.'})
       }).catch((error) => {
         console.error("onSubscribe", error)
         Actions.error()
