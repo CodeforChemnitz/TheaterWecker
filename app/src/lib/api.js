@@ -36,18 +36,29 @@ const api = {
    * @param {*} success 
    * @param {*} error 
    */
-  async registerDevice() {
+  registerDevice(success, error) {
     const uuid = push.getDeviceId();
-    const response = await post('device', uuid)
-    const json = await response.json()
-    console.log("registerDevice response:", response)
-    if (response.status == 200 && 'verified' in json) {
-      return json.verified  // Gerät war schon bekannt
-    } else if (response.status == 201) {
-      return false // Gerät neu
-    } else {
-      throw 'registerDevice fehlgeschlagen'
-    }
+    return post('device', uuid) // Promise
+      .then((response) => { 
+        console.log("registerDevice response:", response)
+        if (!response) {
+          error('registerDevice fehlgeschlagen')
+        }
+        if (response.status == 200) {
+          return response.json() // Promise
+        } else if (response.status == 201) {
+          success(false)  // fulfil, Gerät neu
+        } else {
+          error('registerDevice fehlgeschlagen')
+        }
+      })
+      .then((json) => { 
+        console.log("registerDevice JSON:", json.verified)
+        success(json.verified)
+      })
+      .catch(() => { 
+        return false  // error(false)?
+      })
   },
 
   /**
@@ -59,14 +70,18 @@ const api = {
    * @param {*} key 
    * @param {*} success 
    * @param {*} error 
+   * @return Promise
    */
-  verifyDevice(key) {
-    const response = get('verify/' + key)
-    if (response.status == 200) {
-      return true
-    } else {
-      throw 'verifyDevice fehlgeschlagen'
-    }
+  verifyDevice(key, success, error) {
+    return get('verify/' + key)
+      .then((response) => {
+        console.log("verifyDevice response", response)
+        if (response.status == 200) {
+          success(true)
+        } else {
+          error('verifyDevice fehlgeschlagen')
+        }
+      })
   },
 
   /**
@@ -78,19 +93,22 @@ const api = {
    * Status 500: Speichern fehlgeschlagen
    * 
    * @param {*} categories 
+   * @return Promise
    */
-  subscribe(categories) {
+  subscribe(categories, success, error) {
     const uuid = push.getDeviceId();
-    const response = post('subscribe', JSON.stringify({
-        deviceId: uuid,
-        categories
-    }))
-    console.log("subscribe response", response)
-    if (response.status === 201) {
-      return true
-    } else {
-      throw 'subscribe fehlgeschlagen'
-    }
+    return post('subscribe', JSON.stringify({
+          deviceId: uuid,
+          categories
+      }))
+      .then((response) => {
+        console.log("subscribe response", response)
+        if (response.status === 201) {
+          success(true)
+        } else {
+          error('subscribe fehlgeschlagen')
+        }
+      })
   },
 
   /**
@@ -98,6 +116,7 @@ const api = {
    * 
    * @param {*} success 
    * @param {*} error 
+   * @return Promise
    */
   getSubscriptions(success, error) {
     const uuid = push.getDeviceId();
@@ -106,22 +125,21 @@ const api = {
 }
 
 
-async function get(route) {
+function get(route) {
   console.log("GET " + url + '/' + route)
-  const response = await fetch(url + '/' + route)
-  console.log("get",route,"response", response)
-  return response
+  return fetch(url + '/' + route)
 }
 
-async function getJson(route) {
-  const response = await get(route)
-  console.log("getJson", route, "response", response)
-  return await response.json()
+function getJson(route) {
+  return get(route)
+    .then((reponse) => { 
+      return response.json()
+    })
 }
 
-async function post(route, body) {
+function post(route, body) {
   console.log("POST " + url + '/' + route, body)
-  await fetch(url + '/' + route, {
+  return fetch(url + '/' + route, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -129,7 +147,6 @@ async function post(route, body) {
       },
       body
     })
-  return true
 }
 
 export default api

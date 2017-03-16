@@ -16,7 +16,7 @@ import api from '../lib/api'
 
 let push = {
   deviceId: '',
-  init(success, error) {
+  init(success, error, routingStatus) {
     OneSignal.configure({
       onIdsAvailable: (device) => {
         this.deviceId = device.userId
@@ -32,8 +32,10 @@ let push = {
               await new Promise((resolve, reject) =>  {
                 api.verifyDevice(verification, resolve, reject)
               })
-              
-              Actions.main()
+              if (routingStatus.canRouteToMain) {
+                Actions.main()
+                routingStatus.routeChanged = true
+              }
 
             } catch(e) {
               // Promise rejected?! Show error
@@ -44,6 +46,7 @@ let push = {
               performance: message.notification.payload.additionalData.performance,
               back: true
             })
+            routingStatus.routeChanged = true
           }
         } catch(e) {
           console.debug(e)
