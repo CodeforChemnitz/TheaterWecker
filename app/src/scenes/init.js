@@ -19,17 +19,17 @@ export default class InitScene extends Component {
     }
   }
 
-  async initPush() {
+  initPush(routingStatus) {
     // first init OneSignal
     this.setState({progressText: 'Initialisiere Push Dienst..'})
     console.log("init push")
-    return await push.init(resolve, reject)
+    return push.init(resolve, reject, routingStatus)
   }
 
-  async registerDevice() {
+  registerDevice() {
     // console.log("registerDevice")
     this.setState({progressText: 'Registriere Gerät..'})
-    return await api.registerDevice()
+    return api.registerDevice()
   }
 
   getCategories() {
@@ -44,21 +44,24 @@ export default class InitScene extends Component {
     return api.getSubscriptions()
   }
 
-  async saveCategories(categories) {
+  saveCategories(categories) {
     console.log("AsyncStorage.setItem", categories)
     this.setState({progressText: 'Cache Kategorien..'})
-    return await AsyncStorage.setItem('@TW:categories', JSON.stringify(categories))
+    return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories))
   }
-  async saveSubscriptions(subscriptions) {
+  saveSubscriptions(subscriptions) {
     console.log("AsyncStorage.setItem", subscriptions)
     this.setState({progressText: 'Cache Subscriptions..'})
-    return await AsyncStorage.setItem('@TW:subscriptions', JSON.stringify(subscriptions))
+    return AsyncStorage.setItem('@TW:subscriptions', JSON.stringify(subscriptions))
   }
 
   async componentDidMount() {
     try {
-      let done = this.initPush()
+      let routingStatus = {routeChanged: false, canRouteToMain: false}
+      let done = await this.initPush(routingStatus)
+      console.log("%c registerDevice geht los", "color: blue")
       let verified = await this.registerDevice()
+      console.log("%c registerDevice sollte durch sein", "color: blue")
       // verified = true // TEST!!
 
       if (!verified) {
@@ -67,16 +70,22 @@ export default class InitScene extends Component {
         return
       } 
 
-      let categories = this.getCategories()
-      // let catStored = this.saveCategories(categories)
+      let categories = await this.getCategories()
+      let catStored = await this.saveCategories(categories)
 
-      // let subscriptions = this.getSubscriptions()
-      // let subsStored = this.saveSubscriptions(subscriptions)
+      let subscriptions = await this.getSubscriptions()
+      let subsStored = await this.saveSubscriptions(subscriptions)
       
+      // hier warten ob evtl. Push verarbeitet werden kann
+      this.setState({progressText: 'Initialisierung abgeschlossen'})
+
       // then switch to Main scene
-      // console.log("Actions.main")
-      this.setState({progressText: 'Lade Maske..'})
-      Actions.main()
+      if (!routingStatus.routeChanged) {
+        routingStatus.canRouteToMain = true  // ab hier wieder okay
+        console.log("Actions.main")
+        this.setState({progressText: 'Lade Maske..'})
+        Actions.main()
+      }
     
     // show errors
     } catch(error) {
@@ -97,7 +106,7 @@ export default class InitScene extends Component {
           </View>
           <View style={{flex: 5}}>
               <View style={styles.initContainer}>
-                <Text style={{marginBottom: 20}}>{this.state.progressText}</Text>
+                <Text style={{margin: 20}}>{this.state.progressText}</Text>
                 {this.state.skipButton ? <Button title="Überspringen" onPress={Actions.main} /> : null}
                 {this.state.spinner ? <ActivityIndicator size="large" /> : null }
               </View>
