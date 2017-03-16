@@ -14,14 +14,25 @@ const url = settings.url
 const api = {
   /**
    * Test: curl https://theaterwecker.de/api/categories/
+   * 
+   * @param {*} success
+   * @param {*} error
+   * @return Promise
    */
-  getCategories() {
-    const cat = getJson('categories')
-    if (cat !== false) {
-      return cat
-    } else {
-      throw "keine Kategorien gefunden"
-    }
+  getCategories(success, error) {
+    // console.log("getCategories func call")
+    return new Promise((successInner, rejectInner) => {
+        return getJson('categories', successInner)
+      })
+      .then((cat) => {
+        // console.log("getCategories then", cat)
+        if (cat !== false) {
+          // console.log("getCategories success", cat)
+          success(cat)
+        } else {
+          error("keine Kategorien gefunden")
+        }
+      })
   },
 
   /**
@@ -120,7 +131,12 @@ const api = {
    */
   getSubscriptions(success, error) {
     const uuid = push.getDeviceId();
-    return getJson('subscriptions/' + uuid)
+    return new Promise((successInner, rejectInner) => {
+        return getJson('subscriptions/' + uuid, successInner)
+      })
+      .then((json) => {
+        success(json)
+      })
   }
 }
 
@@ -130,10 +146,11 @@ function get(route) {
   return fetch(url + '/' + route)
 }
 
-function getJson(route) {
+function getJson(route, success) {
   return get(route)
-    .then((reponse) => { 
-      return response.json()
+    .then((response) => { 
+      console.log("getJson",route,"response",response)
+      success(response.json())
     })
 }
 

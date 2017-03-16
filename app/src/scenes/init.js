@@ -21,81 +21,112 @@ export default class InitScene extends Component {
 
   initPush(routingStatus) {
     // first init OneSignal
-    this.setState({progressText: 'Initialisiere Push Dienst..'})
-    console.log("init push")
-    return push.init(resolve, reject, routingStatus)
+    return new Promise((resolve, reject) => {
+      console.log("initPush")
+      this.setState({progressText: 'Initialisiere Push Dienst..'})
+      return push.init(resolve, reject, routingStatus)
+    })
   }
 
   registerDevice() {
     // console.log("registerDevice")
-    this.setState({progressText: 'Registriere Gerät..'})
-    return api.registerDevice()
+    return new Promise((resolve, reject) => {
+      console.log("registerDevice")
+      this.setState({progressText: 'Registriere Gerät..'})
+      return api.registerDevice(resolve, reject)
+    })
   }
 
   getCategories() {
     // console.log("getCategories")
-    this.setState({progressText: 'Hole Kategorien..'})
-    return api.getCategories()
+    return new Promise((resolve, reject) => {
+      console.log("getCategories")
+      this.setState({progressText: 'Hole Kategorien..'})
+      return api.getCategories(resolve, reject)
+    })
   }
 
   getSubscriptions() {
-    // console.log("getSubscriptions")
-    this.setState({progressText: 'Hole Subscriptions..'})
-    return api.getSubscriptions()
+    return new Promise((resolve, reject) => {
+      console.log("getSubscriptions")
+      this.setState({progressText: 'Hole Subscriptions..'})
+      return api.getSubscriptions(resolve, reject)
+    })
   }
 
   saveCategories(categories) {
-    console.log("AsyncStorage.setItem", categories)
-    this.setState({progressText: 'Cache Kategorien..'})
-    return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories))
+    // return new Promise((resolve, reject) => {
+      console.log("AsyncStorage.setItem", categories)
+      this.setState({progressText: 'Cache Kategorien..'})
+      return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories)) //, reject)
+    // })
   }
+
   saveSubscriptions(subscriptions) {
-    console.log("AsyncStorage.setItem", subscriptions)
-    this.setState({progressText: 'Cache Subscriptions..'})
-    return AsyncStorage.setItem('@TW:subscriptions', JSON.stringify(subscriptions))
+    // return new Promise((resolve, reject) => {
+      console.log("AsyncStorage.setItem", subscriptions)
+      this.setState({progressText: 'Cache Subscriptions..'})
+      return AsyncStorage.setItem('@TW:subscriptions', JSON.stringify(subscriptions)) //, reject)
+    // })
   }
 
-  async componentDidMount() {
-    try {
-      let routingStatus = {routeChanged: false, canRouteToMain: false}
-      let done = await this.initPush(routingStatus)
-      console.log("%c registerDevice geht los", "color: blue")
-      let verified = await this.registerDevice()
-      console.log("%c registerDevice sollte durch sein", "color: blue")
-      // verified = true // TEST!!
-
-      if (!verified) {
-        // console.log("mustVerify")
-        Actions.mustVerify()
-        return
-      } 
-
-      let categories = await this.getCategories()
-      let catStored = await this.saveCategories(categories)
-
-      let subscriptions = await this.getSubscriptions()
-      let subsStored = await this.saveSubscriptions(subscriptions)
-      
-      // hier warten ob evtl. Push verarbeitet werden kann
-      this.setState({progressText: 'Initialisierung abgeschlossen'})
-
-      // then switch to Main scene
-      if (!routingStatus.routeChanged) {
-        routingStatus.canRouteToMain = true  // ab hier wieder okay
-        console.log("Actions.main")
-        this.setState({progressText: 'Lade Maske..'})
-        Actions.main()
-      }
-    
-    // show errors
-    } catch(error) {
-      console.warn(error)
-      this.setState({
-        progressText: `Es ist ein Fehler aufgetreten: ${error}`,
-        skipButton: true,
-        spinner: false
+  componentDidMount() {
+    let routingStatus = {routeChanged: false, canRouteToMain: false}
+    this.initPush(routingStatus) // Promise
+      .then(() => { 
+        console.log("%c registerDevice geht los", "color: blue")
+        return this.registerDevice()
       })
-    }
+
+      .then((verified) => {
+        console.log("%c registerDevice sollte durch sein", "color: blue")
+        // verified = true // TEST!!
+        if (!verified) {
+          // console.log("mustVerify")
+          Actions.mustVerify()
+          return Promise.resolve()
+        }
+        console.log("%c mit getCategories weiter", "color: blue")
+        return this.getCategories()
+      })
+
+      .then((categories) => {
+        console.log("%c getCategories sollte durch sein, mit saveCategories weiter", "color: blue")
+        return this.saveCategories(categories)
+      })
+
+      .then((catStored) => {
+        console.log("%c saveCategories sollte durch sein, mit getSubscriptions weiter", "color: blue")
+        return this.getSubscriptions()
+      })
+
+      .then((subscriptions) => {
+        console.log("%c getSubscriptions sollte durch sein, mit saveSubscriptions weiter", "color: blue")
+        this.saveSubscriptions(subscriptions)
+      })
+
+      .then((subsStored) => {
+        console.log("%c saveSubscriptions sollte durch sein", "color: blue")
+        // hier warten ob evtl. Push verarbeitet werden kann
+        this.setState({progressText: 'Initialisierung abgeschlossen'})
+        // then switch to Main scene
+        if (!routingStatus.routeChanged) {
+          routingStatus.canRouteToMain = true  // ab hier wieder okay
+          console.log("Actions.main")
+          this.setState({progressText: 'Lade Maske..'})
+          Actions.main()
+        }
+      })
+      
+      // show errors
+      .catch((error) => {
+        console.warn(error)
+        this.setState({
+          progressText: `Es ist ein Fehler aufgetreten: ${error}`,
+          skipButton: true,
+          spinner: false
+        })
+      })
   }
 
   render() {
