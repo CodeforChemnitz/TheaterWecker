@@ -41,9 +41,11 @@ export default class EventNotificationScene extends Component {
                     <Text style={[styles.baseText, {}]}>
                         Wir wünschen dir viel Spaß!
                     </Text>
+                    { 'back' in this.props && !!this.props.back 
+                        ? <View style={{marginTop: 20}}><Button title="Zurück" onPress={() => Actions.main()} /></View>
+                        : null }
                 </View>
             </View>
-            { 'back' in this.props && !!this.props.back ? <Button title="Zurück" onPress={() => Actions.main()} /> : null }
             
 
             <Footer/>

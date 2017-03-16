@@ -35,6 +35,7 @@ let push = {
               if (routingStatus.canRouteToMain) {
                 Actions.main()
                 routingStatus.routeChanged = true
+                routingStatus.disableProgress()
               }
 
             } catch(e) {
@@ -47,6 +48,7 @@ let push = {
               back: true
             })
             routingStatus.routeChanged = true
+            routingStatus.disableProgress()
           }
         } catch(e) {
           console.debug(e)

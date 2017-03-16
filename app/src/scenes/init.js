@@ -18,12 +18,13 @@ export default class InitScene extends Component {
       spinner: true
     }
   }
+  showProgress = true
 
   initPush(routingStatus) {
     // first init OneSignal
     return new Promise((resolve, reject) => {
       console.log("initPush")
-      this.setState({progressText: 'Initialisiere Push Dienst..'})
+      if (this.showProgress) this.setState({progressText: 'Initialisiere Push Dienst..'})
       return push.init(resolve, reject, routingStatus)
     })
   }
@@ -32,7 +33,7 @@ export default class InitScene extends Component {
     // console.log("registerDevice")
     return new Promise((resolve, reject) => {
       console.log("registerDevice")
-      this.setState({progressText: 'Registriere Gerät..'})
+      if (this.showProgress) this.setState({progressText: 'Registriere Gerät..'})
       return api.registerDevice(resolve, reject)
     })
   }
@@ -41,7 +42,7 @@ export default class InitScene extends Component {
     // console.log("getCategories")
     return new Promise((resolve, reject) => {
       console.log("getCategories")
-      this.setState({progressText: 'Hole Kategorien..'})
+      if (this.showProgress) this.setState({progressText: 'Hole Kategorien..'})
       return api.getCategories(resolve, reject)
     })
   }
@@ -49,15 +50,15 @@ export default class InitScene extends Component {
   getSubscriptions() {
     return new Promise((resolve, reject) => {
       console.log("getSubscriptions")
-      this.setState({progressText: 'Hole Subscriptions..'})
+      if (this.showProgress) this.setState({progressText: 'Hole Subscriptions..'})
       return api.getSubscriptions(resolve, reject)
     })
   }
 
-  saveCategories(categories) {
+  saveCategories(categories, showText) {
     // return new Promise((resolve, reject) => {
       console.log("AsyncStorage.setItem", categories)
-      this.setState({progressText: 'Cache Kategorien..'})
+      if (this.showProgress) this.setState({progressText: 'Cache Kategorien..'})
       return AsyncStorage.setItem('@TW:categories', JSON.stringify(categories)) //, reject)
     // })
   }
@@ -65,13 +66,18 @@ export default class InitScene extends Component {
   saveSubscriptions(subscriptions) {
     // return new Promise((resolve, reject) => {
       console.log("AsyncStorage.setItem", subscriptions)
-      this.setState({progressText: 'Cache Subscriptions..'})
+      if (this.showProgress) this.setState({progressText: 'Cache Subscriptions..'})
       return AsyncStorage.setItem('@TW:subscriptions', JSON.stringify(subscriptions)) //, reject)
     // })
   }
 
   componentDidMount() {
-    let routingStatus = {routeChanged: false, canRouteToMain: false}
+    let routingStatus = {
+      routeChanged: false, 
+      canRouteToMain: false, 
+      disableProgress: () => {
+        this.showProgress = false
+      }}
     this.initPush(routingStatus) // Promise
       .then(() => { 
         console.log("%c registerDevice geht los", "color: blue")
@@ -108,12 +114,12 @@ export default class InitScene extends Component {
       .then((subsStored) => {
         console.log("%c saveSubscriptions sollte durch sein", "color: blue")
         // hier warten ob evtl. Push verarbeitet werden kann
-        this.setState({progressText: 'Initialisierung abgeschlossen'})
+        if (this.showProgress) this.setState({progressText: 'Initialisierung abgeschlossen'})
         // then switch to Main scene
         if (!routingStatus.routeChanged) {
           routingStatus.canRouteToMain = true  // ab hier wieder okay
           console.log("Actions.main")
-          this.setState({progressText: 'Lade Maske..'})
+          if (this.showProgress) this.setState({progressText: 'Lade Maske..'})
           Actions.main()
         }
       })
@@ -121,7 +127,7 @@ export default class InitScene extends Component {
       // show errors
       .catch((error) => {
         console.warn(error)
-        this.setState({
+        if (this.showProgress) this.setState({
           progressText: `Es ist ein Fehler aufgetreten: ${error}`,
           skipButton: true,
           spinner: false
