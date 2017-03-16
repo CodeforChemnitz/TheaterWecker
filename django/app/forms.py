@@ -11,3 +11,7 @@ class SubscribeForm(forms.Form):
         self.category_choices = kwargs.pop('category_choices')
         super(SubscribeForm, self).__init__(*args, **kwargs)
         self.fields['categories'].choices = self.category_choices
+
+
+class UnsubscribeForm(forms.Form):
+    email = forms.EmailField(required=True)

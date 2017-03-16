@@ -36,7 +36,8 @@ def send_verify_email(email, scheme, host, count):
         user_email.mail("Willkommen beim TheaterWecker", render_to_string('email/welcome.email', {
             'verification_link': "%s://%s%s" % (scheme, host, reverse('app:verify', kwargs={
                 'key': user_email.verification_key
-            }))
+            })),
+            'unsubscribe_link': "%s://%s%s?email=%s" % (scheme, host, reverse('app:unsubscribe'), email),
         }))
         c.incr('send_verify_email')
         c.gauge('total.send_verify_email', 1, delta=True)
@@ -52,6 +53,28 @@ def send_verify_email(email, scheme, host, count):
         c.incr('send_verify_email.failed')
         logger.error('Sending email failed', exc_info=True)
         send_verify_email.apply_async((email, scheme, host, count + 1), countdown=(2 ** count) * 60)
+
+
+@shared_task
+def send_unsubscribe_email(email, count):
+    c = statsd.StatsClient('localhost', 8125)
+    try:
+        user_email = UserEmail.objects.get(email=email)
+        user_email.mail("Auf Wiedersehen", render_to_string('email/unsubscribe.email', {}))
+        c.incr('send_unsubscribe_email')
+        c.gauge('total.send_unsubscribe_email', 1, delta=True)
+    except UserEmail.DoesNotExist as e:
+        c.incr('send_unsubscribe_email.no_user')
+        logger.error('User does not exist', exc_info=True)
+        return
+    except Exception as e:
+        if count > 9:
+            c.incr('send_unsubscribe_email.failed_finally')
+            logger.error('Sending email failed after 10th retry', exc_info=True)
+            return
+        c.incr('send_unsubscribe_email.failed')
+        logger.error('Sending email failed', exc_info=True)
+        send_verify_email.apply_async((email, count + 1), countdown=(2 ** count) * 60)
 
 
 @shared_task

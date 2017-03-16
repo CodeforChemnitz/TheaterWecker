@@ -5,9 +5,9 @@ import statsd
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, get_object_or_404
 
-from app.forms import SubscribeForm
+from app.forms import SubscribeForm, UnsubscribeForm
 from app.models import CategoryNotification, Category, UserEmail, Institution, City
-from app.tasks import send_verify_email
+from app.tasks import send_verify_email, send_unsubscribe_email
 
 # import the logging library
 import logging
@@ -45,17 +45,15 @@ def subscribe(request):
         user_email.verification_key = uuid4().hex
         user_email.save()
         interval = form.cleaned_data.get('interval')
+        CategoryNotification.objects.filter(user=user_email).delete()
         for category in form.cleaned_data.get('categories', []):
             try:
-                notification,_ = CategoryNotification.objects.get_or_create(
+                CategoryNotification.objects.create(
                     user=user_email,
                     category=Category.objects.get(id=category),
                     verified=False,
-                    defaults={'interval': interval}
+                    interval=interval
                 )
-                if notification.interval != interval:
-                    notification.interval = interval
-                    notification.save()
 
             except Exception as e:
                 logger.error('Saving category failed', exc_info=True, extra={
@@ -145,3 +143,29 @@ def verify(request, key=None):
                 'text': 'Danke, wir werden dich bei der nächsten Gelegenheit benachrichtigen.',
                 'showBack': False
             })
+
+
+def unsubscribe(request):
+
+    if request.method == "POST":
+        form = UnsubscribeForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            user_email = get_object_or_404(UserEmail, email=email)
+            if user_email.verified:
+                send_unsubscribe_email.delay(email, 0)
+            user_email.verified = False
+            user_email.save()
+            CategoryNotification.objects.filter(user=user_email).delete()
+            return render(request, 'subscribe.html', {
+                'icon': 'img/cry.svg',
+                'text': 'Schade! Wir sehen dich hoffentlich bald wieder.',
+                'showBack': True
+            })
+    else:
+        form = UnsubscribeForm()
+
+    return render(request, 'unsubscribe.html', {
+        'form': form,
+        'email': request.GET.get('email', '')
+    })

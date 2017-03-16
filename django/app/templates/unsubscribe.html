@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h1><img class="logo" src="{% static 'img/performing-arts.svg' %}"><img class="logo" src="{% static 'img/alarm-clock.svg' %}"> &nbsp; TheaterWecker</h1>
+<div>
+<div class="horizontal"></div>
+<form action="{% url 'app:unsubscribe' %}" method="post">
+  <p>Benachrichtige mich nicht mehr</p>
+
+  <div class="button-group">
+    <input class="button" type="email" name="email" placeholder="max@mustermann.de" value="{{ email }}" required>
+  </div>
+
+  <div class="button-group">
+    <input class="button red" type="submit" value="Austragen">
+  </div>
+
+  {% csrf_token %}
+</form>
+
+</div>
+{% endblock %}

@@ -96,15 +96,28 @@ input[type="submit"].button {
   -webkit-appearance: none; /* Safari on iOS otherwise looks ugly */
 }
 
-.button-group .button:first-child,
-.button-group .button:nth-child(2) { /* needed because the hidden input is the first */
+.button-group .button:first-of-type /*,
+.button-group .button:nth-child(2) */ { /* needed because the hidden input is the first */
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
 
-.button-group .button:last-child {
+.button-group .button:last-of-type {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+}
+
+/*
+.button-group .button:not(:first-child),
+.button-group .button:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 5px;
+}
+*/
+
+input[type="submit"].button.red {
+  background-color: #ea1e32;
+  border-color: #ea1e32;
 }
 
 .button-group:last-child {

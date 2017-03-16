@@ -14,4 +14,6 @@ dein TheaterWecker Team
 Made with ♥ by Code for Chemnitz
 
 https://theaterwecker.de/
+
+Austragen: {{ unsubscribe_link }}
 {% endautoescape %}
