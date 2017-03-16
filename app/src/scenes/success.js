@@ -20,7 +20,9 @@ export default class SuccessScene extends Component {
 
             <View style={styles.card}>
                 <View style={[styles.p, styles.baseText]}>
-                    <Text style={styles.center}>Alles super.</Text>
+                    <Text style={styles.center}>
+                        { 'text' in this.props ? this.props.text : 'Alles super.' }
+                    </Text>
                 </View>
                 <Button title="Zurück" onPress={() => Actions.main({type: ActionConst.BACK})} />
             </View>

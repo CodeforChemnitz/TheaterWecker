@@ -9,6 +9,7 @@ import api from '../lib/api'
 class Selection extends Component {
   render() {
     return (
+      <View>
       <TouchableOpacity onPress={this.props.onPress}>
         <View style={[styles.radioButtonGroupItem, this.props.checked && styles.radioButtonGroupItemActive]}>
           <Text style={[styles.radioButtonGroupItemText, this.props.checked && styles.radioButtonGroupItemTextActive]}>
@@ -16,6 +17,7 @@ class Selection extends Component {
           </Text>
         </View>
       </TouchableOpacity>
+      </View>
       )
   }
 }
@@ -90,9 +92,9 @@ export default class Form extends Component {
   onSubscribe() {
     console.log("Abonnieren..", this.state)
     new Promise((resolve, reject) =>  {
-        api.subscribe(this.state.categoryIdsSelected, resolve, reject)
+        return api.subscribe(this.state.categoryIdsSelected, resolve, reject)
       }).then(() => {
-        Actions.success()
+        Actions.success({text: 'Wir werden dich bei der nächsten Gelegenheit benachrichtigen.'})
       }).catch((error) => {
         console.error("onSubscribe", error)
         Actions.error()
