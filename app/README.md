@@ -60,6 +60,17 @@ To run your app on Android:
 - `cd /Users/ronny/dev/oklabs/TheaterWecker/app`
 - `react-native run-android`
 
+**Signing**
+- Official guide: https://facebook.github.io/react-native/docs/signed-apk-android.html
+- `~/.gradle/gradle.properties` -> ref to Keystore file and passwords
+- `app/android/app/build.gradle` -> `signingConfigs` + `buildTypes.release`
+
+**Gradle Stuff**
+- `app/android/settings.gradle` -> list of packages and main app
+- `app/android/build.gradle` -> global Gradle stuff, don't touch it
+- `app/android/app/build.gradle` -> config for the app itself, including App signing configs
+
+
 ## SVGs
 
 - there is no good module for display an SVG file
