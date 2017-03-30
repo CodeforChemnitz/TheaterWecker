@@ -60,6 +60,22 @@ To run your app on Android:
 - `cd /Users/ronny/dev/oklabs/TheaterWecker/app`
 - `react-native run-android`
 
+**Secrets**
+
+in `~/.gradle/gradle.properties`:
+
+```
+org.gradle.daemon=true
+
+THEATERWECKER_RELEASE_STORE_FILE=my-release-key.keystore
+THEATERWECKER_RELEASE_KEY_ALIAS=my-key-alias
+THEATERWECKER_RELEASE_STORE_PASSWORD=[your password]
+THEATERWECKER_RELEASE_KEY_PASSWORD=[your password]
+
+THEATERWECKER_ONESIGNAL_APP_ID="[your OneSignal App ID goes here]"
+THEATERWECKER_ONESIGNAL_GOOGLE_PROJECT_NUMBER="[your G project number goes here]"
+```
+
 **Signing**
 - Official guide: https://facebook.github.io/react-native/docs/signed-apk-android.html
 - `~/.gradle/gradle.properties` -> ref to Keystore file and passwords

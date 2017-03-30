@@ -60,6 +60,3 @@ ios/Pods
 
 # App
 src/settings.js
-
-# hide Secrets
-android/app/build.gradle
