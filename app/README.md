@@ -60,6 +60,18 @@ To run your app on Android:
 - `cd /Users/ronny/dev/oklabs/TheaterWecker/app`
 - `react-native run-android`
 
+## Deploy it!
+
+### Android 
+
+**Bump version**
+in `android/app/build.gradle`
+```
+  versionCode 2
+  versionName "1.2"
+```
+For each new release the technical `versionCode` must be bumped.
+
 **Secrets**
 
 in `~/.gradle/gradle.properties`:
@@ -85,6 +97,17 @@ THEATERWECKER_ONESIGNAL_GOOGLE_PROJECT_NUMBER="[your G project number goes here]
 - `app/android/settings.gradle` -> list of packages and main app
 - `app/android/build.gradle` -> global Gradle stuff, don't touch it
 - `app/android/app/build.gradle` -> config for the app itself, including App signing configs
+
+**Build!**
+build signed APK: `android$ ./gradlew assembleRelease`
+*(this app is without debugging bridge and included JS lib)*
+
+install to connected device: `android$ ./gradlew installRelease`
+
+**Check APK**
+check for the correct `versionControl`:
+
+`android$ aapt dump badging app/build/outputs/apk/app-release.apk`
 
 
 ## SVGs
