@@ -184,6 +184,10 @@ strong {
   top: 8px;
 }
 
+.google_play_badge {
+  height: 42px;
+} 
+
 .light {
   color:#aeaeae;
 }
