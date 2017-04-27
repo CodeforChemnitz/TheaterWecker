@@ -152,7 +152,7 @@ def get_plays(year, month):
             if category_raw:
                 category = category_raw.get_text()
                 if category in ["Theaternahes Rahmenprogramm"]:
-                    category = "Sonstiges"
+                    category = "Sonstige"
                 play["category"] = category
             title_raw = block_top.find("h2")
             if title_raw:
@@ -189,7 +189,7 @@ def scrape_performances_in_chemnitz():
     count_no_ticket = 0
     for play in plays:
         location, _ = Location.objects.get_or_create(name=play.get('location', "Theater Chemnitz"), institution=institution)
-        category, _ = Category.objects.get_or_create(name=play.get('category', 'Sonstiges'), institution=institution)
+        category, _ = Category.objects.get_or_create(name=play.get('category', 'Sonstige'), institution=institution)
         begin = make_aware(datetime.datetime(play['year'], play['month'], play['day'], play['hour'], play['minutes']), pytz.timezone('Europe/Berlin'))
 
         data = {
