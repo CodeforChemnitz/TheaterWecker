@@ -119,12 +119,10 @@ def passed_performance_cleanup():
 
 URL = "http://www.theater-chemnitz.de/spielplan/repertoire"
 BASE_URL = "http://www.theater-chemnitz.de/"
-time_re = re.compile("(?P<hour>\d{2}):(?P<minutes>\d{2})(\s*Uhr\s*)")
-url_id_re = re.compile("\/(?P<id>\d+)\/$")
 
 
 def get_plays(year, month):
-    plan = requests.get("{}/{}/{}".format(URL, year, month))
+    plan = requests.get("{}/{}/{:02d}/".format(URL, year, month))
     if plan.status_code != 200:
         logger.error('got non-200 return code while scraping', exc_info=True)
         return []
@@ -140,10 +138,9 @@ def get_plays(year, month):
                 "day": day,
                 "year": year
             }
-            time_raw = date.find(class_="cc_timeresp")
-            m = time_re.match(time_raw.get_text())
-            play["hour"] = int(m.group("hour"))
-            play["minutes"] = int(m.group("minutes"))
+            time_raw = date.find(class_="cc_timeresp").get_text().split(' ')[0].split(':')
+            play["hour"] = int(time_raw[0])
+            play["minutes"] = int(time_raw[1])
             play["location"] = block_top.find(class_="cc_content").get_text()
             # Gastspiel, Premiere etc.
             special_raw = block_top.find(class_="cc_premiere")
@@ -197,22 +194,21 @@ def scrape_performances_in_chemnitz():
     c.timing('performance_count', len(plays))
     count_no_ticket = 0
     for play in plays:
+        location, _ = Location.objects.get_or_create(name=play.get('location', "Theater Chemnitz"), institution=institution)
+        category, _ = Category.objects.get_or_create(name=play.get('category', 'Sonstige'), institution=institution)
+        begin = make_aware(datetime.datetime(play['year'], play['month'], play['day'], play['hour'], play['minutes']), pytz.timezone('Europe/Berlin'))
+        eventid = play.get("id", None)
+
+        data = {
+            "eventid": eventid,
+            "title": play.get('title'),
+            "location": location,
+            "category": category,
+            "begin": begin.isoformat(),
+            "description": play.get('description', ''),
+            "url": play.get('url', None)
+        }
         try:
-            location, _ = Location.objects.get_or_create(name=play.get('location', "Theater Chemnitz"), institution=institution)
-            category, _ = Category.objects.get_or_create(name=play.get('category', 'Sonstige'), institution=institution)
-            begin = make_aware(datetime.datetime(play['year'], play['month'], play['day'], play['hour'], play['minutes']), pytz.timezone('Europe/Berlin'))
-            eventid = play.get("id", None)
-
-            data = {
-                "eventid": eventid,
-                "title": play.get('title'),
-                "location": location,
-                "category": category,
-                "begin": begin.isoformat(),
-                "description": play.get('description', ''),
-                "url": play.get('url', None)
-            }
-
             if not play['tickets']:
                 count_no_ticket += 1
                 try:
@@ -231,17 +227,18 @@ def scrape_performances_in_chemnitz():
                         **data
                     )
                     c.gauge('chemnitz.scrape_performances.performance_created', 1, delta=True)
-                    logger.warning('performance created', exc_info=True)
+                    logger.info('performance created')
                 else:
-                    performance.title = play.get('title'),
-                    performance.location = location,
-                    performance.category = category,
-                    performance.begin = begin,
-                    performance.description = play.get('description', ''),
+                    performance.title = play.get('title')
+                    performance.location = location
+                    performance.category = category
+                    performance.begin = begin
+                    performance.description = play.get('description', '')
                     performance.url = play.get('url', None)
                     performance.save()
+                    logger.info('performance updated')
         except Exception:
-            logger.error('Performance error', exc_info=True, extra={"data": data})
+            logger.error('Error creating or updating performance data', exc_info=True, extra={"data": data})
 
 
     c.gauge('chemnitz.performance_count', len(plays))
