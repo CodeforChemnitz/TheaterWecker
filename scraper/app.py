@@ -14,8 +14,9 @@ from bs4 import BeautifulSoup
 locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
 
 URL = "http://www.theater-chemnitz.de/spielplan/repertoire"
+BASE_URL = "http://www.theater-chemnitz.de/"
 time_re = re.compile("(?P<hour>\d{2}):(?P<minutes>\d{2})(\s*Uhr\s*)")
-time_location_re = re.compile("(?P<hour>\d{2}):(?P<minutes>\d{2})(\s*Uhr\s*)(?P<location>[\w\s]*)")
+url_id_re = re.compile("\/(?P<id>\d+)\/$")
 calendar_months = [
     '',
     'januar',
@@ -44,8 +45,6 @@ def get_plays(year, month):
     for block_top in news_items:
         date = block_top.find("div", class_="cc_news_date")
         if date:
-            print(date)
-            print('\n\n')
             day = int(date.find(class_="cc_day").get_text().strip('.'))
             play = {
                 "month": month,
@@ -78,7 +77,12 @@ def get_plays(year, month):
             if desciption_raw:
                 play["description"] = desciption_raw.get_text()
             tickets_raw = block_top.find("a", class_="cc_ticket")
-            play["tickets"] = tickets_raw
+            play["tickets"] = tickets_raw["href"] if tickets_raw else None
+            # ID & URL
+            id_raw = block_top.find(class_="cc_newscol2").find("a")["href"]
+            if id_raw:
+                play["url"] = "{}{}".format(BASE_URL, id_raw)
+                play["id"] = int(id_raw.strip("/").split("/")[-1])
             plays.append(play)
     if len(plays) == 0:
         logger.error('could not find a single play while scraping', exc_info=True)
