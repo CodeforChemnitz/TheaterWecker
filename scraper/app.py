@@ -35,7 +35,7 @@ calendar_months = [
 
 
 def get_plays(year, month):
-    plan = requests.get("{}/{}/{}".format(URL, year, month))
+    plan = requests.get("{}/{}/{:02d}/".format(URL, year, month))
     if plan.status_code != 200:
         logger.error('got non-200 return code while scraping', exc_info=True)
         return []
@@ -51,10 +51,9 @@ def get_plays(year, month):
                 "day": day,
                 "year": year
             }
-            time_raw = date.find(class_="cc_timeresp")
-            m = time_re.match(time_raw.get_text())
-            play["hour"] = int(m.group("hour"))
-            play["minutes"] = int(m.group("minutes"))
+            time_raw = date.find(class_="cc_timeresp").get_text().split(' ')[0].split(':')
+            play["hour"] = int(time_raw[0])
+            play["minutes"] = int(time_raw[1])
             play["location"] = block_top.find(class_="cc_content").get_text()
             # Gastspiel, Premiere etc.
             special_raw = block_top.find(class_="cc_premiere")
