@@ -114,11 +114,13 @@ class Performance(models.Model):
         verbose_name_plural = _('Performances')
         ordering = ['begin']
 
+    eventid = models.IntegerField(blank=True, null=True, unique=True)
     title = models.CharField(max_length=255)
     begin = models.DateTimeField()
     location = models.ForeignKey('Location')
     category = models.ForeignKey('Category', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+    url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return "%s (%s)" % (self.title, self.begin)
