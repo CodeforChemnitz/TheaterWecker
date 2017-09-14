@@ -1,11 +1,11 @@
 PODS:
-  - OneSignal (2.3.5)
+  - OneSignal (2.5.4)
 
 DEPENDENCIES:
   - OneSignal
 
 SPEC CHECKSUMS:
-  OneSignal: 4cb42948ebc141bd5deb54d3fda25105db94f6d4
+  OneSignal: da994bcf6a2efbdceaf71e389e1d05245c562899
 
 PODFILE CHECKSUM: a0b8900b62c99d3e732c608943cf03f4237ff8b4
 
