@@ -4,6 +4,11 @@
  
 ## Setup
 
+```
+yarn add react-native-cli
+react-native run-ios
+react-native run-android
+```
 
 ### OneSignal iOS Setup (Pods)
 
