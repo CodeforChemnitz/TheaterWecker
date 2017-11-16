@@ -26,7 +26,7 @@ cp ios/TheaterWecker/AppDelegate.m.dist ios/TheaterWecker/AppDelegate.m
 Replace `ONESIGNAL_APP_ID_GOES_HERE` in `AppDelegate.m` with the OneSignal App-ID.
 
 
-### OneSignal iOS Setup
+### OneSignal Android Setup
 
 https://github.com/geektimecoil/react-native-onesignal#android-installation
 
@@ -108,6 +108,15 @@ install to connected device: `android$ ./gradlew installRelease`
 check for the correct `versionControl`:
 
 `android$ aapt dump badging app/build/outputs/apk/app-release.apk`
+
+
+### iOS 
+
+- Bundle Identifier: `de.okfn.chemnitz.TheaterWecker`
+- Version: 1.0
+- Build: 1
+- Device: iPhone
+- Build Settings: Enable Bitcode: false
 
 
 ## SVGs
