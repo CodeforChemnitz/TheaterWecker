@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from uuid import uuid4
 import statsd
+from django.conf import settings
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, get_object_or_404
@@ -15,6 +16,7 @@ import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+
 def index(request, institution=None):
     c = statsd.StatsClient('localhost', 8125)
     c.incr('index_loads')
@@ -26,12 +28,14 @@ def index(request, institution=None):
         city = City.objects.get(name='Chemnitz')
         inst = Institution.objects.filter(city=city).first()
     return render(request, "index.html", {
-        'categories': Category.objects.filter(institution=inst)
+        'categories': Category.objects.filter(institution=inst),
+        'ONE_SIGNAL_APP_ID': settings.ONE_SIGNAL['APP_ID']
     })
 
 
 def impressum(request):
     return render(request, "impressum.html")
+
 
 @require_http_methods(['POST'])
 def subscribe(request):
