@@ -2,12 +2,13 @@
 from uuid import uuid4
 import statsd
 from django.conf import settings
+from django.db.models import Q
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, get_object_or_404
 
 from app.forms import SubscribeForm, UnsubscribeForm
-from app.models import CategoryNotification, Category, UserEmail, Institution, City
+from app.models import CategoryNotification, Category, UserEmail, Institution, City, UserDevice
 from app.tasks import send_verify_email, send_unsubscribe_email
 
 # import the logging library
@@ -44,18 +45,34 @@ def subscribe(request):
 
     if form.is_valid():
         email = form.cleaned_data.get('email')
-        user_email, _ = UserEmail.objects.get_or_create(email=email)
-        user_email.verified = False
-        user_email.verification_key = uuid4().hex
-        user_email.save()
+        device = form.cleaned_data.get('device')
         interval = form.cleaned_data.get('interval')
-        CategoryNotification.objects.filter(user=user_email).delete()
+
+        if email:
+            user_email, _ = UserEmail.objects.get_or_create(email=email)
+            user_email.verified = False
+            user_email.verification_key = uuid4().hex
+            user_email.save()
+        else:
+            user_email = None
+
+        if device:
+            user_device, _ = UserDevice.objects.get_or_create(device=device)
+            user_device.verified = False
+            user_device.verification_key = uuid4().hex
+            user_device.save()
+        else:
+            user_device = None
+
+        interval = form.cleaned_data.get('interval')
+        CategoryNotification.objects.filter(Q(user=user_email) | Q(device=user_device)).delete()
         for category in form.cleaned_data.get('categories', []):
             try:
                 CategoryNotification.objects.create(
                     user=user_email,
+                    device=user_device,
                     category=Category.objects.get(id=category),
-                    verified=False,
+                    verified=user_email is not None,
                     interval=interval
                 )
 
@@ -70,7 +87,8 @@ def subscribe(request):
                         'showBack': True
                     })
 
-        send_verify_email.delay(email, request.scheme, request.get_host(), 0)
+        if email:
+            send_verify_email.delay(email, request.scheme, request.get_host(), 0)
 
         c.incr('subscribe.success')
         c.gauge('total.subscribe.success', 1, delta=True)

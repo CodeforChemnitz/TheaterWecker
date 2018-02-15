@@ -5,7 +5,8 @@ from django import forms
 class SubscribeForm(forms.Form):
     interval = forms.DurationField(required=True)
     categories = forms.MultipleChoiceField(required=True)
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=False)
+    device = forms.UUIDField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.category_choices = kwargs.pop('category_choices')
