@@ -23,12 +23,7 @@
     function onManageWebPushSubscriptionButtonClicked(event) {
       getSubscriptionState()
         .then(function(state) {
-          if (state.isPushEnabled) {
-            /* Subscribed, opt them out */
-            OneSignal.setSubscription(false);
-            /* ToDo: unsubscribe User */
-            OneSignal.getUserId().then(console.log);
-          } else {
+          if (!state.isPushEnabled) {
             if (state.isOptedOut) {
               /* Opted out, opt them back in */
                OneSignal.setSubscription(true);
@@ -36,34 +31,17 @@
                /* Unsubscribed, subscribe them */
                OneSignal.registerForPushNotifications();
             }
-            OneSignal.getUserId().then(console.log);
+            OneSignal.getUserId().then(x => console.log('subscribe', x));
             /* ToDo: subscribe User */
           }
         });
       event.preventDefault();
     }
 
-    function updateMangeWebPushSubscriptionButton(buttonSelector) {
-      var hideWhenSubscribed = true;
-      var subscribeText = "Subscribe to Notifications";
-      var unsubscribeText = "Unsubscribe from Notifications";
-
+    function updateMangeWebPushSubscriptionButton() {
       getSubscriptionState().then(function(state) {
-        var buttonText = !state.isPushEnabled || state.isOptedOut ? subscribeText : unsubscribeText;
-
-        var element = document.querySelector(buttonSelector);
-        if (element === null) {
-          return;
-        }
-
-        element.removeEventListener('click', onManageWebPushSubscriptionButtonClicked);
-        element.addEventListener('click', onManageWebPushSubscriptionButtonClicked);
-        element.value = buttonText;
-
-        if (hideWhenSubscribed && state.isPushEnabled) {
-          element.style.display = "none";
-        } else {
-          element.style.display = "";
+        if (state.isPushEnabled && !state.isOptedOut) {
+          document.querySelector('#subscribe-form').submit();
         }
       });
     }
@@ -84,22 +62,25 @@
         });
     }
 
-    var buttonSelector = "#my-notification-button";
-
     /* This example assumes you've already initialized OneSignal */
     OneSignal.push(function() {
       // If we're on an unsupported browser, do nothing
       if (!OneSignal.isPushNotificationsSupported()) {
         return;
       }
-      updateMangeWebPushSubscriptionButton(buttonSelector);
       OneSignal.on("subscriptionChange", function(isSubscribed) {
         /* If the user's subscription state changes during the page's session, update the button text */
-        updateMangeWebPushSubscriptionButton(buttonSelector);
+        updateMangeWebPushSubscriptionButton();
       });
       OneSignal.getUserId().then(console.log);
     });
     </script>
+{% endblock %}
+{% block extrascript %}
+<script>
+    const buttonSelector = document.querySelector("#notification-button");
+    buttonSelector.addEventListener('click', onManageWebPushSubscriptionButtonClicked, true)
+</script>
 {% endblock %}
 
 {% block content %}
@@ -116,7 +97,7 @@
   <a href="https://play.google.com/store/apps/details?id=de.codeforchemnitz.theaterwecker"><img class="google_play_badge" src="{% static 'img/google-play-badge.png' %}"></a>
 </p>
 <div class="horizontal"></div>
-<form action="{% url 'app:subscribe' %}" method="post">
+<form action="{% url 'app:subscribe' %}" method="post" id="subscribe-form">
   <p>Benachrichtige mich</p>
   <div class="button-group">
     <input type="radio" name="interval" id="interval2" value="00:30:00">
@@ -137,19 +118,27 @@
       <label class="button" for="category{{ category.pk }}">{{ category.name }}</label>
     {% endfor %}
   </div>
+<div style="display: flex; justify-content: space-evenly; flex-wrap: wrap">
+  <div style="padding: 0 1em">
+    <p>via E-Mail</p>
 
-  <p>via E-Mail</p>
+    <div class="button-group">
+      <input class="button" type="email" name="email" placeholder="max@mustermann.de" required>
+    </div>
 
-  <div class="button-group">
-    <input class="button" type="email" name="email" placeholder="max@mustermann.de" required>
+    <div class="button-group">
+      <input class="button" type="submit" value="Abonnieren">
+    </div>
   </div>
+  <div style="padding: 0 1em">
+    <p>via Web-Push</p>
 
-  <input class="button" type="button" value="Push Benachrichtigungen" id="my-notification-button">
-
-  <div class="button-group">
-    <input class="button" type="submit" value="Abonnieren">
+    <input type="hidden" name="device">
+    <div class="button-group" style="margin-top: -1px">
+      <input class="button" type="submit" value="Abonnieren" id="notification-button">
+    </div>
   </div>
-
+</div>
   {% csrf_token %}
 </form>
 
