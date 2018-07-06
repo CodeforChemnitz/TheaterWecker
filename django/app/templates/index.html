@@ -6,21 +6,55 @@
     <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
     <script>
       var OneSignal = window.OneSignal || [];
-      OneSignal.push(function() {
-        OneSignal.init({
-          appId: "1c52ee9f-71ed-4081-9c54-e66a815538ac",
-          autoRegister: false,
-          notifyButton: {
-            enable: false,
-          },
-          httpPermissionRequest: {
-            enable: true
-          },
-        });
-      });
+      OneSignal.push(['init', {
+        appId: "f36145bc-6ad0-4855-b36b-c1aa5aa99ccb",
+        autoRegister: false,
+        notifyButton: {
+          enable: false,
+        },
+        httpPermissionRequest: {
+          enable: true
+        },
+        welcomeNotification: {
+          "title": "TheaterWecker",
+          "message": "Herzlich Willkommen beim TheaterWecker",
+          // "url": "" /* Leave commented for the notification to not open a window on Chrome and Firefox (on Safari, it opens to your webpage) */
+        },
+        promptOptions: {
+          /* Change bold title, limited to 30 characters */
+          siteName: 'TheaterWecker',
+          /* Subtitle, limited to 90 characters */
+          actionMessage: "Möchtest du, dass der TheaterWecker dich benachticht?",
+          /* Example notification title */
+          exampleNotificationTitle: "Es gibt noch Karten für 'BEATE UWE UWE SELFIE KLICK'",
+          /* Example notification message */
+          exampleNotificationMessage: 'Eine europäische Groteske (Uraufführung)',
+          /* Accept button text, limited to 15 characters */
+          acceptButtonText: "Erlauben",
+          /* Cancel button text, limited to 15 characters */
+          cancelButtonText: "Nein Danke!"
+        }
+      }]);
     </script>
+{% endblock %}
+{% block extrascript %}
     <script>
-    function onManageWebPushSubscriptionButtonClicked(event) {
+    function updateEventSubscription() {
+      getSubscriptionState().then(function(state) {
+        if (state.isPushEnabled && !state.isOptedOut) {
+          OneSignal.getUserId().then((userid) => {
+            document.querySelector('input[name="email"]').value = '';
+            document.querySelector('input[name="device"]').value = userid;
+            return Promise.resolve();
+          })
+          .then(() => {
+            document.querySelector('#subscribe-form').submit();
+          });
+        }
+      });
+    }
+    
+    function subscribe(event) {
       getSubscriptionState()
         .then(function(state) {
           if (!state.isPushEnabled) {
@@ -31,19 +65,11 @@
                /* Unsubscribed, subscribe them */
                OneSignal.registerForPushNotifications();
             }
-            OneSignal.getUserId().then(x => console.log('subscribe', x));
-            /* ToDo: subscribe User */
           }
-        });
+          return Promise.resolve();
+        })
+        .then(updateEventSubscription);
       event.preventDefault();
-    }
-
-    function updateMangeWebPushSubscriptionButton() {
-      getSubscriptionState().then(function(state) {
-        if (state.isPushEnabled && !state.isOptedOut) {
-          document.querySelector('#subscribe-form').submit();
-        }
-      });
     }
 
     function getSubscriptionState() {
@@ -51,13 +77,10 @@
         OneSignal.isPushNotificationsEnabled(),
         OneSignal.isOptedOut(),
       ])
-        .then(function(result) {
-          var isPushEnabled = result[0];
-          var isOptedOut = result[1];
-
+        .then(function([isPushEnabled, isOptedOut]) {
           return {
-            isPushEnabled: isPushEnabled,
-            isOptedOut: isOptedOut,
+            isPushEnabled,
+            isOptedOut,
           };
         });
     }
@@ -70,16 +93,12 @@
       }
       OneSignal.on("subscriptionChange", function(isSubscribed) {
         /* If the user's subscription state changes during the page's session, update the button text */
-        updateMangeWebPushSubscriptionButton();
+        updateEventSubscription();
       });
-      OneSignal.getUserId().then(console.log);
     });
-    </script>
-{% endblock %}
-{% block extrascript %}
-<script>
-    const buttonSelector = document.querySelector("#notification-button");
-    buttonSelector.addEventListener('click', onManageWebPushSubscriptionButtonClicked, true)
+
+    const subscribeButton = document.querySelector("#subscribe-button");
+    subscribeButton.addEventListener('click', subscribe, true)
 </script>
 {% endblock %}
 
@@ -119,7 +138,7 @@
     {% endfor %}
   </div>
 <div style="display: flex; justify-content: space-evenly; flex-wrap: wrap">
-  <div style="padding: 0 1em">
+  <div style="padding: 0 .5rem">
     <p>via E-Mail</p>
 
     <div class="button-group">
@@ -130,12 +149,12 @@
       <input class="button" type="submit" value="Abonnieren">
     </div>
   </div>
-  <div style="padding: 0 1em">
+  <div style="padding: 0 .5rem">
     <p>via Web-Push</p>
 
     <input type="hidden" name="device">
     <div class="button-group" style="margin-top: -1px">
-      <input class="button" type="submit" value="Abonnieren" id="notification-button">
+      <input class="button" type="submit" value="Abonnieren" id="subscribe-button">
     </div>
   </div>
 </div>

@@ -9,7 +9,7 @@ from django.shortcuts import render, get_object_or_404
 
 from app.forms import SubscribeForm, UnsubscribeForm
 from app.models import CategoryNotification, Category, UserEmail, Institution, City, UserDevice
-from app.tasks import send_verify_email, send_unsubscribe_email
+from app.tasks import send_verify_email, send_unsubscribe_email, send_verify_notification
 
 # import the logging library
 import logging
@@ -57,7 +57,7 @@ def subscribe(request):
             user_email = None
 
         if device:
-            user_device, _ = UserDevice.objects.get_or_create(device=device)
+            user_device, _ = UserDevice.objects.get_or_create(device_id=device)
             user_device.verified = False
             user_device.verification_key = uuid4().hex
             user_device.save()
@@ -87,8 +87,10 @@ def subscribe(request):
                         'showBack': True
                     })
 
-        if email:
+        if user_email:
             send_verify_email.delay(email, request.scheme, request.get_host(), 0)
+        if user_device:
+            send_verify_notification.delay(device, request.scheme, request.get_host(), 0)
 
         c.incr('subscribe.success')
         c.gauge('total.subscribe.success', 1, delta=True)
@@ -137,19 +139,42 @@ def verify(request, key=None):
 
     else:
         try:
-            user_email = UserEmail.objects.get(verification_key=key)
-            user_email.verified = True
-            user_email.save()
-            notifications = CategoryNotification.objects.filter(user=user_email)
-            # remove previously verified notifications on re-verify
-            notifications.filter(verified=True).delete()
+            try:
+                user_email = UserEmail.objects.get(verification_key=key)
+                user_email.verified = True
+                user_email.save()
+                notifications = CategoryNotification.objects.filter(user=user_email)
+                # remove previously verified notifications on re-verify
+                notifications.filter(verified=True).delete()
 
-            # verify new notifications
-            unverified_notifications = notifications.filter(verified=False)
-            for n in unverified_notifications:
-                n.verified = True
-                n.save()
-        except UserEmail.DoesNotExist:
+                # verify new notifications
+                unverified_notifications = notifications.filter(verified=False)
+                for n in unverified_notifications:
+                    n.verified = True
+                    n.save()
+            except UserEmail.DoesNotExist:
+                user_email = None
+            
+            try:
+                user_device = UserDevice.objects.get(verification_key=key)
+                user_device.verified = True
+                user_device.save()
+                notifications = CategoryNotification.objects.filter(device=user_device)
+                # remove previously verified notifications on re-verify
+                notifications.filter(verified=True).delete()
+
+                # verify new notifications
+                unverified_notifications = notifications.filter(verified=False)
+                for n in unverified_notifications:
+                    n.verified = True
+                    n.save()
+            except UserDevice.DoesNotExist:
+                user_device = None
+
+            if user_email is None and user_device is None:
+                raise Exception()    
+            
+        except Exception:
             c.incr('verify.failed')
             c.gauge('total.verify.failed', 1, delta=True)
             return render(request, 'subscribe.html', {

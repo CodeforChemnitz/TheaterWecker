@@ -78,23 +78,28 @@ def send_unsubscribe_email(email, count):
 
 
 @shared_task
-def send_verify_notification(device, count):
+def send_verify_notification(device, scheme, host, count):
     c = statsd.StatsClient('localhost', 8125)
     try:
         user_device = UserDevice.objects.get(device_id=device)
-        user_device.notify(data={
+        data={
             'headings': {
                 'de': 'Willkommen beim TheaterWecker',
                 'en': 'Willkommen beim TheaterWecker',
             },
             'contents': {
-                'de': 'Tippe hier, um dein Gerät zu verifizieren.',
-                'en': 'Tippe hier, um dein Gerät zu verifizieren.',
+                'de': 'Tippe hier, um Dich zu verifizieren.',
+                'en': 'Tippe hier, um Dich zu verifizieren.',
             },
             'data': {
                 'verification': user_device.verification_key,
             },
-        })
+        }
+        if scheme and host:
+            data['url'] = "%s://%s%s" % (scheme, host, reverse('app:verify', kwargs={
+                            'key': user_device.verification_key
+                        }))
+        user_device.notify(data)
         c.incr('send_verify_notification')
         c.gauge('total.send_verify_notification', 1, delta=True)
     except UserDevice.DoesNotExist as e:
@@ -108,7 +113,7 @@ def send_verify_notification(device, count):
             return
         c.incr('send_verify_notification.failed')
         logger.error('Sending notification failed', exc_info=True)
-        send_verify_notification.apply_async((device, count + 1), countdown=(2 ** count) * 60)
+        send_verify_notification.apply_async((device, scheme, host, count + 1), countdown=(2 ** count) * 60)
 
 
 @periodic_task(run_every=(crontab(hour="4", minute="33", day_of_week="*")))
