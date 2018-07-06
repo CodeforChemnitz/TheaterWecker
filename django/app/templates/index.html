@@ -5,101 +5,15 @@
     <link rel="manifest" href="/manifest.json" />
     <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
     <script>
-      var OneSignal = window.OneSignal || [];
-      OneSignal.push(['init', {
-        appId: "f36145bc-6ad0-4855-b36b-c1aa5aa99ccb",
-        autoRegister: false,
-        notifyButton: {
-          enable: false,
-        },
-        httpPermissionRequest: {
-          enable: true
-        },
-        welcomeNotification: {
-          "title": "TheaterWecker",
-          "message": "Herzlich Willkommen beim TheaterWecker",
-          // "url": "" /* Leave commented for the notification to not open a window on Chrome and Firefox (on Safari, it opens to your webpage) */
-        },
-        promptOptions: {
-          /* Change bold title, limited to 30 characters */
-          siteName: 'TheaterWecker',
-          /* Subtitle, limited to 90 characters */
-          actionMessage: "Möchtest du, dass der TheaterWecker dich benachticht?",
-          /* Example notification title */
-          exampleNotificationTitle: "Es gibt noch Karten für 'BEATE UWE UWE SELFIE KLICK'",
-          /* Example notification message */
-          exampleNotificationMessage: 'Eine europäische Groteske (Uraufführung)',
-          /* Accept button text, limited to 15 characters */
-          acceptButtonText: "Erlauben",
-          /* Cancel button text, limited to 15 characters */
-          cancelButtonText: "Nein Danke!"
-        }
-      }]);
+      const ONE_SIGNAL_APP_ID = '{{ ONE_SIGNAL_APP_ID }}';
     </script>
+    <script src="{% static 'os.js' %}"></script>
 {% endblock %}
 {% block extrascript %}
-    <script>
-    function updateEventSubscription() {
-      getSubscriptionState().then(function(state) {
-        if (state.isPushEnabled && !state.isOptedOut) {
-          OneSignal.getUserId().then((userid) => {
-            document.querySelector('input[name="email"]').value = '';
-            document.querySelector('input[name="device"]').value = userid;
-            return Promise.resolve();
-          })
-          .then(() => {
-            document.querySelector('#subscribe-form').submit();
-          });
-        }
-      });
-    }
-    
-    function subscribe(event) {
-      getSubscriptionState()
-        .then(function(state) {
-          if (!state.isPushEnabled) {
-            if (state.isOptedOut) {
-              /* Opted out, opt them back in */
-               OneSignal.setSubscription(true);
-            } else {
-               /* Unsubscribed, subscribe them */
-               OneSignal.registerForPushNotifications();
-            }
-          }
-          return Promise.resolve();
-        })
-        .then(updateEventSubscription);
-      event.preventDefault();
-    }
-
-    function getSubscriptionState() {
-      return Promise.all([
-        OneSignal.isPushNotificationsEnabled(),
-        OneSignal.isOptedOut(),
-      ])
-        .then(function([isPushEnabled, isOptedOut]) {
-          return {
-            isPushEnabled,
-            isOptedOut,
-          };
-        });
-    }
-
-    /* This example assumes you've already initialized OneSignal */
-    OneSignal.push(function() {
-      // If we're on an unsupported browser, do nothing
-      if (!OneSignal.isPushNotificationsSupported()) {
-        return;
-      }
-      OneSignal.on("subscriptionChange", function(isSubscribed) {
-        /* If the user's subscription state changes during the page's session, update the button text */
-        updateEventSubscription();
-      });
-    });
-
-    const subscribeButton = document.querySelector("#subscribe-button");
-    subscribeButton.addEventListener('click', subscribe, true)
-</script>
+  <script>
+      const subscribeButton = document.querySelector("#subscribe-button");
+      subscribeButton.addEventListener('click', subscribe, true)
+  </script>
 {% endblock %}
 
 {% block content %}
@@ -110,10 +24,6 @@
 </p>
 <p>
   Lass dich einfach von uns benachrichtigen, wenn kurz vor der Veranstaltung noch Tickets frei sind.
-</p>
-<p>
-  Jetzt auch als Android App.
-  <a href="https://play.google.com/store/apps/details?id=de.codeforchemnitz.theaterwecker"><img class="google_play_badge" src="{% static 'img/google-play-badge.png' %}"></a>
 </p>
 <div class="horizontal"></div>
 <form action="{% url 'app:subscribe' %}" method="post" id="subscribe-form">
@@ -137,8 +47,8 @@
       <label class="button" for="category{{ category.pk }}">{{ category.name }}</label>
     {% endfor %}
   </div>
-<div style="display: flex; justify-content: space-evenly; flex-wrap: wrap">
-  <div style="padding: 0 .5rem">
+<div class="subscribe-group">
+  <div class="subscribe-element">
     <p>via E-Mail</p>
 
     <div class="button-group">
@@ -149,11 +59,11 @@
       <input class="button" type="submit" value="Abonnieren">
     </div>
   </div>
-  <div style="padding: 0 .5rem">
+  <div class="subscribe-element">
     <p>via Web-Push</p>
 
     <input type="hidden" name="device">
-    <div class="button-group" style="margin-top: -1px">
+    <div class="button-group" style="margin-top: 0">
       <input class="button" type="submit" value="Abonnieren" id="subscribe-button">
     </div>
   </div>
