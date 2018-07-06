@@ -278,8 +278,12 @@ def send_push_notifications(devices, performance_id):
                     'location': performance.location.__str__(),
                     'description': performance.description,
                 }
-            }
+            },
+            'url': "https://theaterwecker.de%s" % (reverse('app:redirect_performance', kwargs={
+                            'performance_id': performance_id
+                        }))
         }
+
         requests.post(
             url=settings.ONE_SIGNAL['URL'],
             headers={
@@ -370,7 +374,7 @@ def send_notifications():
                     send_email_notification.delay(notification.user.email, performance.pk)
                 if notification.device:
                     devices.append(notification.device.device_id)
-            send_push_notifications.delay(devices, performance.pk)
+            send_push_notifications.delay(devices, performance.pk, )
 
     end = time.time()
     c.timing('notification.timed', floor((end - start) * 1000))

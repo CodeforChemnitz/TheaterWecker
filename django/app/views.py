@@ -5,10 +5,10 @@ from django.conf import settings
 from django.db.models import Q
 
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from app.forms import SubscribeForm, UnsubscribeForm
-from app.models import CategoryNotification, Category, UserEmail, Institution, City, UserDevice
+from app.models import CategoryNotification, Category, UserEmail, Institution, City, UserDevice, Performance
 from app.tasks import send_verify_email, send_unsubscribe_email, send_verify_notification
 
 # import the logging library
@@ -37,6 +37,14 @@ def index(request, institution=None):
 def impressum(request):
     return render(request, "impressum.html")
 
+def redirect_performance(reqest, performance_id):
+    c = statsd.StatsClient('localhost', 8125)
+    c.incr('redirect_performance_loads')
+    c.gauge('total.redirect_performance_loads', 1, delta=True)
+    performance = get_object_or_404(Performance, pk=performance_id)
+    if performance.url:
+        return redirect(performance.url)
+    return redirect('index')
 
 @require_http_methods(['POST'])
 def subscribe(request):
@@ -96,7 +104,7 @@ def subscribe(request):
         c.gauge('total.subscribe.success', 1, delta=True)
         return render(request, 'subscribe.html', {
                 'icon': 'img/ok.svg',
-                'text': 'Danke, wir haben dir eine E-Mail zur Bestätigung geschickt.',
+                'text': 'Danke, wir haben dir eine Nachricht zur Bestätigung geschickt.',
                 'showBack': False
             })
 
