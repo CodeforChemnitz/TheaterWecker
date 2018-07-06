@@ -225,3 +225,11 @@ strong {
 .subscribe-element {
     padding: 0 .5rem
 }
+
+.os-blocked {
+  display: none;
+  color: #ea1e32;
+  text-wrap: normal;
+  max-width: 10rem;
+}
+

@@ -3,7 +3,12 @@
 
 {% block extrahead %}
     <link rel="manifest" href="/manifest.json" />
-    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+    <script>
+    let osBlocked = false;
+    function setOSBlocked(state) {
+      osBlocked = state;
+    }</script>
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async="" onerror="setOSBlocked(true)"></script>
     <script>
       const ONE_SIGNAL_APP_ID = '{{ ONE_SIGNAL_APP_ID }}';
     </script>
@@ -11,8 +16,13 @@
 {% endblock %}
 {% block extrascript %}
   <script>
-      const subscribeButton = document.querySelector("#subscribe-button");
-      subscribeButton.addEventListener('click', subscribe, true)
+    const subscribeButton = document.querySelector("#subscribe-button");
+    if (!osBlocked) {
+      subscribeButton.addEventListener('click', subscribe, true);
+    } else {
+      document.querySelector(".os-blocked").style.display = 'block';
+      subscribeButton.parentNode.style.display = 'none';
+    }
   </script>
 {% endblock %}
 
@@ -61,7 +71,7 @@
   </div>
   <div class="subscribe-element">
     <p>via Web-Push</p>
-
+    <p class="os-blocked">Bitte deaktiviere für diese Funktion Deinen AddBlocker!</p>
     <input type="hidden" name="device">
     <div class="button-group" style="margin-top: 0">
       <input class="button" type="submit" value="Abonnieren" id="subscribe-button">
