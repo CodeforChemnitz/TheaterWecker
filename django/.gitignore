@@ -3,6 +3,7 @@
 *.pyc
 __pycache__
 .idea
+.vscode
 /static
 celerybeat.pid
 
