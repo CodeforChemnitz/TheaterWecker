@@ -55,7 +55,7 @@ def verify(request, key=None):
         user_device = UserDevice.objects.get(verification_key=key)
         user_device.verified = True
         user_device.save()
-    except UserEmail.DoesNotExist:
+    except UserDevice.DoesNotExist:
         c.incr('verify.device.failed')
         c.gauge('total.verify.device.failed', 1, delta=True)
         return HttpResponse("", status=400)

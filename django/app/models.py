@@ -57,7 +57,8 @@ class UserDevice(models.Model):
         )
 
     def __str__(self):
-        return self.device_id
+        check = "✓" if self.verified else "×"
+        return "%s (%s)" % (self.device_id, check)
 
 
 class City(models.Model):
