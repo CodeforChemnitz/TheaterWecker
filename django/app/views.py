@@ -73,14 +73,17 @@ def subscribe(request):
             user_device = None
 
         interval = form.cleaned_data.get('interval')
-        CategoryNotification.objects.filter(Q(user=user_email) | Q(device=user_device)).delete()
+        if user_email:
+            CategoryNotification.objects.filter(user=user_email).delete()
+        if user_device:
+            CategoryNotification.objects.filter(device=user_device).delete()
         for category in form.cleaned_data.get('categories', []):
             try:
                 CategoryNotification.objects.create(
                     user=user_email,
                     device=user_device,
                     category=Category.objects.get(id=category),
-                    verified=user_email is not None,
+                    verified=False,
                     interval=interval
                 )
 
@@ -134,7 +137,7 @@ def subscribe(request):
         })
 
 
-def verify(request, key=None):
+def verify_email(request, key=None):
     c = statsd.StatsClient('localhost', 8125)
     if not key:
         c.incr('verify.failed')
@@ -147,42 +150,55 @@ def verify(request, key=None):
 
     else:
         try:
-            try:
-                user_email = UserEmail.objects.get(verification_key=key)
-                user_email.verified = True
-                user_email.save()
-                notifications = CategoryNotification.objects.filter(user=user_email)
-                # remove previously verified notifications on re-verify
-                notifications.filter(verified=True).delete()
 
-                # verify new notifications
-                unverified_notifications = notifications.filter(verified=False)
-                for n in unverified_notifications:
-                    n.verified = True
-                    n.save()
-            except UserEmail.DoesNotExist:
-                user_email = None
-            
-            try:
-                user_device = UserDevice.objects.get(verification_key=key)
-                user_device.verified = True
-                user_device.save()
-                notifications = CategoryNotification.objects.filter(device=user_device)
-                # remove previously verified notifications on re-verify
-                notifications.filter(verified=True).delete()
+            user_email = UserEmail.objects.get(verification_key=key)
+            user_email.verified = True
+            user_email.save()
+            notifications = CategoryNotification.objects.filter(user=user_email)
+            # verify new notifications
+            unverified_notifications = notifications.filter(verified=False)
+            for n in unverified_notifications:
+                n.verified = True
+                n.save()
+        except UserEmail.DoesNotExist:
+            c.incr('verify.failed')
+            c.gauge('total.verify.failed', 1, delta=True)
+            return render(request, 'subscribe.html', {
+                'icon': 'img/boom.svg',
+                'text': 'Leider ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+                'showBack': True
+            })
+        else:
+            c.incr('verify.success')
+            c.gauge('total.verify.success', 1, delta=True)
+            return render(request, 'subscribe.html', {
+                'icon': 'img/ok.svg',
+                'text': 'Danke, wir werden dich bei der nächsten Gelegenheit benachrichtigen.',
+                'showBack': False
+            })
 
-                # verify new notifications
-                unverified_notifications = notifications.filter(verified=False)
-                for n in unverified_notifications:
-                    n.verified = True
-                    n.save()
-            except UserDevice.DoesNotExist:
-                user_device = None
-
-            if user_email is None and user_device is None:
-                raise Exception()    
-            
-        except Exception:
+def verify_push(request, key=None):
+    c = statsd.StatsClient('localhost', 8125)
+    if not key:
+        c.incr('verify.failed')
+        c.gauge('total.verify.failed', 1, delta=True)
+        return render(request, 'subscribe.html', {
+            'icon': 'img/boom.svg',
+            'text': 'Leider ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+            'showBack': True
+        })
+    else:
+        try:
+            user_device = UserDevice.objects.get(verification_key=key)
+            user_device.verified = True
+            user_device.save()
+            notifications = CategoryNotification.objects.filter(device=user_device)
+            # verify new notifications
+            unverified_notifications = notifications.filter(verified=False)
+            for n in unverified_notifications:
+                n.verified = True
+                n.save()
+        except UserDevice.DoesNotExist:
             c.incr('verify.failed')
             c.gauge('total.verify.failed', 1, delta=True)
             return render(request, 'subscribe.html', {
@@ -201,7 +217,6 @@ def verify(request, key=None):
 
 
 def unsubscribe(request):
-
     if request.method == "POST":
         form = UnsubscribeForm(request.POST)
         if form.is_valid():

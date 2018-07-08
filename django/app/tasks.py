@@ -34,7 +34,7 @@ def send_verify_email(email, scheme, host, count):
     try:
         user_email = UserEmail.objects.get(email=email)
         user_email.mail("Willkommen beim TheaterWecker", render_to_string('email/welcome.email', {
-            'verification_link': "%s://%s%s" % (scheme, host, reverse('app:verify', kwargs={
+            'verification_link': "%s://%s%s" % (scheme, host, reverse('app:verify_email', kwargs={
                 'key': user_email.verification_key
             })),
             'unsubscribe_link': "%s://%s%s?email=%s" % (scheme, host, reverse('app:unsubscribe'), email),
@@ -96,7 +96,7 @@ def send_verify_notification(device, scheme, host, count):
             },
         }
         if scheme and host:
-            data['url'] = "%s://%s%s" % (scheme, host, reverse('app:verify', kwargs={
+            data['url'] = "%s://%s%s" % (scheme, host, reverse('app:verify_push', kwargs={
                             'key': user_device.verification_key
                         }))
         user_device.notify(data)
